@@ -7,28 +7,25 @@
 //
 
 #import "VTablature.h"
+#import "VChord.h"
+#import "VNote.h"
+
+#define NUM_STRINGS 6
 
 @implementation VTablature
 
-- (NSUInteger) strings { return numStrings; }
+@synthesize numStrings;
+@synthesize tabLength;
 
 - (id)initWithStrings:(NSUInteger)num
 {
-    // Returns an initialized VTablature with space for eight notes, no strings played.
+    // Returns an initialized VTablature.
     self = [super init];
     if (self) {
         numStrings = num;
-        // outer array holds "notes"
-        tabData = [[NSMutableArray arrayWithCapacity:32] retain];
-        
-        int noteNumber, stringNumber;
-        for (noteNumber = 0; noteNumber < 8; noteNumber ++) {
-            // inner array holds "strings"
-            [tabData addObject:[NSMutableArray arrayWithCapacity:numStrings]];
-            for (stringNumber = 0; stringNumber < numStrings; stringNumber ++) {
-                [[tabData objectAtIndex:noteNumber] addObject:[NSNumber numberWithInt:-1]];
-            }
-        }
+
+        tabData = [[NSDictionary dictionary] retain];
+        tabLength = 0;
         // NSLog([tabData description]);
         return self;
     } else {
@@ -39,71 +36,50 @@
 - (id) init
 {
     NSLog(@"VTablature init");
-    return [self initWithStrings:6];
-}
-
-- (NSUInteger) length { return [tabData count]; }
-
-- (NSUInteger) fretAtLocation:(NSUInteger)location
-                     onString:(NSUInteger)stringNum
-{
-    NSNumber *fretNum = [[tabData objectAtIndex:location] objectAtIndex:stringNum];
-    return [fretNum intValue];
+    return [self initWithStrings:NUM_STRINGS];
 }
 
 - (NSString *) asText
 {
-    NSMutableString *tabText = [NSMutableString stringWithCapacity:32];
-    
-    NSEnumerator *instrStringsEnum;
-    NSNumber *aNote;
-    NSMutableArray *stringsArray = [NSMutableArray arrayWithCapacity:numStrings];
-    id tabNote;
-    
-    int stringNum;
-    for (stringNum = 0; stringNum < numStrings; stringNum ++) {
-        // NSLog(@"string %i", stringNum);
-        instrStringsEnum = [tabData objectEnumerator];
-        while ( tabNote = [instrStringsEnum nextObject] ) {
-            aNote = [tabNote objectAtIndex:stringNum];
-            if ( [aNote intValue] < 0 ) {
-                // negative values indicate unplayed strings
-                [tabText appendString:@"———"];
-                // NSLog([NSString stringWithFormat:@"Unplayed string: %@", tabText]);
-            } else {
-                [tabText appendString:[VTablature getNoteTextForString:[aNote stringValue]]];
-                // NSLog(@"String value: %i", [aNote intValue]);
-            }
-        }
-        [stringsArray addObject:[tabText copy]];
-        [tabText setString:@""];
+    // FIXME: stub
+    return @"";
+}
+
+- (NSInteger)fretAtLocation:(Fraction *)location
+                   onString:(NSUInteger)stringNum
+{
+    VChord *soughtChord;
+    if ((soughtChord = [tabData objectForKey:location])) {
+        return [[soughtChord noteOnString:stringNum] fret];
+    } else {
+        return -1;
     }
-    [tabText setString:[stringsArray componentsJoinedByString:@"\n"]];
-    return tabText;
 }
 
-- (void) addNoteAtIndex:(NSUInteger)noteIndex
+- (VChord *)chordAtLocation:(Fraction *)location
 {
-    int stringNumber;
-	
-	// make an array with no strings fretted
-	NSMutableArray *emptyStringsArray = [NSMutableArray arrayWithCapacity:numStrings];
-    for (stringNumber = 0; stringNumber < numStrings; stringNumber ++)
-	{
-		[emptyStringsArray addObject:[NSNumber numberWithInt:-1]];
-	}
-	
-	// insert it
-    [tabData insertObject:emptyStringsArray
-				  atIndex:noteIndex];
+    VChord *soughtChord;
+    if ((soughtChord = [tabData objectForKey:location])) {
+        return soughtChord;
+    } else {
+        return nil;
+    }
+
 }
 
-- (void) addNoteAtLocation:(NSUInteger)location
-                  onString:(NSUInteger)stringNum
-                    onFret:(NSUInteger)fretNum
+- (void)addNoteAtLocation:(Fraction *)location
+                 onString:(NSUInteger)stringNum
+                   onFret:(NSUInteger)fretNum
 {
-    [[tabData objectAtIndex:location] replaceObjectAtIndex:stringNum
-                                                withObject:[NSNumber numberWithInt:fretNum]];
+    id noteAlready;
+    id newChord;
+    if ((noteAlready = [tabData objectForKey:location])) {
+        newChord = [noteAlready plusNoteOnString:stringNum
+                                             onFret:fretNum];
+    } else {
+        newChord = [VNote noteOnString:stringNum atFret:fretNum];
+    }
+    [tabData setObject:newChord forKey:location];
 }
 
 + (NSString *) getNoteTextForString:(NSString *)fretText

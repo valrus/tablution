@@ -7,23 +7,31 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VTablature.h"
 
+@class VTablature;
+@class VTabView;
 @class VTabDocument;
 
-@interface VTabController : NSWindowController
+@interface VTabController : NSObject
 {
-    IBOutlet NSTextView *tabView;
+    // View stuff
+    IBOutlet VTabView *tabView;
     IBOutlet NSTextField *currentFretField;
-	NSDictionary *defaultTextAttrs;
-	NSDictionary *selectedTextAttrs;
-	NSDictionary *hiliteTextAttrs;
+    
     NSDictionary *editCharsDict;
-    VTabDocument *tabDoc;
+    
+    // Document
+    IBOutlet VTabDocument *tabDocument;
+    
+    // Data
+    VTablature *tablature;
 }
 
+@property (retain) VTabDocument *tabDocument;
+@property (retain) VTablature *tablature;
+
 - (void)setupEditDict;
-- (void)setupTextAttrDicts;
-- (void)drawTablature;
+
+- (void)awakeFromNib;
 
 @end

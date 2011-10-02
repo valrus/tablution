@@ -7,45 +7,18 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VTablature.h"
-#import "VTabController.h"
+
+@class VTablature;
+@class VTabController;
 
 @interface VTabDocument : NSDocument
 {
-	VTablature *theTablature;
-    
-    NSUInteger currentLocation;
-    NSUInteger currentString;
+	VTablature *tablature;
     NSUInteger baseFret;
-    
-    NSRange currentSelection;
+    IBOutlet VTabController *controller;
 }
 
-// get information about the tab
-- (VTablature *) tablature;
-- (NSUInteger) cursorLocation;
-- (NSUInteger) cursorString;
-- (NSUInteger) tabLength;
-- (NSUInteger) baseFret;
-- (NSRange) cursorTextRange;
-- (NSArray *) cursorTextRanges;
-- (NSRange) textRangeForString:(NSUInteger)stringNum
-					atLocation:(NSUInteger)location;
-- (BOOL) atEndOfTab;
-
-// editing
-- (void) advanceCurrentLocation;
-- (void) recedeCurrentLocation;
-- (void) upString;
-- (void) downString;
-- (void) addNoteOnString:(NSNumber *)stringNum
-                  onFret:(NSNumber *)fretNum;
-- (void) incrementBaseFret;
-- (void) decrementBaseFret;
-- (void) insertNoteBefore:(NSUInteger)noteIndex;
-- (void) changeSelectionToIndex:(NSUInteger)clickIndex;
-
-// hook into a tab
-- (void) setTablature:(VTablature *)aTablature;
+@property (retain) VTablature *tablature;
+@property (readwrite) NSUInteger baseFret;
 
 @end

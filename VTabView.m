@@ -1,162 +1,71 @@
 #import "VTabView.h"
 #import "VTabController.h"
 #import "VTablature.h"
+#import "VTabDocument.h"
 
+#define STRING_SPACE 12.0
+#define LINE_SPACE 24.0
+#define LEFT_MARGIN 16.0
+#define RIGHT_MARGIN 16.0
+#define TOP_MARGIN 16.0
 
 @interface VTabView (Private)
 
-- (void)fretEntry:(NSString *)entryChar;
-- (void)moveBaseFret:(NSString *)entryChar;
+- (void)drawStringsWithGraphicsContext:(NSGraphicsContext *)theContext;
+- (void)drawTab;
 
 @end
 
 @implementation VTabView
 
-// setup stuff
+@synthesize tablature;
 
-- (void)setupEditDict {
-    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"editChars"
-                                                          ofType:@"plist"];
-    editCharsDict = [[NSDictionary dictionaryWithContentsOfFile:plistPath] retain];
-    if (!editCharsDict) {
-        // make a dialog box or something for this
-        NSLog(@"Edit chars dictionary not found!");
-    }
-}
-
-- (void)setTablature:(VTablature *)newValue {
-    if (myTablature != newValue) {
-        if (myTablature) [myTablature release];
-        
-        myTablature = [newValue retain];
-    }
-}
-
-// editing
-
-- (void)fretEntry:(NSString *)entryChar
+- (void)drawStringsWithGraphicsContext:(NSGraphicsContext *)theContext
 {
-    NSDictionary *fretInfo = [editCharsDict objectForKey:entryChar];
-    [myController addNoteOnString:[fretInfo objectForKey:@"stringNum"]
-                           onFret:[fretInfo objectForKey:@"fretNum"]];
-}
-
-- (void)moveBaseFret:(NSString *)entryChar
-{
-    if ( [entryChar isEqualToString:@"+"] ) {
-        [myController incrementBaseFret];
-    } else {
-        [myController decrementBaseFret];
-    }
-}
-
-// changing text
-
-- (void)replaceNote:(NSUInteger)whichNote
-           onString:(NSUInteger)whichString
-           withFret:(NSUInteger)whichFret
-{
-    int tabTextLength = [myTablature length] * 6 + 1;
-    NSString *replaceString = [VTablature getNoteTextForValue:whichFret];
-    NSRange textRange = NSMakeRange((tabTextLength + 1) * whichString +
-                                    6 * whichNote, 5);
-    NSString *stringForDelegate = replaceString;
+    NSUInteger i;
+    NSPoint startPoint;
+    NSPoint endPoint;
+    NSRect viewRect = [self bounds];
+    CGFloat viewWidth = viewRect.size.width;
+    CGFloat viewHeight = viewRect.size.height;
+    CGFloat stringHeight = 0.0;
     
-    if ([myTablature fretAtLocation:whichNote  
-                           onString:whichString] == whichFret)
-        stringForDelegate = nil;
+    [theContext saveGraphicsState];
     
-    NSLog(@"what the");
-    if ([self shouldChangeTextInRange:textRange
-                    replacementString:stringForDelegate])
-    {
-        NSLog(@"HARBL");
-        // if a note is being replaced, we can assume it is selected.
-        // Hence, use red text on a black background to indicate this.
-        NSDictionary *attrDict = [NSDictionary dictionaryWithObjectsAndKeys:
-            NSForegroundColorAttributeName, [NSColor redColor],
-            NSBackgroundColorAttributeName, [NSColor blackColor],
-            NSFontAttributeName, [NSFont fontWithName:@"Monaco" size:12.0]];
-        
-        NSAttributedString *attrString = [[NSAttributedString alloc]
-                                            initWithString:replaceString
-                                                attributes:attrDict];
-        [[self textStorage] replaceCharactersInRange:textRange
-                                withAttributedString:attrString];
-        NSLog(@"%@", [[self textStorage] string]);
-        [self didChangeText];
-        [self needsDisplay];
-    }
-}
-
-// NSResponder overrides
-
-- (BOOL)acceptsFirstResponder {
-    return YES;    
-}
-
-- (void)keyDown:(NSEvent *)theEvent {
-    NSCharacterSet *fretEntryChars =
-        [NSCharacterSet characterSetWithCharactersInString:@"123456qwertyasdfghzxcvbn"];
-    NSString *theKey = [theEvent charactersIgnoringModifiers];
-    NSString *keyChar;
-    unichar keyUnichar = 0;
-    if ( [theKey length] == 1 ) {
-        keyChar = [theKey substringToIndex:1];
-        keyUnichar = [keyChar characterAtIndex:0];
-        if ( [keyChar isEqualToString:@" "] ) {
-            [myController advanceAndExtend:YES];
-        } else if ( [fretEntryChars characterIsMember:keyUnichar] ) {
-            // keys for adding fretted strings
-            [self fretEntry:keyChar];
-        } else if ( [[NSCharacterSet characterSetWithCharactersInString:@"-+"]
-                        characterIsMember:keyUnichar] ) {
-            // move base fret
-            [self moveBaseFret:keyChar];
-        } else if ( [theEvent modifierFlags] & NSNumericPadKeyMask ) {
-            // handle arrow keys using input management system
-            [self interpretKeyEvents:[NSArray arrayWithObject:theEvent]];
+    [NSBezierPath setDefaultLineWidth:2];
+    [[NSColor blackColor] setStroke];
+    
+    while (stringHeight + TOP_MARGIN <= viewHeight) {
+        for (i = 0; i < [tablature numStrings]; i++) {
+            startPoint = NSMakePoint(LEFT_MARGIN, stringHeight + TOP_MARGIN);
+            endPoint = NSMakePoint(viewWidth - RIGHT_MARGIN, stringHeight + TOP_MARGIN);
+            [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+            stringHeight += STRING_SPACE;
         }
-    } else {
-        [super keyDown:theEvent];
+        stringHeight += LINE_SPACE;
     }
+    [theContext restoreGraphicsState];
 }
 
-- (IBAction)moveRight:(id)sender
+- (void)drawTab
 {
-    [myController advanceAndExtend:NO];
+    return;
 }
 
-- (IBAction)moveLeft:(id)sender
+- (void)drawRect:(NSRect)dirtyRect
 {
-    [myController recede];
+    [[NSColor whiteColor] setFill];
+    NSRectFill(dirtyRect);
+    [self drawStringsWithGraphicsContext:[NSGraphicsContext currentContext]];
 }
 
-- (IBAction)moveUp:(id)sender
+- (BOOL)isFlipped
 {
-    [myController upString];
+    return YES;
 }
 
-- (IBAction)moveDown:(id)sender
+- (void)awakeFromNib
 {
-    [myController downString];
-}
-
-- (void)mouseDown:(NSEvent *)theEvent
-{
-    NSLog(@"mouseUp");
     
-    NSPoint clickPoint = [theEvent locationInWindow];
-    NSLog([NSString stringWithFormat:@"window click x:%f, y:%f", clickPoint.x, clickPoint.y]);
-    // Get the point where the mouse was clicked in the view
-    // Change from window coordinates by sending nil as the fromView
-    // NSPoint viewClickPoint = [self convertPoint:clickPoint
-    //                                    fromView:nil];
-    clickPoint = [[self window] convertBaseToScreen:clickPoint];
-    NSLog([NSString stringWithFormat:@"view click x:%f, y:%f", clickPoint.x, clickPoint.y]);
-    // Get the index in the text where the mouse was clicked
-    NSUInteger clickIndex = [self characterIndexForPoint:clickPoint];
-    [myController respondToClickAtIndex:clickIndex];
 }
-    
 @end

@@ -2,19 +2,26 @@
 
 @class VTabController;
 @class VTablature;
+@class VTabDocument;
 
-@interface VTabView : NSTextView
+@interface VTabView : NSView
 {
-    // dictionary to store characters for entering tab
-    NSDictionary    *editCharsDict;
-    IBOutlet VTabController  *myController;
-    VTablature *myTablature;
+    VTabController *tabController;
+    VTablature *tablature;
+    
+    NSArray *selectedRanges;
 }
 
-- (void)setupEditDict;
-- (void)setTablature:(VTablature *)newValue;
+@property (retain) VTablature *tablature;
 
-- (void)replaceNote:(NSUInteger)whichNote
-           onString:(NSUInteger)whichString
-           withFret:(NSUInteger)whichFret;
+// Drawing helper functions
+- (void)drawStringsWithGraphicsContext:(NSGraphicsContext *)theContext;
+- (void)drawTab;
+
+- (void)drawRect:(NSRect)dirtyRect;
+
+- (BOOL)isFlipped;
+
+- (void)awakeFromNib;
+
 @end

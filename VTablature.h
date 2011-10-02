@@ -7,32 +7,36 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "Fraction.h"
+#import "VChord.h"
 
 @interface VTablature : NSObject {
-    NSMutableArray *tabData;
+    NSMutableDictionary *tabData;
     
-    int numStrings;
+    NSUInteger numStrings;
+    Fraction *tabLength;
 }
+
+@property (readonly) NSUInteger numStrings;
+@property (readonly) Fraction *tabLength;
 
 // setup stuff
 - (id)initWithStrings:(NSUInteger)num;
 - (id)init;
 
 // get information about tab
-- (NSUInteger) strings;
-- (NSUInteger) length;
-- (NSString *) asText;
-- (NSUInteger) fretAtLocation:(NSUInteger)location
-                     onString:(NSUInteger)stringNum;
+- (NSString *)asText;
+- (NSInteger)fretAtLocation:(Fraction *)location
+                   onString:(NSUInteger)stringNum;
+- (VChord *)chordAtLocation:(Fraction *)location;
 
 // alter the tab
-- (void) addNoteAtIndex:(NSUInteger)noteIndex;
-- (void) addNoteAtLocation:(NSUInteger)location
-                  onString:(NSUInteger)stringNum
-                    onFret:(NSUInteger)fretNum;
+- (void)addNoteAtLocation:(Fraction *)location
+                 onString:(NSUInteger)stringNum
+                   onFret:(NSUInteger)fretNum;
 
 // convert tab data to text
-+ (NSString *) getNoteTextForString:(NSString *)fretText;
-+ (NSString *) getNoteTextForValue:(NSUInteger)fretNum;
++ (NSString *)getNoteTextForString:(NSString *)fretText;
++ (NSString *)getNoteTextForValue:(NSUInteger)fretNum;
 
 @end
