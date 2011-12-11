@@ -21,7 +21,7 @@
                                                           ofType:@"plist"];
     editCharsDict = [[NSDictionary dictionaryWithContentsOfFile:plistPath] retain];
     if (!editCharsDict) {
-        // make a dialog box or something for this
+        // TODO: make a dialog box or something for this
         NSLog(@"Edit chars dictionary not found!");
     }
 }

@@ -14,15 +14,29 @@
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		D43327560F0D83650081EBAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D43327550F0D83650081EBAF /* InfoPlist.strings */; };
-		D466EAB013C2BC34002C77C4 /* Fraction.m in Sources */ = {isa = PBXBuildFile; fileRef = D466EAAF13C2BC34002C77C4 /* Fraction.m */; };
+		D45EBA80149463AE0067EE82 /* Fraction.m in Sources */ = {isa = PBXBuildFile; fileRef = D45EBA7F149463AD0067EE82 /* Fraction.m */; };
+		D45EBA82149467F30067EE82 /* editChars.plist in Resources */ = {isa = PBXBuildFile; fileRef = D45EBA81149467F30067EE82 /* editChars.plist */; };
 		D47C3D740E931A1B00C33AA5 /* VTablature.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C3D730E931A1B00C33AA5 /* VTablature.m */; };
 		D47C3D7D0E932AAF00C33AA5 /* VTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C3D7C0E932AAF00C33AA5 /* VTabController.m */; };
 		D48A317E13C2784C00A0594D /* VTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = D48A317D13C2784C00A0594D /* VTabView.m */; };
 		D4D54D8813C939AA00399D9B /* VChord.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D54D8713C939AA00399D9B /* VChord.m */; };
 		D4D54D8B13C940F400399D9B /* VNote.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D54D8A13C940F400399D9B /* VNote.m */; };
-		D4EB0D981438D5840034F48C /* TestVTablature.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EB0D971438D5840034F48C /* TestVTablature.m */; };
 		D4EB0D9C1438DBB40034F48C /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4EB0D9B1438DBB40034F48C /* SenTestingKit.framework */; };
+		D4EB0DA414395DA20034F48C /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4EB0DA314395DA20034F48C /* SenTestingKit.framework */; };
+		D4EB0DAC14395DA20034F48C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAA14395DA20034F48C /* InfoPlist.strings */; };
+		D4EB0DAE14395DA20034F48C /* TablutionTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAD14395DA20034F48C /* TablutionTests.h */; };
+		D4EB0DB014395DA20034F48C /* TablutionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EB0DAF14395DA20034F48C /* TablutionTests.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D4EB0DB5143976E90034F48C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D15AC270486D014006FF6A4;
+			remoteInfo = tablution;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -39,8 +53,9 @@
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* tablution.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tablution.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43327550F0D83650081EBAF /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		D466EAAE13C2BC34002C77C4 /* Fraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fraction.h; path = ../../Downloads/FractionDemo/Fraction.h; sourceTree = "<group>"; };
-		D466EAAF13C2BC34002C77C4 /* Fraction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Fraction.m; path = ../../Downloads/FractionDemo/Fraction.m; sourceTree = "<group>"; };
+		D45EBA7E149463AD0067EE82 /* Fraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fraction.h; sourceTree = "<group>"; };
+		D45EBA7F149463AD0067EE82 /* Fraction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Fraction.m; sourceTree = "<group>"; };
+		D45EBA81149467F30067EE82 /* editChars.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = editChars.plist; sourceTree = "<group>"; };
 		D47C3D720E931A1B00C33AA5 /* VTablature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTablature.h; sourceTree = "<group>"; };
 		D47C3D730E931A1B00C33AA5 /* VTablature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTablature.m; sourceTree = "<group>"; };
 		D47C3D7B0E932AAF00C33AA5 /* VTabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTabController.h; sourceTree = "<group>"; };
@@ -51,9 +66,14 @@
 		D4D54D8713C939AA00399D9B /* VChord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VChord.m; sourceTree = "<group>"; };
 		D4D54D8913C940F400399D9B /* VNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNote.h; sourceTree = "<group>"; };
 		D4D54D8A13C940F400399D9B /* VNote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNote.m; sourceTree = "<group>"; };
-		D4EB0D961438D5840034F48C /* TestVTablature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestVTablature.h; sourceTree = "<group>"; };
-		D4EB0D971438D5840034F48C /* TestVTablature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestVTablature.m; sourceTree = "<group>"; };
 		D4EB0D9B1438DBB40034F48C /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		D4EB0DA214395DA20034F48C /* TablutionTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TablutionTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4EB0DA314395DA20034F48C /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		D4EB0DA914395DA20034F48C /* TablutionTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TablutionTests-Info.plist"; sourceTree = "<group>"; };
+		D4EB0DAB14395DA20034F48C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D4EB0DAD14395DA20034F48C /* TablutionTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TablutionTests.h; sourceTree = "<group>"; };
+		D4EB0DAF14395DA20034F48C /* TablutionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TablutionTests.m; sourceTree = "<group>"; };
+		D4EB0DB114395DA20034F48C /* TablutionTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TablutionTests-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +83,14 @@
 			files = (
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
 				D4EB0D9C1438DBB40034F48C /* SenTestingKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4EB0D9E14395DA20034F48C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4EB0DA414395DA20034F48C /* SenTestingKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				8D15AC370486D014006FF6A4 /* tablution.app */,
+				D4EB0DA214395DA20034F48C /* TablutionTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -102,6 +131,7 @@
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
+				D4EB0DA714395DA20034F48C /* TablutionTests */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
 			);
@@ -111,8 +141,8 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				D466EAAE13C2BC34002C77C4 /* Fraction.h */,
-				D466EAAF13C2BC34002C77C4 /* Fraction.m */,
+				D45EBA7E149463AD0067EE82 /* Fraction.h */,
+				D45EBA7F149463AD0067EE82 /* Fraction.m */,
 				D48A317C13C2784C00A0594D /* VTabView.h */,
 				D48A317D13C2784C00A0594D /* VTabView.m */,
 				D47C3D7B0E932AAF00C33AA5 /* VTabController.h */,
@@ -121,8 +151,6 @@
 				2A37F4ACFDCFA73011CA2CEA /* VTabDocument.m */,
 				D47C3D720E931A1B00C33AA5 /* VTablature.h */,
 				D47C3D730E931A1B00C33AA5 /* VTablature.m */,
-				D4EB0D961438D5840034F48C /* TestVTablature.h */,
-				D4EB0D971438D5840034F48C /* TestVTablature.m */,
 				D4D54D8613C939AA00399D9B /* VChord.h */,
 				D4D54D8713C939AA00399D9B /* VChord.m */,
 				D4D54D8913C940F400399D9B /* VNote.h */,
@@ -147,6 +175,7 @@
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				2A37F4B4FDCFA73011CA2CEA /* TabDocument.nib */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
+				D45EBA81149467F30067EE82 /* editChars.plist */,
 				D43327550F0D83650081EBAF /* InfoPlist.strings */,
 			);
 			name = Resources;
@@ -156,9 +185,30 @@
 			isa = PBXGroup;
 			children = (
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
+				D4EB0DA314395DA20034F48C /* SenTestingKit.framework */,
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D4EB0DA714395DA20034F48C /* TablutionTests */ = {
+			isa = PBXGroup;
+			children = (
+				D4EB0DAD14395DA20034F48C /* TablutionTests.h */,
+				D4EB0DAF14395DA20034F48C /* TablutionTests.m */,
+				D4EB0DA814395DA20034F48C /* Supporting Files */,
+			);
+			path = TablutionTests;
+			sourceTree = "<group>";
+		};
+		D4EB0DA814395DA20034F48C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D4EB0DA914395DA20034F48C /* TablutionTests-Info.plist */,
+				D4EB0DAA14395DA20034F48C /* InfoPlist.strings */,
+				D4EB0DB114395DA20034F48C /* TablutionTests-Prefix.pch */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,6 +232,25 @@
 			productReference = 8D15AC370486D014006FF6A4 /* tablution.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D4EB0DA114395DA20034F48C /* TablutionTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4EB0DB214395DA20034F48C /* Build configuration list for PBXNativeTarget "TablutionTests" */;
+			buildPhases = (
+				D4EB0D9D14395DA20034F48C /* Sources */,
+				D4EB0D9E14395DA20034F48C /* Frameworks */,
+				D4EB0D9F14395DA20034F48C /* Resources */,
+				D4EB0DA014395DA20034F48C /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D4EB0DB6143976E90034F48C /* PBXTargetDependency */,
+			);
+			name = TablutionTests;
+			productName = TablutionTests;
+			productReference = D4EB0DA214395DA20034F48C /* TablutionTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -202,6 +271,7 @@
 			projectRoot = "";
 			targets = (
 				8D15AC270486D014006FF6A4 /* tablution */,
+				D4EB0DA114395DA20034F48C /* TablutionTests */,
 			);
 		};
 /* End PBXProject section */
@@ -215,10 +285,36 @@
 				8D15AC2D0486D014006FF6A4 /* MainMenu.nib in Resources */,
 				8D15AC2E0486D014006FF6A4 /* TabDocument.nib in Resources */,
 				D43327560F0D83650081EBAF /* InfoPlist.strings in Resources */,
+				D45EBA82149467F30067EE82 /* editChars.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4EB0D9F14395DA20034F48C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4EB0DAC14395DA20034F48C /* InfoPlist.strings in Resources */,
+				D4EB0DAE14395DA20034F48C /* TablutionTests.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D4EB0DA014395DA20034F48C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8D15AC300486D014006FF6A4 /* Sources */ = {
@@ -230,14 +326,29 @@
 				D47C3D740E931A1B00C33AA5 /* VTablature.m in Sources */,
 				D47C3D7D0E932AAF00C33AA5 /* VTabController.m in Sources */,
 				D48A317E13C2784C00A0594D /* VTabView.m in Sources */,
-				D466EAB013C2BC34002C77C4 /* Fraction.m in Sources */,
 				D4D54D8813C939AA00399D9B /* VChord.m in Sources */,
 				D4D54D8B13C940F400399D9B /* VNote.m in Sources */,
-				D4EB0D981438D5840034F48C /* TestVTablature.m in Sources */,
+				D45EBA80149463AE0067EE82 /* Fraction.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4EB0D9D14395DA20034F48C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4EB0DB014395DA20034F48C /* TablutionTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D4EB0DB6143976E90034F48C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D15AC270486D014006FF6A4 /* tablution */;
+			targetProxy = D4EB0DB5143976E90034F48C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		2A37F4B4FDCFA73011CA2CEA /* TabDocument.nib */ = {
@@ -262,6 +373,14 @@
 				2A37F4BAFDCFA73011CA2CEA /* English */,
 			);
 			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		D4EB0DAA14395DA20034F48C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D4EB0DAB14395DA20034F48C /* en */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -338,6 +457,61 @@
 			};
 			name = Release;
 		};
+		D4EB0DB314395DA20034F48C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/tablution.app/tablution";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TablutionTests/TablutionTests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				INFOPLIST_FILE = "TablutionTests/TablutionTests-Info.plist";
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		D4EB0DB414395DA20034F48C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/tablution.app/tablution";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TablutionTests/TablutionTests-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				INFOPLIST_FILE = "TablutionTests/TablutionTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -355,6 +529,15 @@
 			buildConfigurations = (
 				C05733CC08A9546B00998B17 /* Debug */,
 				C05733CD08A9546B00998B17 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4EB0DB214395DA20034F48C /* Build configuration list for PBXNativeTarget "TablutionTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4EB0DB314395DA20034F48C /* Debug */,
+				D4EB0DB414395DA20034F48C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

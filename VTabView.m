@@ -8,6 +8,7 @@
 #define LEFT_MARGIN 16.0
 #define RIGHT_MARGIN 16.0
 #define TOP_MARGIN 16.0
+#define LINE_WIDTH 2
 
 @interface VTabView (Private)
 
@@ -29,13 +30,14 @@
     CGFloat viewWidth = viewRect.size.width;
     CGFloat viewHeight = viewRect.size.height;
     CGFloat stringHeight = 0.0;
+    NSUInteger lineHeight = ([tablature numStrings] - 1) * (STRING_SPACE + LINE_WIDTH);
     
     [theContext saveGraphicsState];
     
-    [NSBezierPath setDefaultLineWidth:2];
-    [[NSColor blackColor] setStroke];
+    [NSBezierPath setDefaultLineWidth:LINE_WIDTH];
+    [[NSColor grayColor] setStroke];
     
-    while (stringHeight + TOP_MARGIN <= viewHeight) {
+    while (stringHeight + TOP_MARGIN + lineHeight <= viewHeight) {
         for (i = 0; i < [tablature numStrings]; i++) {
             startPoint = NSMakePoint(LEFT_MARGIN, stringHeight + TOP_MARGIN);
             endPoint = NSMakePoint(viewWidth - RIGHT_MARGIN, stringHeight + TOP_MARGIN);
