@@ -24,9 +24,9 @@
     if (self) {
         numStrings = num;
 
-        tabData = [[NSDictionary dictionary] retain];
-        tabLength = 0;
-        // NSLog([tabData description]);
+        tabData = [[NSMutableArray arrayWithCapacity:10] retain];
+        tabLength = 1;
+        
         return self;
     } else {
         return nil;
@@ -45,21 +45,21 @@
     return @"";
 }
 
-- (NSInteger)fretAtLocation:(Fraction *)location
+- (NSInteger)fretAtLocation:(NSUInteger)location
                    onString:(NSUInteger)stringNum
 {
     VChord *soughtChord;
-    if ((soughtChord = [tabData objectForKey:location])) {
+    if ((soughtChord = [tabData objectAtIndex:location])) {
         return [[soughtChord noteOnString:stringNum] fret];
     } else {
         return -1;
     }
 }
 
-- (VChord *)chordAtLocation:(Fraction *)location
+- (VChord *)chordAtLocation:(NSUInteger)location
 {
     VChord *soughtChord;
-    if ((soughtChord = [tabData objectForKey:location])) {
+    if ((soughtChord = [tabData objectAtIndex:location])) {
         return soughtChord;
     } else {
         return nil;
@@ -67,19 +67,31 @@
 
 }
 
-- (void)addNoteAtLocation:(Fraction *)location
-                 onString:(NSUInteger)stringNum
-                   onFret:(NSUInteger)fretNum
+- (void)insertNoteAtLocation:(NSUInteger)location
+                    onString:(NSUInteger)stringNum
+                      onFret:(NSUInteger)fretNum
 {
     id noteAlready;
     id newChord;
-    if ((noteAlready = [tabData objectForKey:location])) {
+    if ((noteAlready = [tabData objectAtIndex:location])) {
         newChord = [noteAlready plusNoteOnString:stringNum
                                              onFret:fretNum];
     } else {
         newChord = [VNote noteOnString:stringNum atFret:fretNum];
     }
-    [tabData setObject:newChord forKey:location];
+    [tabData replaceObjectAtIndex:location withObject:newChord];
+}
+
+- (void)insertChordFromArray:(NSArray *)chordArray
+                  atLocation:(NSUInteger)location
+{
+    [tabData insertObject:[[VChord alloc] initWithArray:chordArray]
+                  atIndex:location];
+}
+
+- (void)addChordFromArray:(NSArray *)chordArray
+{
+    [tabData addObject:[[VChord alloc] initWithArray:chordArray]];
 }
 
 + (NSString *) getNoteTextForString:(NSString *)fretText

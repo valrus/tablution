@@ -11,14 +11,14 @@
 #import "VChord.h"
 
 @interface VTablature : NSObject {
-    NSMutableDictionary *tabData;
+    NSMutableArray *tabData;
     
     NSUInteger numStrings;
-    Fraction *tabLength;
+    NSUInteger tabLength;
 }
 
 @property (readonly) NSUInteger numStrings;
-@property (readonly) Fraction *tabLength;
+@property (readonly) NSUInteger tabLength;
 
 // setup stuff
 - (id)initWithStrings:(NSUInteger)num;
@@ -26,14 +26,17 @@
 
 // get information about tab
 - (NSString *)asText;
-- (NSInteger)fretAtLocation:(Fraction *)location
+- (NSInteger)fretAtLocation:(NSUInteger)location
                    onString:(NSUInteger)stringNum;
-- (VChord *)chordAtLocation:(Fraction *)location;
+- (VChord *)chordAtLocation:(NSUInteger)location;
 
 // alter the tab
-- (void)addNoteAtLocation:(Fraction *)location
-                 onString:(NSUInteger)stringNum
-                   onFret:(NSUInteger)fretNum;
+- (void)insertNoteAtLocation:(NSUInteger)location
+                    onString:(NSUInteger)stringNum
+                      onFret:(NSUInteger)fretNum;
+- (void)insertChordFromArray:(NSArray *)chordArray
+                  atLocation:(NSUInteger)location;
+- (void)addChordFromArray:(NSArray *)chordArray;
 
 // convert tab data to text
 + (NSString *)getNoteTextForString:(NSString *)fretText;
