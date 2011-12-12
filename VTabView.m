@@ -21,6 +21,9 @@
 
 @synthesize tablature;
 
+#pragma mark -
+#pragma mark Drawing Functions
+
 - (void)drawStringsWithGraphicsContext:(NSGraphicsContext *)theContext
 {
     NSUInteger i;
@@ -49,6 +52,7 @@
     [theContext restoreGraphicsState];
 }
 
+// TODO
 - (void)drawTab
 {
     return;
@@ -59,6 +63,7 @@
     [[NSColor whiteColor] setFill];
     NSRectFill(dirtyRect);
     [self drawStringsWithGraphicsContext:[NSGraphicsContext currentContext]];
+    [self drawTab];
 }
 
 - (BOOL)isFlipped
@@ -68,6 +73,41 @@
 
 - (void)awakeFromNib
 {
-    
+    return;
 }
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
+
+#pragma mark -
+#pragma mark Input Handling
+- (void)keyDown:(NSEvent *)theEvent
+{
+    NSLog(@"Bindings: %@", [[tabController keyBindings] description]);
+    NSLog(@"keyDown: %@", [theEvent characters]);
+    if ([[tabController keyBindings] objectForKey:[theEvent characters]])
+    {
+        NSArray *actionParts = [[tabController keyBindings] objectForKey:[theEvent characters]];
+        NSLog(@"%@", [actionParts objectAtIndex:0]);
+        SEL theSelector = NSSelectorFromString([actionParts objectAtIndex:0]);
+        switch ([actionParts count])
+        {
+            case 1:
+                [tabController performSelector:theSelector];
+                break;
+            case 2:
+                [tabController performSelector:theSelector
+                                    withObject:[actionParts objectAtIndex:1]];
+                break;
+            case 3:
+                [tabController performSelector:theSelector
+                                    withObject:[actionParts objectAtIndex:1]
+                                    withObject:[actionParts objectAtIndex:2]];
+        }
+    }
+}
+
 @end

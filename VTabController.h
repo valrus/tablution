@@ -18,7 +18,7 @@
     IBOutlet VTabView *tabView;
     IBOutlet NSTextField *currentFretField;
     
-    NSDictionary *editCharsDict;
+    NSDictionary *keyBindings;
     
     // Document
     IBOutlet VTabDocument *tabDocument;
@@ -29,9 +29,19 @@
 
 @property (retain) VTabDocument *tabDocument;
 @property (retain) VTablature *tablature;
+@property (retain) NSDictionary *keyBindings;
 
-- (void)setupEditDict;
+// Setup
+
+- (void)setupKeyBindings;
 
 - (void)awakeFromNib;
+
+// Editing functions
+
+- (void)addNoteOnString:(NSNumber *)whichString
+                 onFret:(NSNumber *)whichFret;
+
+- (void)incrementBaseFret;
 
 @end

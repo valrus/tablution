@@ -14,22 +14,26 @@
 
 @synthesize tabDocument;
 @synthesize tablature;
+@synthesize keyBindings;
     
-- (void)setupEditDict
+- (void)setupKeyBindings
 {
-    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"editChars"
+    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"keyBindings"
                                                           ofType:@"plist"];
-    editCharsDict = [[NSDictionary dictionaryWithContentsOfFile:plistPath] retain];
-    if (!editCharsDict) {
+    
+    if ((!(keyBindings = [[NSDictionary dictionaryWithContentsOfFile:plistPath] retain])))
+    {
         // TODO: make a dialog box or something for this
-        NSLog(@"Edit chars dictionary not found!");
+        NSLog(@"Edit chars dictionary not found or contains an error!");
     }
+    NSLog(@"Loaded dictionary:\n%@", [keyBindings description]);
 }
 
 - (void)awakeFromNib
 {
     [tabView setTablature:[tabDocument tablature]];
-    [self setupEditDict];
+    [self setupKeyBindings];
+    
 }
 
 // Editing selectors
@@ -37,9 +41,8 @@
 - (void)addNoteOnString:(NSNumber *)whichString
                  onFret:(NSNumber *)whichFret
 {
-//    [tablature addNoteAtLocation:
-//                        onString:whichString
-//                          onFret:whichFret];
+    NSLog(@"Add a note on string %i at fret %i",
+          [whichString intValue], [whichFret intValue]);
 }
 
 - (void)incrementBaseFret

@@ -15,7 +15,7 @@
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		D43327560F0D83650081EBAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D43327550F0D83650081EBAF /* InfoPlist.strings */; };
 		D45EBA80149463AE0067EE82 /* Fraction.m in Sources */ = {isa = PBXBuildFile; fileRef = D45EBA7F149463AD0067EE82 /* Fraction.m */; };
-		D45EBA82149467F30067EE82 /* editChars.plist in Resources */ = {isa = PBXBuildFile; fileRef = D45EBA81149467F30067EE82 /* editChars.plist */; };
+		D45EBA82149467F30067EE82 /* keyBindings.plist in Resources */ = {isa = PBXBuildFile; fileRef = D45EBA81149467F30067EE82 /* keyBindings.plist */; };
 		D47C3D740E931A1B00C33AA5 /* VTablature.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C3D730E931A1B00C33AA5 /* VTablature.m */; };
 		D47C3D7D0E932AAF00C33AA5 /* VTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C3D7C0E932AAF00C33AA5 /* VTabController.m */; };
 		D48A317E13C2784C00A0594D /* VTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = D48A317D13C2784C00A0594D /* VTabView.m */; };
@@ -55,7 +55,7 @@
 		D43327550F0D83650081EBAF /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D45EBA7E149463AD0067EE82 /* Fraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fraction.h; sourceTree = "<group>"; };
 		D45EBA7F149463AD0067EE82 /* Fraction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Fraction.m; sourceTree = "<group>"; };
-		D45EBA81149467F30067EE82 /* editChars.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = editChars.plist; sourceTree = "<group>"; };
+		D45EBA81149467F30067EE82 /* keyBindings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = keyBindings.plist; sourceTree = "<group>"; };
 		D47C3D720E931A1B00C33AA5 /* VTablature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTablature.h; sourceTree = "<group>"; };
 		D47C3D730E931A1B00C33AA5 /* VTablature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTablature.m; sourceTree = "<group>"; };
 		D47C3D7B0E932AAF00C33AA5 /* VTabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTabController.h; sourceTree = "<group>"; };
@@ -175,7 +175,7 @@
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				2A37F4B4FDCFA73011CA2CEA /* TabDocument.nib */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
-				D45EBA81149467F30067EE82 /* editChars.plist */,
+				D45EBA81149467F30067EE82 /* keyBindings.plist */,
 				D43327550F0D83650081EBAF /* InfoPlist.strings */,
 			);
 			name = Resources;
@@ -285,7 +285,7 @@
 				8D15AC2D0486D014006FF6A4 /* MainMenu.nib in Resources */,
 				8D15AC2E0486D014006FF6A4 /* TabDocument.nib in Resources */,
 				D43327560F0D83650081EBAF /* InfoPlist.strings in Resources */,
-				D45EBA82149467F30067EE82 /* editChars.plist in Resources */,
+				D45EBA82149467F30067EE82 /* keyBindings.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
