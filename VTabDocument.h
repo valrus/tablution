@@ -14,11 +14,11 @@
 @interface VTabDocument : NSDocument
 {
 	VTablature *tablature;
-    NSUInteger baseFret;
+    NSNumber *baseFret;
     IBOutlet VTabController *controller;
 }
 
 @property (retain) VTablature *tablature;
-@property (readwrite) NSUInteger baseFret;
+@property (retain) NSNumber *baseFret;
 
 @end

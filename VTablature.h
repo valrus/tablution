@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "Fraction.h"
 #import "VChord.h"
 
 @interface VTablature : NSObject {
@@ -37,9 +36,15 @@
 - (void)insertChordFromArray:(NSArray *)chordArray
                   atLocation:(NSUInteger)location;
 - (void)addChordFromArray:(NSArray *)chordArray;
+- (void)addChordFromString:(NSString *)chordString;
 
 // convert tab data to text
 + (NSString *)getNoteTextForString:(NSString *)fretText;
 + (NSString *)getNoteTextForValue:(NSUInteger)fretNum;
+
+// NSFastEnumeration protocol
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(id *)stackbuf
+                                    count:(NSUInteger)len;
 
 @end

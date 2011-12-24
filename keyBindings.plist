@@ -146,5 +146,13 @@
 		<integer>5</integer>
 		<integer>3</integer>
 	</array>
+	<key>-</key>
+	<array>
+		<string>decrementBaseFret</string>
+	</array>
+	<key>+</key>
+	<array>
+		<string>incrementBaseFret</string>
+	</array>
 </dict>
 </plist>

@@ -10,25 +10,24 @@
 
 @implementation VNote
 
-@synthesize duration;
-@synthesize stringNum;
 @synthesize fret;
-
 @synthesize attrs;
 
-+ (VNote *)noteOnString:(NSUInteger)theString
-                 atFret:(NSUInteger)theFret;
++ (VNote *)noteAtFret:(NSInteger)theFret;
 {
-    return [[self alloc] initOnString:theString atFret:theFret];
+    return [[[self alloc] initAtFret:theFret] autorelease];
 }
 
-- (VNote *)initOnString:(NSUInteger)theString
-                 atFret:(NSUInteger)theFret;
++ (VNote *)blankNote
+{
+    return [[[self alloc] initAtFret:NO_FRET] autorelease];
+}
+
+- (VNote *)initAtFret:(NSInteger)theFret;
 {
     self = [super init];
     if (self) {
         fret = theFret;
-        stringNum = theString;
         attrs = nil;
         return self;
     } else {
@@ -36,11 +35,14 @@
     }
 }
 
-- (VChord *)plusNoteOnString:(NSUInteger)stringNum
-                      onFret:(NSUInteger)fretNum
+- (NSString *)stringValue
 {
-    // stub
-    return [[VChord alloc] initWithNote:[VNote noteOnString:1 atFret:1]];
+    return [NSString stringWithFormat:@"%i", fret];
+}
+
+- (BOOL)hasFret
+{
+    return (fret != NO_FRET);
 }
 
 @end

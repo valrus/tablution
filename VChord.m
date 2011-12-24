@@ -8,19 +8,46 @@
 #import "VChord.h"
 #import "VNote.h"
 
-static NSUInteger numStrings = 6;
-
 @implementation VChord
 
 @synthesize notes;
 @synthesize attrs;
+
+// construct
+
++ (VChord *)chordWithArray:(NSArray *)fretArray
+{
+    return [[[self alloc] initWithArray:fretArray] autorelease];
+}
+
++ (VChord *)chordWithStrings:(NSUInteger)numStrings
+                    withNote:(VNote *)note
+                    onString:(NSUInteger)string
+{
+    return [[[self alloc] initWithStrings:(NSUInteger)numStrings
+                                 withNote:(VNote *)note
+                                 onString:(NSUInteger)string] autorelease];
+}
+
++ (VChord *)chordWithStrings:(NSUInteger)numStrings
+                    withFret:(NSInteger)fret
+                    onString:(NSUInteger)string
+{
+    return [[[self alloc] initWithStrings:(NSUInteger)numStrings
+                                 withFret:(NSInteger)fret
+                                 onString:(NSUInteger)string] autorelease];
+}
 
 // init
 - (VChord *)initWithArray:(NSArray *)fretArray
 {
     self = [super init];
     if (self) {
-        notes = [NSMutableArray arrayWithArray:fretArray];
+        notes = [NSMutableArray arrayWithCapacity:[fretArray count]];
+        NSUInteger i;
+        for (i = 0; i < [fretArray count]; i++) {
+            [notes addObject:[VNote noteAtFret:[[fretArray objectAtIndex:i] intValue]]];
+        }
         attrs = nil;
         return self;
     } else {
@@ -28,19 +55,20 @@ static NSUInteger numStrings = 6;
     }
 }
 
-- (VChord *)initWithNote:(VNote *)note
+- (VChord *)initWithStrings:(NSUInteger)numStrings
+                   withNote:(VNote *)note
+                   onString:(NSUInteger)string
 {
     self = [super init];
+    
     if (self) {
-        NSMutableArray *fretArray = [NSMutableArray arrayWithCapacity:numStrings];
-        NSNumber *noteFret = [NSNumber numberWithInt:[note fret]];
-        NSUInteger noteString = [note stringNum];
+        notes = [NSMutableArray arrayWithCapacity:numStrings];
         NSUInteger i;
         for (i = 0; i < numStrings; i++) {
-            if (i == noteString) {
-                [fretArray addObject:noteFret];
+            if (i == string) {
+                [notes addObject:note];
             } else {
-                [fretArray addObject:[NSNumber numberWithInt:-1]];
+                [notes addObject:[VNote blankNote]];
             }
         }
         return self;
@@ -49,28 +77,48 @@ static NSUInteger numStrings = 6;
     }
 }
 
+- (VChord *)initWithStrings:(NSUInteger)numStrings
+                   withFret:(NSInteger)fret
+                   onString:(NSUInteger)string;
+{
+    VNote *newNote = [VNote noteAtFret:fret];
+    return [self initWithStrings:numStrings
+                        withNote:newNote
+                        onString:string];
+}
+
 // access
 - (VNote *)noteOnString:(NSUInteger)stringNum
 {
-    return [VNote noteOnString:stringNum
-                        atFret:[[notes objectAtIndex:stringNum] intValue]];
+    assert(stringNum > 0 && stringNum <= [[self notes] count]);
+    return [notes objectAtIndex:stringNum];
 }
 
-- (NSUInteger)fretOnString:(NSUInteger)stringNum
+- (NSInteger)fretOnString:(NSUInteger)stringNum
 {
-    return [[notes objectAtIndex:stringNum] intValue];
+    return [[notes objectAtIndex:stringNum] fret];
 }
 
 - (void)addNote:(VNote *)note
-{
-    [notes replaceObjectAtIndex:[note stringNum]
-                     withObject:[NSNumber numberWithInt:[note fret]]];
-}
-
-- (void)addFret:(NSUInteger)fret
        onString:(NSUInteger)stringNum
 {
     [notes replaceObjectAtIndex:stringNum
-                     withObject:[NSNumber numberWithInt:fret]];
+                     withObject:note];
 }
+
+- (void)addFret:(NSInteger)fret
+       onString:(NSUInteger)stringNum
+{
+    [notes replaceObjectAtIndex:stringNum
+                     withObject:[VNote noteAtFret:fret]];
+}
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(id *)stackbuf
+                                    count:(NSUInteger)len
+{
+    // just "delegate" this to internal NSMutableArray
+    return [notes countByEnumeratingWithState:state objects:stackbuf count:len];
+}
+
 @end

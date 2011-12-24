@@ -43,5 +43,6 @@
                  onFret:(NSNumber *)whichFret;
 
 - (void)incrementBaseFret;
+- (void)decrementBaseFret;
 
 @end

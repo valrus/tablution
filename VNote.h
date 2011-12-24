@@ -6,30 +6,29 @@
 //
 
 #import <Foundation/Foundation.h>
-@class Fraction;
+
+#define NO_FRET -1
+
 @class VChord;
 
 @interface VNote : NSObject {
-    Fraction *duration;
-    NSUInteger stringNum;
-    NSUInteger fret;
-    
+    NSInteger fret;
     NSDictionary *attrs;
 }
 
-@property (retain) Fraction *duration;
-@property (readwrite) NSUInteger stringNum;
-@property (readwrite) NSUInteger fret;
-
+@property (readwrite) NSInteger fret;
 @property (retain) NSDictionary *attrs;
 
-+ (VNote *)noteOnString:(NSUInteger)theString
-                 atFret:(NSUInteger)theFret;
++ (VNote *)noteAtFret:(NSInteger)theFret;
++ (VNote *)blankNote;
 
-- (VNote *)initOnString:(NSUInteger)theString
-                 atFret:(NSUInteger)theFret;
+- (VNote *)initAtFret:(NSInteger)theFret;
 
-- (VChord *)plusNoteOnString:(NSUInteger)stringNum
-                      onFret:(NSUInteger)fretNum;
+- (NSString *)stringValue;
+
+- (BOOL)hasFret;
+
+// - (VChord *)plusNoteOnString:(NSUInteger)stringNum
+//                       atFret:(NSInteger)fretNum;
 
 @end

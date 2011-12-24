@@ -10,6 +10,8 @@
 #import "VTabDocument.h"
 #import "VTablature.h"
 
+#define MAX_FRET 22
+
 @implementation VTabController
 
 @synthesize tabDocument;
@@ -33,7 +35,6 @@
 {
     [tabView setTablature:[tabDocument tablature]];
     [self setupKeyBindings];
-    
 }
 
 // Editing selectors
@@ -47,18 +48,18 @@
 
 - (void)incrementBaseFret
 {
-//    [tabDoc incrementBaseFret];
-//    [currentFretField setStringValue:
-//        [@"Current Fret: " stringByAppendingString:
-//            [NSString stringWithFormat:@"%i", [tabDoc baseFret]]]];
+    int currFret = [[tabDocument baseFret] intValue];
+    if (currFret < MAX_FRET) {
+        [tabDocument setBaseFret:[NSNumber numberWithInt:currFret + 1]];
+    }
 }
 
 - (void)decrementBaseFret
 {
-//    [tabDoc decrementBaseFret];
-//    [currentFretField setStringValue:
-//        [@"Current Fret: " stringByAppendingString:
-//            [NSString stringWithFormat:@"%i", [tabDoc baseFret]]]];
+    int currFret = [[tabDocument baseFret] intValue];
+    if (currFret > 0) {
+        [tabDocument setBaseFret:[NSNumber numberWithInt:currFret - 1]];
+    }
 }
 
 - (void)advance

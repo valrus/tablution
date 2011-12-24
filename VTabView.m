@@ -2,6 +2,7 @@
 #import "VTabController.h"
 #import "VTablature.h"
 #import "VTabDocument.h"
+#import "VNote.h"
 
 #define STRING_SPACE 12.0
 #define LINE_SPACE 24.0
@@ -9,6 +10,7 @@
 #define RIGHT_MARGIN 16.0
 #define TOP_MARGIN 16.0
 #define LINE_WIDTH 2
+#define CHORD_SPACE 12.0
 
 @interface VTabView (Private)
 
@@ -55,7 +57,28 @@
 // TODO
 - (void)drawTab
 {
-    return;
+    NSRect viewRect = [self bounds];
+    CGFloat viewWidth = viewRect.size.width;
+    CGFloat viewHeight = viewRect.size.height;
+    NSUInteger x = LEFT_MARGIN;
+    NSUInteger y = TOP_MARGIN - STRING_SPACE / 2;
+    NSDictionary *tabAttrs = [NSDictionary dictionary];
+    for (VChord *chord in tablature) {
+        NSLog(@"%@", chord);
+        for (VNote *note in chord) {
+            NSLog(@"%@", note);
+            if ([note hasFret]) {
+                NSString *text = [note stringValue];
+                [text drawAtPoint:NSMakePoint(x, y)
+                   withAttributes:tabAttrs];
+            }
+            y += STRING_SPACE;
+        }
+        y += CHORD_SPACE;
+        if (x > viewWidth) {
+            x = LEFT_MARGIN;
+        }
+    }
 }
 
 - (void)drawRect:(NSRect)dirtyRect

@@ -10,8 +10,6 @@
 #import "VChord.h"
 #import "VNote.h"
 
-#define NUM_STRINGS 6
-
 @implementation VTablature
 
 @synthesize numStrings;
@@ -22,7 +20,7 @@
     // Returns an initialized VTablature.
     self = [super init];
     if (self) {
-        numStrings = num;
+        numStrings = 6; // TODO: make not hardcoded
 
         tabData = [[NSMutableArray arrayWithCapacity:10] retain];
         tabLength = 1;
@@ -36,7 +34,7 @@
 - (id) init
 {
     NSLog(@"VTablature init");
-    return [self initWithStrings:NUM_STRINGS];
+    return [self initWithStrings:numStrings];
 }
 
 - (NSString *) asText
@@ -71,13 +69,15 @@
                     onString:(NSUInteger)stringNum
                       onFret:(NSUInteger)fretNum
 {
-    id noteAlready;
+    id chordAlready;
     id newChord;
-    if ((noteAlready = [tabData objectAtIndex:location])) {
-        newChord = [noteAlready plusNoteOnString:stringNum
-                                             onFret:fretNum];
+    if ((chordAlready = [tabData objectAtIndex:location])) {
+        [chordAlready addFret:fretNum
+                     onString:stringNum];
     } else {
-        newChord = [VNote noteOnString:stringNum atFret:fretNum];
+        newChord = [VChord chordWithStrings:numStrings
+                                   withFret:fretNum
+                                   onString:stringNum];
     }
     [tabData replaceObjectAtIndex:location withObject:newChord];
 }
@@ -85,13 +85,24 @@
 - (void)insertChordFromArray:(NSArray *)chordArray
                   atLocation:(NSUInteger)location
 {
-    [tabData insertObject:[[VChord alloc] initWithArray:chordArray]
+    [tabData insertObject:[VChord chordWithArray:chordArray]
                   atIndex:location];
 }
 
 - (void)addChordFromArray:(NSArray *)chordArray
 {
-    [tabData addObject:[[VChord alloc] initWithArray:chordArray]];
+    [tabData addObject:[VChord chordWithArray:chordArray]];
+}
+
+- (void)addChordFromString:(NSString *)chordString
+{
+    NSArray *fretStringsArray;
+    NSArray *fretNumsArray;
+    fretStringsArray = [chordString componentsSeparatedByString:@" "];
+    if ([fretStringsArray count] == numStrings) {
+        fretNumsArray = [[fretStringsArray valueForKey:@"intValue"] retain];
+        [self addChordFromArray:fretNumsArray];
+    }
 }
 
 + (NSString *) getNoteTextForString:(NSString *)fretText
@@ -107,6 +118,14 @@
 + (NSString *) getNoteTextForValue:(NSUInteger)fretNum
 {
     return [VTablature getNoteTextForString:[NSString stringWithFormat:@"%i", fretNum]];
+}
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(id *)stackbuf
+                                    count:(NSUInteger)len
+{
+    // just "delegate" this to internal NSMutableArray
+    return [tabData countByEnumeratingWithState:state objects:stackbuf count:len];
 }
 
 @end

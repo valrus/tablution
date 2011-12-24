@@ -25,7 +25,8 @@
         
         if (tablature == nil) {
             tablature = [[VTablature alloc] initWithStrings:6];
-            baseFret = 0;
+            baseFret = [NSNumber numberWithInt:0];
+            [tablature addChordFromString:@"0 2 2 1 0 0"];
         }
         [controller setTablature:tablature];
     }
@@ -65,4 +66,8 @@
     return YES;
 }
 
+- (void)windowControllerDidLoadNib:(NSWindowController *) aController
+{
+    
+}
 @end
