@@ -17,25 +17,25 @@
 
 + (VChord *)chordWithArray:(NSArray *)fretArray
 {
-    return [[[self alloc] initWithArray:fretArray] autorelease];
+    return [[self alloc] initWithArray:fretArray];
 }
 
 + (VChord *)chordWithStrings:(NSUInteger)numStrings
                     withNote:(VNote *)note
                     onString:(NSUInteger)string
 {
-    return [[[self alloc] initWithStrings:(NSUInteger)numStrings
+    return [[self alloc] initWithStrings:(NSUInteger)numStrings
                                  withNote:(VNote *)note
-                                 onString:(NSUInteger)string] autorelease];
+                                 onString:(NSUInteger)string];
 }
 
 + (VChord *)chordWithStrings:(NSUInteger)numStrings
                     withFret:(NSInteger)fret
                     onString:(NSUInteger)string
 {
-    return [[[self alloc] initWithStrings:(NSUInteger)numStrings
+    return [[self alloc] initWithStrings:(NSUInteger)numStrings
                                  withFret:(NSInteger)fret
-                                 onString:(NSUInteger)string] autorelease];
+                                 onString:(NSUInteger)string];
 }
 
 // init
@@ -43,7 +43,7 @@
 {
     self = [super init];
     if (self) {
-        notes = [NSMutableArray arrayWithCapacity:[fretArray count]];
+        [self setNotes:[NSMutableArray arrayWithCapacity:[fretArray count]]];
         NSUInteger i;
         for (i = 0; i < [fretArray count]; i++) {
             [notes addObject:[VNote noteAtFret:[[fretArray objectAtIndex:i] intValue]]];
@@ -62,7 +62,7 @@
     self = [super init];
     
     if (self) {
-        notes = [NSMutableArray arrayWithCapacity:numStrings];
+        [self setNotes:[NSMutableArray arrayWithCapacity:numStrings]];
         NSUInteger i;
         for (i = 0; i < numStrings; i++) {
             if (i == string) {
@@ -99,6 +99,12 @@
     return [[notes objectAtIndex:stringNum] fret];
 }
 
+- (NSString *)asText
+{
+    return [[notes valueForKey:@"stringValue"] componentsJoinedByString:@" "];
+}
+
+// modify
 - (void)addNote:(VNote *)note
        onString:(NSUInteger)stringNum
 {
@@ -114,7 +120,7 @@
 }
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                  objects:(id *)stackbuf
+                                  objects:(id __unsafe_unretained [])stackbuf
                                     count:(NSUInteger)len
 {
     // just "delegate" this to internal NSMutableArray

@@ -27,9 +27,9 @@
     VTablature *tablature;
 }
 
-@property (retain) VTabDocument *tabDocument;
-@property (retain) VTablature *tablature;
-@property (retain) NSDictionary *keyBindings;
+@property (strong) VTabDocument *tabDocument;
+@property (strong) VTablature *tablature;
+@property (strong) NSDictionary *keyBindings;
 
 // Setup
 
@@ -40,7 +40,8 @@
 // Editing functions
 
 - (void)addNoteOnString:(NSNumber *)whichString
-                 onFret:(NSNumber *)whichFret;
+                 onFret:(NSNumber *)whichFret
+          reverseString:(bool)doReverse;
 
 - (void)incrementBaseFret;
 - (void)decrementBaseFret;

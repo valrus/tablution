@@ -17,7 +17,7 @@
 }
 
 @property (readwrite) NSInteger fret;
-@property (retain) NSDictionary *attrs;
+@property (strong) NSDictionary *attrs;
 
 + (VNote *)noteAtFret:(NSInteger)theFret;
 + (VNote *)blankNote;

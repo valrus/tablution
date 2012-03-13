@@ -9,6 +9,7 @@
 #import "VTabController.h"
 #import "VTabDocument.h"
 #import "VTablature.h"
+#import "VTabView.h"
 
 #define MAX_FRET 22
 
@@ -23,7 +24,7 @@
     NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"keyBindings"
                                                           ofType:@"plist"];
     
-    if ((!(keyBindings = [[NSDictionary dictionaryWithContentsOfFile:plistPath] retain])))
+    if ((!(keyBindings = [NSDictionary dictionaryWithContentsOfFile:plistPath])))
     {
         // TODO: make a dialog box or something for this
         NSLog(@"Edit chars dictionary not found or contains an error!");
@@ -34,6 +35,7 @@
 - (void)awakeFromNib
 {
     [tabView setTablature:[tabDocument tablature]];
+    [self setTablature:[tabDocument tablature]];
     [self setupKeyBindings];
 }
 
@@ -41,9 +43,13 @@
 
 - (void)addNoteOnString:(NSNumber *)whichString
                  onFret:(NSNumber *)whichFret
+          reverseString:(bool)doReverse
 {
-    NSLog(@"Add a note on string %i at fret %i",
-          [whichString intValue], [whichFret intValue]);
+    if ([whichString intValue] < [tablature numStrings]) {
+        [[tabView focusChord] addFret:[whichFret intValue]
+                             onString:doReverse ? [tablature numStrings] - [whichString intValue] - 1
+                                                : [whichString intValue]];
+    }
 }
 
 - (void)incrementBaseFret
@@ -64,11 +70,10 @@
 
 - (void)advance
 {
-//	if ( [tabDoc atEndOfTab] )
-//	{
-//		[tabDoc insertNoteBefore:[tabDoc tabLength]];
-//	}
-//	[self moveRight:nil];
+    if (![tabView focusNextChord]) {
+        [tablature extend];
+        [tabView focusNextChord];
+    }
 }
 
 // Editing: selectors from input manager or whatever

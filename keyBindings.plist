@@ -154,5 +154,9 @@
 	<array>
 		<string>incrementBaseFret</string>
 	</array>
+	<key> </key>
+	<array>
+		<string>advance</string>
+	</array>
 </dict>
 </plist>

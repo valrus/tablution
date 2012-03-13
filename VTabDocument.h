@@ -18,7 +18,7 @@
     IBOutlet VTabController *controller;
 }
 
-@property (retain) VTablature *tablature;
-@property (retain) NSNumber *baseFret;
+@property (strong) VTablature *tablature;
+@property (strong) NSNumber *baseFret;
 
 @end

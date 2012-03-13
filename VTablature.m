@@ -10,10 +10,11 @@
 #import "VChord.h"
 #import "VNote.h"
 
+#define MAX_STRINGS 7
+
 @implementation VTablature
 
 @synthesize numStrings;
-@synthesize tabLength;
 
 - (id)initWithStrings:(NSUInteger)num
 {
@@ -22,8 +23,7 @@
     if (self) {
         numStrings = 6; // TODO: make not hardcoded
 
-        tabData = [[NSMutableArray arrayWithCapacity:10] retain];
-        tabLength = 1;
+        tabData = [NSMutableArray arrayWithCapacity:10];
         
         return self;
     } else {
@@ -43,35 +43,49 @@
     return @"";
 }
 
-- (NSInteger)fretAtLocation:(NSUInteger)location
-                   onString:(NSUInteger)stringNum
+- (NSInteger)fretAtindex:(NSUInteger)index
+                onString:(NSUInteger)stringNum
 {
     VChord *soughtChord;
-    if ((soughtChord = [tabData objectAtIndex:location])) {
+    if ((soughtChord = [tabData objectAtIndex:index])) {
         return [[soughtChord noteOnString:stringNum] fret];
     } else {
         return -1;
     }
 }
 
-- (VChord *)chordAtLocation:(NSUInteger)location
+- (VChord *)chordAtIndex:(NSUInteger)index
 {
     VChord *soughtChord;
-    if ((soughtChord = [tabData objectAtIndex:location])) {
+    if ((soughtChord = [tabData objectAtIndex:index])) {
         return soughtChord;
     } else {
         return nil;
     }
-
 }
 
-- (void)insertNoteAtLocation:(NSUInteger)location
-                    onString:(NSUInteger)stringNum
-                      onFret:(NSUInteger)fretNum
+- (NSArray *)chordsAtIndexes:(NSIndexSet *)indexSet
+{
+    return [tabData objectsAtIndexes:indexSet];
+}
+
+- (VChord *)lastChord
+{
+    return [self chordAtIndex:[self tabLength]];
+}
+
+- (NSUInteger)tabLength
+{
+    return [tabData count]; 
+}
+
+- (void)insertNoteAtindex:(NSUInteger)index
+                 onString:(NSUInteger)stringNum
+                   onFret:(NSUInteger)fretNum
 {
     id chordAlready;
     id newChord;
-    if ((chordAlready = [tabData objectAtIndex:location])) {
+    if ((chordAlready = [tabData objectAtIndex:index])) {
         [chordAlready addFret:fretNum
                      onString:stringNum];
     } else {
@@ -79,14 +93,14 @@
                                    withFret:fretNum
                                    onString:stringNum];
     }
-    [tabData replaceObjectAtIndex:location withObject:newChord];
+    [tabData replaceObjectAtIndex:index withObject:newChord];
 }
 
 - (void)insertChordFromArray:(NSArray *)chordArray
-                  atLocation:(NSUInteger)location
+                  atindex:(NSUInteger)index
 {
     [tabData insertObject:[VChord chordWithArray:chordArray]
-                  atIndex:location];
+                  atIndex:index];
 }
 
 - (void)addChordFromArray:(NSArray *)chordArray
@@ -100,12 +114,18 @@
     NSArray *fretNumsArray;
     fretStringsArray = [chordString componentsSeparatedByString:@" "];
     if ([fretStringsArray count] == numStrings) {
-        fretNumsArray = [[fretStringsArray valueForKey:@"intValue"] retain];
+        fretNumsArray = [fretStringsArray valueForKey:@"intValue"];
         [self addChordFromArray:fretNumsArray];
     }
 }
 
-+ (NSString *) getNoteTextForString:(NSString *)fretText
+- (void)extend
+{
+    NSLog(@"Extend tab length");
+    [self addChordFromString:@"-1 -1 -1 -1 -1 -1"];
+}
+
++ (NSString *)getNoteTextForString:(NSString *)fretText
 {
     // A note with a string marked should look like "-2-" or "-13"
     // depending on the length of the fret number. Prepend a hyphen
@@ -121,7 +141,7 @@
 }
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                  objects:(id *)stackbuf
+                                  objects:(id __unsafe_unretained [])stackbuf
                                     count:(NSUInteger)len
 {
     // just "delegate" this to internal NSMutableArray

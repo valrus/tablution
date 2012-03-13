@@ -13,11 +13,9 @@
     NSMutableArray *tabData;
     
     NSUInteger numStrings;
-    NSUInteger tabLength;
 }
 
 @property (readonly) NSUInteger numStrings;
-@property (readonly) NSUInteger tabLength;
 
 // setup stuff
 - (id)initWithStrings:(NSUInteger)num;
@@ -25,18 +23,22 @@
 
 // get information about tab
 - (NSString *)asText;
-- (NSInteger)fretAtLocation:(NSUInteger)location
-                   onString:(NSUInteger)stringNum;
-- (VChord *)chordAtLocation:(NSUInteger)location;
+- (NSInteger)fretAtindex:(NSUInteger)index
+                onString:(NSUInteger)stringNum;
+- (VChord *)chordAtIndex:(NSUInteger)index;
+- (NSArray *)chordsAtIndexes:(NSIndexSet *)indexSet;
+- (VChord *)lastChord;
+- (NSUInteger)tabLength;
 
 // alter the tab
-- (void)insertNoteAtLocation:(NSUInteger)location
-                    onString:(NSUInteger)stringNum
-                      onFret:(NSUInteger)fretNum;
+- (void)insertNoteAtindex:(NSUInteger)index
+                 onString:(NSUInteger)stringNum
+                   onFret:(NSUInteger)fretNum;
 - (void)insertChordFromArray:(NSArray *)chordArray
-                  atLocation:(NSUInteger)location;
+                     atindex:(NSUInteger)index;
 - (void)addChordFromArray:(NSArray *)chordArray;
 - (void)addChordFromString:(NSString *)chordString;
+- (void)extend;
 
 // convert tab data to text
 + (NSString *)getNoteTextForString:(NSString *)fretText;
@@ -44,7 +46,7 @@
 
 // NSFastEnumeration protocol
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                  objects:(id *)stackbuf
+                                  objects:(id __unsafe_unretained [])stackbuf
                                     count:(NSUInteger)len;
 
 @end

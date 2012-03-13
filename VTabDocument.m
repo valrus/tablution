@@ -27,6 +27,7 @@
             tablature = [[VTablature alloc] initWithStrings:6];
             baseFret = [NSNumber numberWithInt:0];
             [tablature addChordFromString:@"0 2 2 1 0 0"];
+            [tablature addChordFromString:@"0 0 2 2 2 0"];           
         }
         [controller setTablature:tablature];
     }

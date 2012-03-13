@@ -15,12 +15,12 @@
 
 + (VNote *)noteAtFret:(NSInteger)theFret;
 {
-    return [[[self alloc] initAtFret:theFret] autorelease];
+    return [[self alloc] initAtFret:theFret];
 }
 
 + (VNote *)blankNote
 {
-    return [[[self alloc] initAtFret:NO_FRET] autorelease];
+    return [[self alloc] initAtFret:NO_FRET];
 }
 
 - (VNote *)initAtFret:(NSInteger)theFret;

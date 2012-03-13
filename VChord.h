@@ -13,8 +13,8 @@
     NSDictionary *attrs;
 }
 
-@property (readwrite, retain) NSMutableArray *notes;
-@property (readwrite, retain) NSDictionary *attrs;
+@property (readwrite, strong) NSMutableArray *notes;
+@property (readwrite, strong) NSDictionary *attrs;
 
 // construct
 + (VChord *)chordWithArray:(NSArray *)fretArray;
@@ -37,6 +37,7 @@
 // access
 - (VNote *)noteOnString:(NSUInteger)stringNum;
 - (NSInteger)fretOnString:(NSUInteger)stringNum;
+- (NSString *)asText;
 
 // alter
 - (void)addNote:(VNote *)note
@@ -46,7 +47,7 @@
 
 // NSFastEnumeration protocol
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                  objects:(id *)stackbuf
+                                  objects:(id __unsafe_unretained [])stackbuf
                                     count:(NSUInteger)len;
 
 @end
