@@ -44,11 +44,11 @@
 - (NSData *)dataOfType:(NSString *)typeName
                  error:(NSError **)outError
 {
-    NSData *data;
+    NSString *tabText = [[self tablature] toSerialString];
+    NSLog(@"Saving doc with string: %@", tabText);
+    NSData *data = [tabText dataUsingEncoding:NSUTF8StringEncoding];
     
-    data = [NSArchiver archivedDataWithRootObject:[self tablature]];
-    
-    if ( outError != NULL ) {
+    if (!data) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
 	return data;
@@ -58,7 +58,8 @@
               ofType:(NSString *)typeName
                error:(NSError **)outError
 {
-    VTablature *tablatureToLoad = [NSUnarchiver unarchiveObjectWithData:data];
+    NSString *tabText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    VTablature *tablatureToLoad = [VTablature tablatureWithString:tabText];
     [self setTablature:tablatureToLoad];
         
     if ( outError != NULL ) {
@@ -71,4 +72,5 @@
 {
     
 }
+
 @end

@@ -24,6 +24,8 @@
 + (VChord *)chordWithStrings:(NSUInteger)numStrings
                     withFret:(NSInteger)fret
                     onString:(NSUInteger)string;
++ (VChord *)chordWithStrings:(NSUInteger)numStrings
+                    fromText:(NSString *)chordString;
 
 // init
 - (VChord *)initWithArray:(NSArray *)fretArray;

@@ -40,6 +40,16 @@
     return [NSString stringWithFormat:@"%i", fret];
 }
 
+- (NSString *)stringValueOrDash
+{
+    if (fret == NO_FRET) {
+        return @"-";
+    }
+    else {
+        return [self stringValue];
+    }
+}
+
 - (BOOL)hasFret
 {
     return (fret != NO_FRET);

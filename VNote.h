@@ -25,6 +25,7 @@
 - (VNote *)initAtFret:(NSInteger)theFret;
 
 - (NSString *)stringValue;
+- (NSString *)stringValueOrDash;
 
 - (BOOL)hasFret;
 

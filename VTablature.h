@@ -20,8 +20,10 @@
 // setup stuff
 - (id)initWithStrings:(NSUInteger)num;
 - (id)init;
++ (VTablature *)tablatureWithString:(NSString *)tabText;
 
 // get information about tab
+- (NSArray *)asArrayOfStrings;
 - (NSString *)asText;
 - (NSInteger)fretAtindex:(NSUInteger)index
                 onString:(NSUInteger)stringNum;
@@ -43,6 +45,7 @@
 // convert tab data to text
 + (NSString *)getNoteTextForString:(NSString *)fretText;
 + (NSString *)getNoteTextForValue:(NSUInteger)fretNum;
+- (NSString *)toSerialString;
 
 // NSFastEnumeration protocol
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state

@@ -15,10 +15,18 @@
 
 @interface VTabView (Private)
 
+// drawing submethods
 - (void)drawStringsWithGraphicsContext:(NSGraphicsContext *)theContext;
 - (void)drawTabWithGraphicsContext:(NSGraphicsContext *)theContext;
+- (void)drawFocusRectAtPoint:(NSPoint)origin
+                      ofSize:(NSSize)size
+                     inColor:(NSColor *)strokeColor;
+
+// drawing helper functions
 - (NSUInteger)lineHeight;
 - (NSUInteger)chordsPerLine;
+
+// internal information
 - (NSInteger)chordIndexAtPoint:(NSPoint)thePoint;
 
 @end
@@ -72,6 +80,18 @@
              stringHeight + TOP_MARGIN + [self lineHeight] <= viewHeight);
 }
 
+- (void)drawFocusRectAtPoint:(NSPoint)origin
+                      ofSize:(NSSize)size
+                     inColor:(NSColor *)strokeColor
+{
+    NSRect focusRect = {origin, size};
+    NSBezierPath *focusPath = [NSBezierPath bezierPathWithRoundedRect:focusRect
+                                                              xRadius:3.0
+                                                              yRadius:3.0];
+    [[strokeColor colorWithAlphaComponent:0.5] setStroke];
+    [focusPath stroke];
+}
+
 - (void)drawTabWithGraphicsContext:(NSGraphicsContext *)theContext
 {
     NSRect viewRect = [self bounds];
@@ -104,17 +124,11 @@
             y += STRING_SPACE;
         }
         y = TOP_MARGIN - textHeight;
-            if (chord == [self focusChord]) {
-                NSRect focusRect;
-                NSLog(@"drawing focus ring around chord %@", [chord asText]);
-                focusRect.origin = NSMakePoint(x, y);
-                focusRect.size = NSMakeSize(CHORD_SPACE, [self lineHeight]);
-                NSBezierPath *focusPath = [NSBezierPath bezierPathWithRoundedRect:focusRect
-                                                                          xRadius:3.0
-                                                                          yRadius:3.0];
-                [[selectionColor colorWithAlphaComponent:0.5] setStroke];
-                [focusPath stroke];
-            }
+        if (chord == [self focusChord]) {
+            [self drawFocusRectAtPoint:NSMakePoint(x, y)
+                                ofSize:NSMakeSize(CHORD_SPACE, [self lineHeight])
+                               inColor:selectionColor];
+        }
         if (selectionStarted && (!inSelection || chord == lastChord)) {
             if ((inSelection) && (chord == lastChord)) {
                 x += CHORD_SPACE;
@@ -257,6 +271,8 @@
 	return YES;
 }
 
+/* Input Handling -------------------------------------------------------------------- */
+
 #pragma mark -
 #pragma mark Input Handling
 
@@ -264,12 +280,9 @@
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    NSLog(@"Bindings: %@", [[tabController keyBindings] description]);
-    NSLog(@"keyDown: %@", [theEvent characters]);
     if ([[tabController keyBindings] objectForKey:[theEvent characters]])
     {
         NSArray *actionParts = [[tabController keyBindings] objectForKey:[theEvent characters]];
-        NSLog(@"%@", [actionParts objectAtIndex:0]);
         NSString *selectorString = [actionParts objectAtIndex:0];
         SEL editSelector = NSSelectorFromString(selectorString);
         switch ([actionParts count])
@@ -304,10 +317,7 @@
 
 - (void)mouseDown:(NSEvent*)theEvent
 {
-    NSLog(@"Mouse click on chord index: %ld", [self chordIndexAtPoint:[self convertPoint:[theEvent locationInWindow]
-                                                                               fromView:nil]]);
     [selectionManager mouseDown:theEvent userInfo:NULL];
-    NSLog(@"%@", [selectionManager selectedItems]);
 }
 
 - (void)mouseDragged:(NSEvent*)theEvent
@@ -324,7 +334,6 @@
         focusChordIndex = [tablature tabLength] - 1;
     }
     [self setNeedsDisplay:YES];
-    NSLog(@"Focused chord: %ld", focusChordIndex);
 }
 
 - (void)selectionManagerDidChangeSelection:(TLSelectionManager*)manager

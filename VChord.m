@@ -38,7 +38,24 @@
                                  onString:(NSUInteger)string];
 }
 
++ (VChord *)chordWithStrings:(NSUInteger)numStrings
+                    fromText:(NSString *)chordString
+{
+    NSLog(@"Loading chord from string: %@", chordString);
+    NSArray *fretStringsArray;
+    NSArray *fretNumsArray;
+    fretStringsArray = [chordString componentsSeparatedByString:@" "];
+    if ([fretStringsArray count] == numStrings) {
+        fretNumsArray = [fretStringsArray valueForKey:@"intValue"];
+        return [VChord chordWithArray:fretNumsArray];
+    }
+    else {
+        return nil;
+    }
+}
+
 // init
+
 - (VChord *)initWithArray:(NSArray *)fretArray
 {
     self = [super init];

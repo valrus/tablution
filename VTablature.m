@@ -31,13 +31,28 @@
     }
 }
 
-- (id) init
+- (id)init
 {
     NSLog(@"VTablature init");
     return [self initWithStrings:numStrings];
 }
 
-- (NSString *) asText
++ (VTablature *)tablatureWithString:(NSString *)tabText
+{
+    VTablature *newTab = [[VTablature alloc] init];
+    NSArray *chordTexts = [tabText componentsSeparatedByString:@"\n"];
+    for (NSString *chordText in chordTexts) {
+        [newTab addChordFromString:chordText];
+    }
+    return newTab;
+}
+
+- (NSArray *)asArrayOfStrings
+{
+    return [tabData valueForKey:@"asText"];
+}
+
+- (NSString *)asText
 {
     // FIXME: stub
     return @"";
@@ -110,12 +125,13 @@
 
 - (void)addChordFromString:(NSString *)chordString
 {
-    NSArray *fretStringsArray;
-    NSArray *fretNumsArray;
-    fretStringsArray = [chordString componentsSeparatedByString:@" "];
-    if ([fretStringsArray count] == numStrings) {
-        fretNumsArray = [fretStringsArray valueForKey:@"intValue"];
-        [self addChordFromArray:fretNumsArray];
+    VChord *newChord;
+    if ((newChord = [VChord chordWithStrings:numStrings
+                                    fromText:chordString])) {
+        [tabData addObject:newChord];
+    }
+    else {
+        // invalid chord
     }
 }
 
@@ -135,9 +151,14 @@
 														   startingAtIndex:0]];
 }
 
-+ (NSString *) getNoteTextForValue:(NSUInteger)fretNum
++ (NSString *)getNoteTextForValue:(NSUInteger)fretNum
 {
-    return [VTablature getNoteTextForString:[NSString stringWithFormat:@"%i", fretNum]];
+    return [self getNoteTextForString:[NSString stringWithFormat:@"%i", fretNum]];
+}
+
+- (NSString *)toSerialString
+{
+    return [[self asArrayOfStrings] componentsJoinedByString:@"\n"];
 }
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
