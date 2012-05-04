@@ -40,44 +40,53 @@
 #pragma mark -
 #pragma mark Drawing Functions
 
-- (void)drawStringsWithGraphicsContext:(NSGraphicsContext *)theContext
+- (CGFloat)drawOneLineOfStringsAtHeight:(CGFloat)stringHeight
+                           withSpaceFor:(NSUInteger)lineLength
 {
-    NSUInteger stringNum;
     NSPoint startPoint;
     NSPoint endPoint;
-    NSRect viewRect = [self bounds];
-    CGFloat viewWidth = viewRect.size.width;
-    CGFloat viewHeight = viewRect.size.height;
-    CGFloat stringHeight = 0.0;
+    NSUInteger stringNum;
+    for (stringNum = 0;
+         stringNum < [tablature numStrings] && stringHeight < [self bounds].size.height;
+         stringNum++) {
+        // draw the strings
+        startPoint = NSMakePoint(LEFT_MARGIN,
+                                 stringHeight);
+        endPoint = NSMakePoint(LEFT_MARGIN + (lineLength * CHORD_SPACE), 
+                               stringHeight);
+        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+        stringHeight += STRING_SPACE;
+    }
+    return stringHeight;
+}
+
+- (void)drawStringsWithGraphicsContext:(NSGraphicsContext *)theContext
+{
+    CGFloat stringHeight = TOP_MARGIN;
     NSUInteger chordsAccommodated = 0;
     NSUInteger lineLength = 0;
-    const NSUInteger chordsPerLine = (NSUInteger)((viewWidth - LEFT_MARGIN - TOP_MARGIN) / 
-                                                  CHORD_SPACE);
-    
+    const NSUInteger chordsPerLine = 
+        (NSUInteger)(([self bounds].size.width - LEFT_MARGIN - RIGHT_MARGIN) / CHORD_SPACE);
     [NSBezierPath setDefaultLineWidth:LINE_WIDTH];
     [[NSColor lightGrayColor] setStroke];
     
     do {
+        // draw one line's worth of tab strings
         if (chordsAccommodated + chordsPerLine > [tablature tabLength]) {
+            // set length to accommodate remaining chords
             lineLength = [tablature tabLength] - chordsAccommodated;
         }
         else {
+            // set length to max based on view width
             lineLength = chordsPerLine;
         }
-        for (stringNum = 0;
-             stringNum < [tablature numStrings] && stringHeight + TOP_MARGIN < viewHeight;
-             stringNum++) {
-            startPoint = NSMakePoint(LEFT_MARGIN,
-                                     stringHeight + TOP_MARGIN);
-            endPoint = NSMakePoint(LEFT_MARGIN + (lineLength * CHORD_SPACE), 
-                                   stringHeight + TOP_MARGIN);
-            [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-            stringHeight += STRING_SPACE;
-            chordsAccommodated += lineLength;
-        }
+        stringHeight = [self drawOneLineOfStringsAtHeight:stringHeight
+                                             withSpaceFor:lineLength];
+        chordsAccommodated += lineLength;
         stringHeight += LINE_SPACE;
+        NSLog(@"lineLength: %lu; chords accommodated on line: %lu;", lineLength, chordsAccommodated);
     } while (chordsAccommodated < [tablature tabLength] && 
-             stringHeight + TOP_MARGIN + [self lineHeight] <= viewHeight);
+             stringHeight + [self lineHeight] <= [self bounds].size.height);
 }
 
 - (void)drawFocusRectAtPoint:(NSPoint)origin
@@ -99,8 +108,9 @@
     CGFloat viewHeight = viewRect.size.height;
     NSFont *currFont = [NSFont userFontOfSize:12.0];
     CGFloat textHeight = [currFont xHeight];
+    NSUInteger lineNum = 0;
     NSUInteger x = LEFT_MARGIN;
-    NSUInteger y = TOP_MARGIN - textHeight;
+    NSUInteger y = TOP_MARGIN - textHeight + (lineNum * ([self lineHeight] + LINE_SPACE));
     NSDictionary *tabAttrs = [NSDictionary dictionary];
     NSColor *selectionColor = [NSColor blueColor];
     [selectionColor set];
@@ -123,7 +133,7 @@
             }
             y += STRING_SPACE;
         }
-        y = TOP_MARGIN - textHeight;
+        y = TOP_MARGIN - textHeight + (lineNum * ([self lineHeight] + LINE_SPACE));
         if (chord == [self focusChord]) {
             [self drawFocusRectAtPoint:NSMakePoint(x, y)
                                 ofSize:NSMakeSize(CHORD_SPACE, [self lineHeight])
@@ -145,7 +155,7 @@
         x += CHORD_SPACE;
         if (x > viewWidth) {
             x = LEFT_MARGIN;
-            y += LINE_SPACE;
+            y += [self lineHeight] + LINE_SPACE;
         }
         if (y + [self lineHeight] > viewHeight) {
             drawEndLine = NO;
@@ -276,43 +286,51 @@
 #pragma mark -
 #pragma mark Input Handling
 
-- (void)keyDown:(NSEvent *)theEvent
+- (void)handleBoundKey:(NSString *)keyString
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    if ([[tabController keyBindings] objectForKey:[theEvent characters]])
+    NSArray *actionParts = [[tabController keyBindings] objectForKey:keyString];
+    NSString *selectorString = [actionParts objectAtIndex:0];
+    SEL editSelector = NSSelectorFromString(selectorString);
+    switch ([actionParts count])
     {
-        NSArray *actionParts = [[tabController keyBindings] objectForKey:[theEvent characters]];
-        NSString *selectorString = [actionParts objectAtIndex:0];
-        SEL editSelector = NSSelectorFromString(selectorString);
-        switch ([actionParts count])
-        {
-            case 1:
-                [tabController performSelector:editSelector];
-                [self setNeedsDisplay:YES];
-                break;
-            case 2:
+        case 1:
+            [tabController performSelector:editSelector];
+            [self setNeedsDisplay:YES];
+            break;
+        case 2:
+            [tabController performSelector:editSelector
+                                withObject:[actionParts objectAtIndex:1]];
+            [self setNeedsDisplay:YES];
+            break;
+        case 3:
+            // annoying rationale behind this:
+            // 
+            if ([selectorString isEqualToString:@"addNoteOnString:onFret:"]) {
+                [tabController addNoteOnString:[actionParts objectAtIndex:1]
+                                        onFret:[actionParts objectAtIndex:2]
+                                 reverseString:YES];
+            }
+            else {
                 [tabController performSelector:editSelector
-                                    withObject:[actionParts objectAtIndex:1]];
-                [self setNeedsDisplay:YES];
-                break;
-            case 3:
-                // annoying rationale behind this:
-                // 
-                if ([selectorString isEqualToString:@"addNoteOnString:onFret:"]) {
-                    [tabController addNoteOnString:[actionParts objectAtIndex:1]
-                                            onFret:[actionParts objectAtIndex:2]
-                                     reverseString:YES];
-                }
-                else {
-                    [tabController performSelector:editSelector
-                                        withObject:[actionParts objectAtIndex:1]
-                                        withObject:[actionParts objectAtIndex:2]];
-                }
-                [self setNeedsDisplay:YES];
-        }
+                                    withObject:[actionParts objectAtIndex:1]
+                                    withObject:[actionParts objectAtIndex:2]];
+            }
+            [self setNeedsDisplay:YES];
     }
 #pragma clang diagnostic pop
+}
+
+- (void)keyDown:(NSEvent *)theEvent
+{
+    if ([theEvent modifierFlags] & NSNumericPadKeyMask) {
+        [self interpretKeyEvents:[NSArray arrayWithObject:theEvent]];
+    }
+    else if ([[tabController keyBindings] objectForKey:[theEvent characters]])
+    {
+        [self handleBoundKey:[theEvent characters]];
+    }
 }
 
 - (void)mouseDown:(NSEvent*)theEvent
@@ -350,6 +368,48 @@
         return YES;
     }
     return NO;
+}
+
+- (bool)focusPrevChord
+{
+    if (focusChordIndex > 0) {
+        focusChordIndex--;
+        [selectionManager selectItems:[NSSet setWithObject:[tablature chordAtIndex:focusChordIndex]]
+                 byExtendingSelection:NO];
+        return YES;
+    }
+    return NO;
+}
+
+#pragma mark -
+#pragma mark inputManager overrides
+
+// Editing: selectors from input manager or whatever
+// TODO: change drawing to use replaceCharactersInRange:
+
+- (IBAction)moveRight:(id)sender
+{
+    [self focusNextChord];
+}
+
+- (IBAction)moveLeft:(id)sender
+{
+    [self focusPrevChord];
+}
+
+- (IBAction)moveUp:(id)sender
+{
+    return;
+}
+
+- (IBAction)moveDown:(id)sender
+{
+    return;
+}
+
+- (IBAction)deleteForward:(id)sender
+{
+    NSLog(@"deleteForward");
 }
 
 @end

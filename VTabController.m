@@ -76,27 +76,4 @@
     }
 }
 
-// Editing: selectors from input manager or whatever
-// TODO: change drawing to use replaceCharactersInRange:
-
-- (IBAction)moveRight:(id)sender
-{
-//    [tabDoc advanceCurrentLocation];
-}
-
-- (IBAction)moveLeft:(id)sender
-{
-//    [tabDoc recedeCurrentLocation];
-}
-
-- (IBAction)moveUp:(id)sender
-{
-//    [tabDoc upString];
-}
-
-- (IBAction)moveDown:(id)sender
-{
-//    [tabDoc downString];
-}
-
 @end

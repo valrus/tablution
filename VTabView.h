@@ -37,5 +37,6 @@
 - (void)mouseUp:(NSEvent*)theEvent;
 
 - (bool)focusNextChord;
+- (bool)focusPrevChord;
 
 @end
