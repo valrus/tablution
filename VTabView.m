@@ -46,6 +46,8 @@
     NSPoint startPoint;
     NSPoint endPoint;
     NSUInteger stringNum;
+    [NSBezierPath setDefaultLineWidth:LINE_WIDTH];
+    [[NSColor lightGrayColor] setStroke];
     for (stringNum = 0;
          stringNum < [tablature numStrings] && stringHeight < [self bounds].size.height;
          stringNum++) {
@@ -60,15 +62,65 @@
     return stringHeight;
 }
 
-- (void)drawStringsWithGraphicsContext:(NSGraphicsContext *)theContext
+- (void)drawOneLineOfTabAtHeight:(CGFloat)tabHeight
+                 fromChordNumber:(NSUInteger)firstChord
+                  numberOfChords:(NSUInteger)numChords
+{
+    NSUInteger x = LEFT_MARGIN;
+    NSUInteger y = tabHeight;
+    NSUInteger chordNum = firstChord;
+    NSDictionary *tabAttrs = [NSDictionary dictionary];
+    NSColor *selectionColor = [NSColor blueColor];
+    [selectionColor set];
+    NSRect selectRect;
+    bool selectionStarted = NO;
+    bool inSelection = NO;
+    for (chordNum = firstChord; chordNum < firstChord + numChords; ++chordNum) {
+        VChord *chord = [tablature chordAtIndex:chordNum];
+        inSelection = [[selectionManager selectedItems] containsObject:chord];
+        if (inSelection && !selectionStarted) {
+            selectRect.origin = NSMakePoint(x, y);
+            selectionStarted = YES;
+        }
+        for (VNote *note in chord) {
+            if ([note hasFret]) {
+                NSString *text = [note stringValue];
+                [text drawAtPoint:NSMakePoint(x + CHORD_SPACE/3, y)
+                   withAttributes:tabAttrs];
+            }
+            y += STRING_SPACE;
+        }
+        y = tabHeight;
+        if (chord == [self focusChord]) {
+            [self drawFocusRectAtPoint:NSMakePoint(x, y)
+                                ofSize:NSMakeSize(CHORD_SPACE, [self lineHeight])
+                               inColor:selectionColor];
+        }
+        if (selectionStarted && (!inSelection || chordNum == [tablature tabLength])) {
+            if ((inSelection) && (chordNum == [tablature tabLength])) {
+                x += CHORD_SPACE;
+            }
+            selectRect.size = NSMakeSize(x - selectRect.origin.x,
+                                         y + [self lineHeight] - selectRect.origin.y);
+            NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRoundedRect:selectRect
+                                                                          xRadius:3.0
+                                                                          yRadius:3.0];
+            [[selectionColor colorWithAlphaComponent:0.3] setFill];
+            [selectionPath fill];
+            selectionStarted = NO;
+        }
+        x += CHORD_SPACE;
+    }
+}
+
+- (void)drawTabWithGraphicsContext:(NSGraphicsContext *)theContext
 {
     CGFloat stringHeight = TOP_MARGIN;
+    CGFloat tabHeight = TOP_MARGIN;
     NSUInteger chordsAccommodated = 0;
     NSUInteger lineLength = 0;
     const NSUInteger chordsPerLine = 
         (NSUInteger)(([self bounds].size.width - LEFT_MARGIN - RIGHT_MARGIN) / CHORD_SPACE);
-    [NSBezierPath setDefaultLineWidth:LINE_WIDTH];
-    [[NSColor lightGrayColor] setStroke];
     
     do {
         // draw one line's worth of tab strings
@@ -80,10 +132,13 @@
             // set length to max based on view width
             lineLength = chordsPerLine;
         }
+        tabHeight = stringHeight - [[NSFont userFontOfSize:12.0] xHeight];
         stringHeight = [self drawOneLineOfStringsAtHeight:stringHeight
-                                             withSpaceFor:lineLength];
+                                             withSpaceFor:lineLength] + LINE_SPACE;
+        [self drawOneLineOfTabAtHeight:tabHeight
+                       fromChordNumber:chordsAccommodated
+                        numberOfChords:lineLength];
         chordsAccommodated += lineLength;
-        stringHeight += LINE_SPACE;
         NSLog(@"lineLength: %lu; chords accommodated on line: %lu;", lineLength, chordsAccommodated);
     } while (chordsAccommodated < [tablature tabLength] && 
              stringHeight + [self lineHeight] <= [self bounds].size.height);
@@ -101,76 +156,12 @@
     [focusPath stroke];
 }
 
-- (void)drawTabWithGraphicsContext:(NSGraphicsContext *)theContext
-{
-    NSRect viewRect = [self bounds];
-    CGFloat viewWidth = viewRect.size.width;
-    CGFloat viewHeight = viewRect.size.height;
-    NSFont *currFont = [NSFont userFontOfSize:12.0];
-    CGFloat textHeight = [currFont xHeight];
-    NSUInteger lineNum = 0;
-    NSUInteger x = LEFT_MARGIN;
-    NSUInteger y = TOP_MARGIN - textHeight + (lineNum * ([self lineHeight] + LINE_SPACE));
-    NSDictionary *tabAttrs = [NSDictionary dictionary];
-    NSColor *selectionColor = [NSColor blueColor];
-    [selectionColor set];
-    NSRect selectRect;
-    bool selectionStarted = NO;
-    bool inSelection = NO;
-    bool drawEndLine = YES;
-    VChord *lastChord = [tablature chordAtIndex:[tablature tabLength] - 1];
-    for (VChord *chord in tablature) {
-        inSelection = [[selectionManager selectedItems] containsObject:chord];
-        if (inSelection && !selectionStarted) {
-            selectRect.origin = NSMakePoint(x, y);
-            selectionStarted = YES;
-        }
-        for (VNote *note in chord) {
-            if ([note hasFret]) {
-                NSString *text = [note stringValue];
-                [text drawAtPoint:NSMakePoint(x + CHORD_SPACE/3, y)
-                   withAttributes:tabAttrs];
-            }
-            y += STRING_SPACE;
-        }
-        y = TOP_MARGIN - textHeight + (lineNum * ([self lineHeight] + LINE_SPACE));
-        if (chord == [self focusChord]) {
-            [self drawFocusRectAtPoint:NSMakePoint(x, y)
-                                ofSize:NSMakeSize(CHORD_SPACE, [self lineHeight])
-                               inColor:selectionColor];
-        }
-        if (selectionStarted && (!inSelection || chord == lastChord)) {
-            if ((inSelection) && (chord == lastChord)) {
-                x += CHORD_SPACE;
-            }
-            selectRect.size = NSMakeSize(x - selectRect.origin.x,
-                                         y + [self lineHeight] - selectRect.origin.y);
-            NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRoundedRect:selectRect
-                                                                          xRadius:3.0
-                                                                          yRadius:3.0];
-            [[selectionColor colorWithAlphaComponent:0.3] setFill];
-            [selectionPath fill];
-            selectionStarted = NO;
-        }
-        x += CHORD_SPACE;
-        if (x > viewWidth) {
-            x = LEFT_MARGIN;
-            y += [self lineHeight] + LINE_SPACE;
-        }
-        if (y + [self lineHeight] > viewHeight) {
-            drawEndLine = NO;
-            break;
-        }
-    }
-}
-
 - (void)drawRect:(NSRect)dirtyRect
 {
     NSGraphicsContext *startGraphicsContext = [NSGraphicsContext currentContext];
     [startGraphicsContext saveGraphicsState];
     [[NSColor whiteColor] setFill];
     NSRectFill(dirtyRect);
-    [self drawStringsWithGraphicsContext:startGraphicsContext];
     [self drawTabWithGraphicsContext:startGraphicsContext];
     [startGraphicsContext restoreGraphicsState];
 }
