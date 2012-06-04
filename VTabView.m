@@ -5,7 +5,7 @@
 #import "VNote.h"
 #import "TLSelectionManager.h"
 
-#define STRING_SPACE 12.0
+#define STRING_SPACE 14.0
 #define LINE_SPACE 24.0
 #define LEFT_MARGIN 16.0
 #define RIGHT_MARGIN 16.0
@@ -28,6 +28,7 @@
 
 // internal information
 - (NSInteger)chordIndexAtPoint:(NSPoint)thePoint;
+- (NSInteger)stringAtPoint:(NSPoint)thePoint;
 
 @end
 
@@ -36,6 +37,7 @@
 @synthesize tablature;
 @synthesize selectionManager;
 @synthesize focusChordIndex;
+@synthesize focusNoteString;
 
 #pragma mark -
 #pragma mark Drawing Functions
@@ -70,6 +72,18 @@
     NSUInteger y = tabHeight;
     NSUInteger chordNum = firstChord;
     NSDictionary *tabAttrs = [NSDictionary dictionary];
+    NSMutableDictionary *focusNoteAttrs = [NSMutableDictionary dictionaryWithDictionary:tabAttrs];
+//    NSFontManager *fontManager = [NSFontManager sharedFontManager];
+//    NSFont *boldUserFont = [fontManager convertFont:[NSFont userFontOfSize:12.0]
+//                                        toHaveTrait:NSBoldFontMask];
+//    [focusNoteAttrs setValue:boldUserFont
+//                      forKey:NSFontAttributeName];
+    [focusNoteAttrs setValue:[NSColor redColor]
+                      forKey:NSForegroundColorAttributeName];
+    [focusNoteAttrs setValue:[NSNumber numberWithFloat:-6.0]
+                      forKey:NSStrokeWidthAttributeName];
+    // NSForegroundColorAttributeName : [NSColor redColor]
+    // NSStrokeWidthAttributeName : -3.0
     NSColor *selectionColor = [NSColor blueColor];
     [selectionColor set];
     NSRect selectRect;
@@ -85,8 +99,14 @@
         for (VNote *note in chord) {
             if ([note hasFret]) {
                 NSString *text = [note stringValue];
-                [text drawAtPoint:NSMakePoint(x + CHORD_SPACE/3, y)
-                   withAttributes:tabAttrs];
+                if (note == [self focusNote]) {
+                    [text drawAtPoint:NSMakePoint(x + CHORD_SPACE/3, y)
+                       withAttributes:focusNoteAttrs];
+                }
+                else {
+                    [text drawAtPoint:NSMakePoint(x + CHORD_SPACE/3, y)
+                       withAttributes:tabAttrs];
+                }
             }
             y += STRING_SPACE;
         }
@@ -179,6 +199,7 @@
         [selectionManager selectItems:[NSSet setWithObject:[tablature chordAtIndex:0]]
                  byExtendingSelection:NO];
         [self setFocusChordIndex:0];
+        [self setFocusNoteString:0];
     }
     return;
 }
@@ -191,6 +212,11 @@
 - (VChord *)focusChord
 {
     return [tablature chordAtIndex:focusChordIndex];
+}
+
+- (VNote *)focusNote
+{
+    return [[self focusChord] noteOnString:focusNoteString];
 }
 
 - (NSUInteger)chordsPerLine
@@ -218,6 +244,7 @@
 {
     CGFloat x = thePoint.x - LEFT_MARGIN;
     CGFloat y = thePoint.y - TOP_MARGIN;
+    // number of full lines of tab above click location
     NSUInteger skipLines = (int)(y / ([self lineHeight] + LINE_SPACE));
     if (fmod(y, skipLines) > [self lineHeight]) {
         return -1;
@@ -227,6 +254,28 @@
         return skipLines * [self chordsPerLine] + skipChords;
     }
 }
+
+- (VNote *)noteAtPoint:(NSPoint)thePoint
+{
+    VChord *theChord;
+    if ((theChord = [self chordAtPoint:thePoint])) {
+        return [theChord noteOnString:[self stringAtPoint:thePoint]];
+    }
+    else {
+        return nil;
+    }
+}
+
+- (NSInteger)stringAtPoint:(NSPoint)thePoint
+{
+    CGFloat y = thePoint.y - TOP_MARGIN;
+    // find y-position of click relative to the top of its tab line
+    y -= (int)(y / ([self lineHeight] + LINE_SPACE)) * ([self lineHeight] + LINE_SPACE);
+    NSUInteger whichString = MIN((int)(y / STRING_SPACE), [tablature numStrings] - 1);
+    NSLog(@"Clicked string: %lu, y = %f", whichString, y);
+    return whichString;
+}
+
 #pragma mark -
 #pragma mark TLSelectionList delegate method
 
@@ -337,11 +386,14 @@
 - (void)mouseUp:(NSEvent*)theEvent
 {
     [selectionManager mouseUp:theEvent];
-    focusChordIndex = [self chordIndexAtPoint:[self convertPoint:[theEvent locationInWindow]
-                                                        fromView:nil]];
+    NSPoint convertedPoint = [self convertPoint:[theEvent locationInWindow]
+                                       fromView:nil];
+    focusChordIndex = [self chordIndexAtPoint:convertedPoint];
     if (focusChordIndex >= [tablature tabLength]) {
         focusChordIndex = [tablature tabLength] - 1;
     }
+    
+    focusNoteString = [self stringAtPoint:convertedPoint];
     [self setNeedsDisplay:YES];
 }
 
@@ -372,6 +424,24 @@
     return NO;
 }
 
+- (bool)focusUpString
+{
+    if (focusNoteString > 0) {
+        focusNoteString--;
+        return YES;
+    }
+    return NO;
+}
+
+- (bool)focusDownString
+{
+    if (focusNoteString < [tablature numStrings]) {
+        focusNoteString++;
+        return YES;
+    }
+    return NO;
+}
+
 #pragma mark -
 #pragma mark inputManager overrides
 
@@ -390,12 +460,16 @@
 
 - (IBAction)moveUp:(id)sender
 {
-    return;
+    if ([self focusUpString]) {
+        [self setNeedsDisplay:YES];
+    }
 }
 
 - (IBAction)moveDown:(id)sender
 {
-    return;
+    if ([self focusDownString]) {
+        [self setNeedsDisplay:YES];
+    }
 }
 
 - (IBAction)deleteForward:(id)sender

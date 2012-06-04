@@ -107,7 +107,7 @@
 // access
 - (VNote *)noteOnString:(NSUInteger)stringNum
 {
-    assert(stringNum > 0 && stringNum <= [[self notes] count]);
+    assert(stringNum >= 0 && stringNum <= [[self notes] count]);
     return [notes objectAtIndex:stringNum];
 }
 

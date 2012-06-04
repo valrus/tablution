@@ -5,6 +5,7 @@
 @class VTabDocument;
 @class TLSelectionManager;
 @class VChord;
+@class VNote;
 
 @interface VTabView : NSView
 {
@@ -12,11 +13,13 @@
     VTablature *tablature;
     TLSelectionManager *selectionManager;
     NSUInteger focusChordIndex;
+    NSUInteger focusNoteString;
 }
 
 @property (strong) VTablature *tablature;
 @property (strong) TLSelectionManager *selectionManager;
 @property (assign) NSUInteger focusChordIndex;
+@property (assign) NSUInteger focusNoteString;
 
 - (void)drawRect:(NSRect)dirtyRect;
 
@@ -27,6 +30,8 @@
 - (BOOL)acceptsFirstResponder;
 
 - (VChord *)focusChord;
+
+- (VNote *)focusNote;
 
 // Input handling
 
