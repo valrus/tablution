@@ -46,7 +46,7 @@
           reverseString:(bool)doReverse
 {
     if ([whichString intValue] < [tablature numStrings]) {
-        [[tabView focusChord] addFret:[whichFret intValue]
+        [[tabView focusChord] addFret:[whichFret intValue] + [[tabDocument baseFret] intValue]
                              onString:doReverse ? [tablature numStrings] - [whichString intValue] - 1
                                                 : [whichString intValue]];
     }
