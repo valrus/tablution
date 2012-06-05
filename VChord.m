@@ -136,6 +136,11 @@
                      withObject:[VNote noteAtFret:fret]];
 }
 
+- (void)deleteNoteOnString:(NSUInteger)stringNum
+{
+    [self addFret:NO_FRET onString:stringNum];
+}
+
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                   objects:(id __unsafe_unretained [])stackbuf
                                     count:(NSUInteger)len

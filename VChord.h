@@ -46,6 +46,7 @@
        onString:(NSUInteger)stringNum;
 - (void)addFret:(NSInteger)fret
        onString:(NSUInteger)stringNum;
+- (void)deleteNoteOnString:(NSUInteger)stringNum;
 
 // NSFastEnumeration protocol
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state

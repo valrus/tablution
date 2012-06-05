@@ -94,7 +94,7 @@
     return [tabData count]; 
 }
 
-- (void)insertNoteAtindex:(NSUInteger)index
+- (void)insertNoteAtIndex:(NSUInteger)index
                  onString:(NSUInteger)stringNum
                    onFret:(NSUInteger)fretNum
 {
@@ -133,6 +133,12 @@
     else {
         // invalid chord
     }
+}
+
+- (void)deleteNoteAtIndex:(NSUInteger)index
+                 onString:(NSUInteger)stringNum
+{
+    [self insertNoteAtIndex:index onString:stringNum onFret:NO_FRET];
 }
 
 - (void)extend

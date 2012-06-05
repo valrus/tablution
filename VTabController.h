@@ -39,11 +39,16 @@
 
 // Editing functions
 
+- (void)addOpenString:(NSNumber *)whichString
+        reverseString:(bool)doReverse;
+
 - (void)addNoteOnString:(NSNumber *)whichString
                  onFret:(NSNumber *)whichFret
           reverseString:(bool)doReverse;
 
 - (void)incrementBaseFret;
 - (void)decrementBaseFret;
+
+- (void)deleteFocusNote;
 
 @end

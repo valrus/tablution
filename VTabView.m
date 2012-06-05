@@ -340,13 +340,17 @@
             [self setNeedsDisplay:YES];
             break;
         case 2:
-            [tabController performSelector:editSelector
-                                withObject:[actionParts objectAtIndex:1]];
+            if ([selectorString isEqualToString:@"addOpenString:"]) {
+                [tabController addOpenString:[actionParts objectAtIndex:1]
+                               reverseString:YES];
+            }
+            else {
+                [tabController performSelector:editSelector
+                                    withObject:[actionParts objectAtIndex:1]];
+            }
             [self setNeedsDisplay:YES];
             break;
         case 3:
-            // annoying rationale behind this:
-            // 
             if ([selectorString isEqualToString:@"addNoteOnString:onFret:"]) {
                 [tabController addNoteOnString:[actionParts objectAtIndex:1]
                                         onFret:[actionParts objectAtIndex:2]
@@ -364,8 +368,10 @@
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-    if ([theEvent modifierFlags] & NSNumericPadKeyMask) {
+    if ([theEvent modifierFlags] & (NSNumericPadKeyMask |
+                                    NSFunctionKeyMask)) {
         [self interpretKeyEvents:[NSArray arrayWithObject:theEvent]];
+        [self setNeedsDisplay:YES];
     }
     else if ([[tabController keyBindings] objectForKey:[theEvent characters]])
     {
@@ -460,21 +466,17 @@
 
 - (IBAction)moveUp:(id)sender
 {
-    if ([self focusUpString]) {
-        [self setNeedsDisplay:YES];
-    }
+    [self focusUpString];
 }
 
 - (IBAction)moveDown:(id)sender
 {
-    if ([self focusDownString]) {
-        [self setNeedsDisplay:YES];
-    }
+    [self focusDownString];
 }
 
 - (IBAction)deleteForward:(id)sender
 {
-    NSLog(@"deleteForward");
+    [tabController deleteFocusNote];
 }
 
 @end

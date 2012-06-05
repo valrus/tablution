@@ -33,13 +33,15 @@
 - (NSUInteger)tabLength;
 
 // alter the tab
-- (void)insertNoteAtindex:(NSUInteger)index
+- (void)insertNoteAtIndex:(NSUInteger)index
                  onString:(NSUInteger)stringNum
                    onFret:(NSUInteger)fretNum;
 - (void)insertChordFromArray:(NSArray *)chordArray
                      atindex:(NSUInteger)index;
 - (void)addChordFromArray:(NSArray *)chordArray;
 - (void)addChordFromString:(NSString *)chordString;
+- (void)deleteNoteAtIndex:(NSUInteger)index
+                 onString:(NSUInteger)stringNum;
 - (void)extend;
 
 // convert tab data to text

@@ -41,6 +41,17 @@
 
 // Editing selectors
 
+- (void)addOpenString:(NSNumber *)whichString
+        reverseString:(bool)doReverse
+{
+    if ([whichString intValue] < [tablature numStrings]) {
+        [[tabView focusChord] addFret:0
+                             onString:doReverse ? [tablature numStrings] - [whichString intValue] - 1
+                                                : [whichString intValue]];
+    }
+
+}
+
 - (void)addNoteOnString:(NSNumber *)whichString
                  onFret:(NSNumber *)whichFret
           reverseString:(bool)doReverse
@@ -74,6 +85,11 @@
         [tablature extend];
         [tabView focusNextChord];
     }
+}
+
+- (void)deleteFocusNote
+{
+    [[tabView focusChord] deleteNoteOnString:[tabView focusNoteString]];
 }
 
 @end
