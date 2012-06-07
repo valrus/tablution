@@ -146,11 +146,11 @@
 		<integer>5</integer>
 		<integer>3</integer>
 	</array>
-	<key>-</key>
+	<key>[</key>
 	<array>
 		<string>decrementBaseFret</string>
 	</array>
-	<key>+</key>
+	<key>]</key>
 	<array>
 		<string>incrementBaseFret</string>
 	</array>
@@ -188,7 +188,7 @@
 		<string>addOpenString:</string>
 		<integer>5</integer>
 	</array>
-	<key>_</key>
+	<key>-</key>
 	<array>
 		<string>deleteFocusNote</string>
 	</array>

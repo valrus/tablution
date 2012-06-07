@@ -86,7 +86,7 @@
 
 - (VChord *)lastChord
 {
-    return [self chordAtIndex:[self tabLength]];
+    return [self chordAtIndex:[self tabLength] - 1];
 }
 
 - (NSUInteger)tabLength
@@ -141,6 +141,12 @@
     [self insertNoteAtIndex:index onString:stringNum onFret:NO_FRET];
 }
 
+- (void)deleteChordAtIndex:(NSUInteger)index
+{
+    if (index < [self tabLength]) {
+        [tabData removeObjectAtIndex:index];
+    }
+}
 - (void)extend
 {
     NSLog(@"Extend tab length");

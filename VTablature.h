@@ -42,6 +42,7 @@
 - (void)addChordFromString:(NSString *)chordString;
 - (void)deleteNoteAtIndex:(NSUInteger)index
                  onString:(NSUInteger)stringNum;
+- (void)deleteChordAtIndex:(NSUInteger)index;
 - (void)extend;
 
 // convert tab data to text

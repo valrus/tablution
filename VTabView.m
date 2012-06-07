@@ -64,6 +64,18 @@
     return stringHeight;
 }
 
+- (void)drawFocusRectAtPoint:(NSPoint)origin
+                      ofSize:(NSSize)size
+                     inColor:(NSColor *)strokeColor
+{
+    NSRect focusRect = {origin, size};
+    NSBezierPath *focusPath = [NSBezierPath bezierPathWithRoundedRect:focusRect
+                                                              xRadius:3.0
+                                                              yRadius:3.0];
+    [[strokeColor colorWithAlphaComponent:0.5] setStroke];
+    [focusPath stroke];
+}
+
 - (void)drawOneLineOfTabAtHeight:(CGFloat)tabHeight
                  fromChordNumber:(NSUInteger)firstChord
                   numberOfChords:(NSUInteger)numChords
@@ -82,8 +94,8 @@
                       forKey:NSForegroundColorAttributeName];
     [focusNoteAttrs setValue:[NSNumber numberWithFloat:-6.0]
                       forKey:NSStrokeWidthAttributeName];
-    // NSForegroundColorAttributeName : [NSColor redColor]
-    // NSStrokeWidthAttributeName : -3.0
+//    NSForegroundColorAttributeName : [NSColor redColor]
+//    NSStrokeWidthAttributeName : -3.0
     NSColor *selectionColor = [NSColor blueColor];
     [selectionColor set];
     NSRect selectRect;
@@ -116,8 +128,8 @@
                                 ofSize:NSMakeSize(CHORD_SPACE, [self lineHeight])
                                inColor:selectionColor];
         }
-        if (selectionStarted && (!inSelection || chordNum == [tablature tabLength])) {
-            if ((inSelection) && (chordNum == [tablature tabLength])) {
+        if (selectionStarted && (!inSelection || chord == [tablature lastChord])) {
+            if ((inSelection) && (chord == [tablature lastChord])) {
                 x += CHORD_SPACE;
             }
             selectRect.size = NSMakeSize(x - selectRect.origin.x,
@@ -139,8 +151,8 @@
     CGFloat tabHeight = TOP_MARGIN;
     NSUInteger chordsAccommodated = 0;
     NSUInteger lineLength = 0;
-    const NSUInteger chordsPerLine = 
-        (NSUInteger)(([self bounds].size.width - LEFT_MARGIN - RIGHT_MARGIN) / CHORD_SPACE);
+    const NSUInteger chordsPerLine = (NSUInteger)(([self bounds].size.width - LEFT_MARGIN - RIGHT_MARGIN) / 
+                                                  CHORD_SPACE);
     
     do {
         // draw one line's worth of tab strings
@@ -162,18 +174,6 @@
         NSLog(@"lineLength: %lu; chords accommodated on line: %lu;", lineLength, chordsAccommodated);
     } while (chordsAccommodated < [tablature tabLength] && 
              stringHeight + [self lineHeight] <= [self bounds].size.height);
-}
-
-- (void)drawFocusRectAtPoint:(NSPoint)origin
-                      ofSize:(NSSize)size
-                     inColor:(NSColor *)strokeColor
-{
-    NSRect focusRect = {origin, size};
-    NSBezierPath *focusPath = [NSBezierPath bezierPathWithRoundedRect:focusRect
-                                                              xRadius:3.0
-                                                              yRadius:3.0];
-    [[strokeColor colorWithAlphaComponent:0.5] setStroke];
-    [focusPath stroke];
 }
 
 - (void)drawRect:(NSRect)dirtyRect
@@ -312,7 +312,8 @@
         endIndex = [tablature tabLength] - 1;
     }
     
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(startIndex, endIndex - startIndex + 1)];
+    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(startIndex,
+                                                                              endIndex - startIndex + 1)];
     
     return [NSSet setWithArray:[tablature chordsAtIndexes:indexSet]];
 }
@@ -337,7 +338,6 @@
     {
         case 1:
             [tabController performSelector:editSelector];
-            [self setNeedsDisplay:YES];
             break;
         case 2:
             if ([selectorString isEqualToString:@"addOpenString:"]) {
@@ -348,7 +348,6 @@
                 [tabController performSelector:editSelector
                                     withObject:[actionParts objectAtIndex:1]];
             }
-            [self setNeedsDisplay:YES];
             break;
         case 3:
             if ([selectorString isEqualToString:@"addNoteOnString:onFret:"]) {
@@ -361,21 +360,19 @@
                                     withObject:[actionParts objectAtIndex:1]
                                     withObject:[actionParts objectAtIndex:2]];
             }
-            [self setNeedsDisplay:YES];
     }
 #pragma clang diagnostic pop
 }
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-    if ([theEvent modifierFlags] & (NSNumericPadKeyMask |
-                                    NSFunctionKeyMask)) {
-        [self interpretKeyEvents:[NSArray arrayWithObject:theEvent]];
+    if ([[tabController keyBindings] objectForKey:[theEvent characters]]) {
+        [self handleBoundKey:[theEvent characters]];
         [self setNeedsDisplay:YES];
     }
-    else if ([[tabController keyBindings] objectForKey:[theEvent characters]])
-    {
-        [self handleBoundKey:[theEvent characters]];
+    else {
+        [self interpretKeyEvents:[NSArray arrayWithObject:theEvent]];
+        [self setNeedsDisplay:YES];
     }
 }
 
@@ -477,6 +474,14 @@
 - (IBAction)deleteForward:(id)sender
 {
     [tabController deleteFocusNote];
+}
+
+- (IBAction)deleteBackward:(id)sender
+{
+    if ([self focusChordIndex] > 0) {
+        [tablature deleteChordAtIndex:[self focusChordIndex] - 1];
+        focusChordIndex -= 1;
+    }
 }
 
 @end
