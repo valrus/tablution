@@ -112,10 +112,16 @@
 }
 
 - (void)insertChordFromArray:(NSArray *)chordArray
-                  atindex:(NSUInteger)index
+                     atIndex:(NSUInteger)index
 {
-    [tabData insertObject:[VChord chordWithArray:chordArray]
-                  atIndex:index];
+    [self insertChord:[VChord chordWithArray:chordArray]
+              atIndex:index];
+}
+
+- (void)insertChord:(VChord *)chord
+            atIndex:(NSUInteger)index
+{
+    [tabData insertObject:chord atIndex:index];
 }
 
 - (void)addChordFromArray:(NSArray *)chordArray

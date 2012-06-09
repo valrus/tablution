@@ -10,13 +10,12 @@
 @interface VTabView : NSView
 {
     IBOutlet VTabController *tabController;
-    VTablature *tablature;
     TLSelectionManager *selectionManager;
     NSUInteger focusChordIndex;
     NSUInteger focusNoteString;
 }
 
-@property (strong) VTablature *tablature;
+@property (weak) VTablature *tablature;
 @property (strong) TLSelectionManager *selectionManager;
 @property (assign) NSUInteger focusChordIndex;
 @property (assign) NSUInteger focusNoteString;
@@ -41,7 +40,9 @@
 - (void)mouseDragged:(NSEvent*)theEvent;
 - (void)mouseUp:(NSEvent*)theEvent;
 
-- (bool)focusNextChord;
-- (bool)focusPrevChord;
+- (void)focusNextChord;
+- (void)focusPrevChord;
+- (void)focusUpString;
+- (void)focusDownString;
 
 @end

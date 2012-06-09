@@ -37,7 +37,9 @@
                  onString:(NSUInteger)stringNum
                    onFret:(NSUInteger)fretNum;
 - (void)insertChordFromArray:(NSArray *)chordArray
-                     atindex:(NSUInteger)index;
+                     atIndex:(NSUInteger)index;
+- (void)insertChord:(VChord *)chord
+            atIndex:(NSUInteger)index;
 - (void)addChordFromArray:(NSArray *)chordArray;
 - (void)addChordFromString:(NSString *)chordString;
 - (void)deleteNoteAtIndex:(NSUInteger)index

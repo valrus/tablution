@@ -1,7 +1,6 @@
 #import "VTabView.h"
 #import "VTabController.h"
 #import "VTablature.h"
-#import "VTabDocument.h"
 #import "VNote.h"
 #import "TLSelectionManager.h"
 
@@ -171,7 +170,6 @@
                        fromChordNumber:chordsAccommodated
                         numberOfChords:lineLength];
         chordsAccommodated += lineLength;
-        NSLog(@"lineLength: %lu; chords accommodated on line: %lu;", lineLength, chordsAccommodated);
     } while (chordsAccommodated < [tablature tabLength] && 
              stringHeight + [self lineHeight] <= [self bounds].size.height);
 }
@@ -195,6 +193,8 @@
 {
     [self setSelectionManager:[TLSelectionManager new]];
     [selectionManager setDelegate:self];
+    [tabController setNextResponder:[self nextResponder]];
+    [self setNextResponder:tabController];
     if ([tablature tabLength] >= 1) {
         [selectionManager selectItems:[NSSet setWithObject:[tablature chordAtIndex:0]]
                  byExtendingSelection:NO];
@@ -203,6 +203,8 @@
     }
     return;
 }
+
+// MVC and controller interaction
 
 - (BOOL)acceptsFirstResponder
 {
@@ -405,83 +407,28 @@
     [self setNeedsDisplay:YES];
 }
 
-- (bool)focusNextChord
+- (void)focusNextChord
 {
-    if (focusChordIndex < [tablature tabLength] - 1) {
-        focusChordIndex++;
-        [selectionManager selectItems:[NSSet setWithObject:[tablature chordAtIndex:focusChordIndex]]
-                 byExtendingSelection:NO];
-        return YES;
-    }
-    return NO;
+    focusChordIndex++;
+    [selectionManager selectItems:[NSSet setWithObject:[tablature chordAtIndex:focusChordIndex]]
+             byExtendingSelection:NO];
 }
 
-- (bool)focusPrevChord
+- (void)focusPrevChord
 {
-    if (focusChordIndex > 0) {
-        focusChordIndex--;
-        [selectionManager selectItems:[NSSet setWithObject:[tablature chordAtIndex:focusChordIndex]]
-                 byExtendingSelection:NO];
-        return YES;
-    }
-    return NO;
+    focusChordIndex--;
+    [selectionManager selectItems:[NSSet setWithObject:[tablature chordAtIndex:focusChordIndex]]
+             byExtendingSelection:NO];
 }
 
-- (bool)focusUpString
+- (void)focusUpString
 {
-    if (focusNoteString > 0) {
-        focusNoteString--;
-        return YES;
-    }
-    return NO;
+    focusNoteString--;
 }
 
-- (bool)focusDownString
+- (void)focusDownString
 {
-    if (focusNoteString < [tablature numStrings]) {
-        focusNoteString++;
-        return YES;
-    }
-    return NO;
-}
-
-#pragma mark -
-#pragma mark inputManager overrides
-
-// Editing: selectors from input manager or whatever
-// TODO: change drawing to use replaceCharactersInRange:
-
-- (IBAction)moveRight:(id)sender
-{
-    [self focusNextChord];
-}
-
-- (IBAction)moveLeft:(id)sender
-{
-    [self focusPrevChord];
-}
-
-- (IBAction)moveUp:(id)sender
-{
-    [self focusUpString];
-}
-
-- (IBAction)moveDown:(id)sender
-{
-    [self focusDownString];
-}
-
-- (IBAction)deleteForward:(id)sender
-{
-    [tabController deleteFocusNote];
-}
-
-- (IBAction)deleteBackward:(id)sender
-{
-    if ([self focusChordIndex] > 0) {
-        [tablature deleteChordAtIndex:[self focusChordIndex] - 1];
-        focusChordIndex -= 1;
-    }
+    focusNoteString++;
 }
 
 @end

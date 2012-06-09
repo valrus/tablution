@@ -12,7 +12,7 @@
 @class VTabView;
 @class VTabDocument;
 
-@interface VTabController : NSObject
+@interface VTabController : NSViewController
 {
     // View stuff
     IBOutlet VTabView *tabView;
@@ -21,14 +21,11 @@
     NSDictionary *keyBindings;
     
     // Document
-    IBOutlet VTabDocument *tabDocument;
-    
-    // Data
-    VTablature *tablature;
+    IBOutlet VTabDocument *tabDoc;
 }
 
-@property (strong) VTabDocument *tabDocument;
-@property (strong) VTablature *tablature;
+@property (strong) VTabDocument *tabDoc;
+@property (weak) VTablature *tablature;
 @property (strong) NSDictionary *keyBindings;
 
 // Setup
@@ -50,5 +47,7 @@
 - (void)decrementBaseFret;
 
 - (void)deleteFocusNote;
+- (bool)focusNextChord;
+- (bool)focusPrevChord;
 
 @end

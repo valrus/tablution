@@ -62,7 +62,7 @@
     VTablature *tablatureToLoad = [VTablature tablatureWithString:tabText];
     [self setTablature:tablatureToLoad];
         
-    if ( outError != NULL ) {
+    if ( *outError != NULL ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
     return YES;
