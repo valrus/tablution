@@ -105,7 +105,7 @@
 }
 
 // access
-- (VNote *)noteOnString:(NSUInteger)stringNum
+- (VNote *)objectInNotesAtIndex:(NSUInteger)stringNum
 {
     assert(stringNum >= 0 && stringNum <= [[self notes] count]);
     return [notes objectAtIndex:stringNum];
@@ -113,7 +113,12 @@
 
 - (NSInteger)fretOnString:(NSUInteger)stringNum
 {
-    return [[notes objectAtIndex:stringNum] fret];
+    return [[self objectInNotesAtIndex:stringNum] fret];
+}
+
+- (bool)hasNoteOnString:(NSUInteger)stringNum
+{
+    return ([self fretOnString:stringNum] != NO_FRET);
 }
 
 - (NSString *)asText
@@ -122,8 +127,8 @@
 }
 
 // modify
-- (void)addNote:(VNote *)note
-       onString:(NSUInteger)stringNum
+- (void)replaceObjectInNotesAtIndex:(NSUInteger)stringNum
+                         withObject:(VNote *)note;
 {
     [notes replaceObjectAtIndex:stringNum
                      withObject:note];
@@ -132,11 +137,17 @@
 - (void)addFret:(NSInteger)fret
        onString:(NSUInteger)stringNum
 {
-    [notes replaceObjectAtIndex:stringNum
-                     withObject:[VNote noteAtFret:fret]];
+    [self replaceObjectInNotesAtIndex:stringNum
+                           withObject:[VNote noteAtFret:fret]];
 }
 
-- (void)deleteNoteOnString:(NSUInteger)stringNum
+- (void)insertObject:(VNote *)note
+      inNotesAtIndex:(NSUInteger)stringNum;
+{
+    [self replaceObjectInNotesAtIndex:stringNum withObject:note];
+}
+
+- (void)removeObjectFromNotesAtIndex:(NSUInteger)stringNum
 {
     [self addFret:NO_FRET onString:stringNum];
 }

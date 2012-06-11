@@ -101,7 +101,7 @@
     bool selectionStarted = NO;
     bool inSelection = NO;
     for (chordNum = firstChord; chordNum < firstChord + numChords; ++chordNum) {
-        VChord *chord = [tablature chordAtIndex:chordNum];
+        VChord *chord = [tablature objectInChordsAtIndex:chordNum];
         inSelection = [[selectionManager selectedItems] containsObject:chord];
         if (inSelection && !selectionStarted) {
             selectRect.origin = NSMakePoint(x, y);
@@ -155,9 +155,9 @@
     
     do {
         // draw one line's worth of tab strings
-        if (chordsAccommodated + chordsPerLine > [tablature tabLength]) {
+        if (chordsAccommodated + chordsPerLine > [tablature countOfChords]) {
             // set length to accommodate remaining chords
-            lineLength = [tablature tabLength] - chordsAccommodated;
+            lineLength = [tablature countOfChords] - chordsAccommodated;
         }
         else {
             // set length to max based on view width
@@ -170,7 +170,7 @@
                        fromChordNumber:chordsAccommodated
                         numberOfChords:lineLength];
         chordsAccommodated += lineLength;
-    } while (chordsAccommodated < [tablature tabLength] && 
+    } while (chordsAccommodated < [tablature countOfChords] && 
              stringHeight + [self lineHeight] <= [self bounds].size.height);
 }
 
@@ -195,8 +195,8 @@
     [selectionManager setDelegate:self];
     [tabController setNextResponder:[self nextResponder]];
     [self setNextResponder:tabController];
-    if ([tablature tabLength] >= 1) {
-        [selectionManager selectItems:[NSSet setWithObject:[tablature chordAtIndex:0]]
+    if ([tablature countOfChords] >= 1) {
+        [selectionManager selectItems:[NSSet setWithObject:[tablature objectInChordsAtIndex:0]]
                  byExtendingSelection:NO];
         [self setFocusChordIndex:0];
         [self setFocusNoteString:0];
@@ -213,12 +213,12 @@
 
 - (VChord *)focusChord
 {
-    return [tablature chordAtIndex:focusChordIndex];
+    return [tablature objectInChordsAtIndex:focusChordIndex];
 }
 
 - (VNote *)focusNote
 {
-    return [[self focusChord] noteOnString:focusNoteString];
+    return [[self focusChord] objectInNotesAtIndex:focusNoteString];
 }
 
 - (NSUInteger)chordsPerLine
@@ -234,9 +234,9 @@
 - (VChord *)chordAtPoint:(NSPoint)thePoint
 {
     NSInteger chordIndex = [self chordIndexAtPoint:thePoint];
-    if (([tablature tabLength] > chordIndex) &&
+    if (([tablature countOfChords] > chordIndex) &&
         (chordIndex != -1)) {
-        return [tablature chordAtIndex:chordIndex];
+        return [tablature objectInChordsAtIndex:chordIndex];
     } else {
         return nil;    
     }
@@ -261,7 +261,7 @@
 {
     VChord *theChord;
     if ((theChord = [self chordAtPoint:thePoint])) {
-        return [theChord noteOnString:[self stringAtPoint:thePoint]];
+        return [theChord objectInNotesAtIndex:[self stringAtPoint:thePoint]];
     }
     else {
         return nil;
@@ -310,8 +310,8 @@
     NSInteger startIndex = MAX([self chordIndexAtPoint:topLeft], 0);
     NSInteger endIndex = [self chordIndexAtPoint:bottomRight];
     
-    if (endIndex < 0 || endIndex >= [tablature tabLength]) {
-        endIndex = [tablature tabLength] - 1;
+    if (endIndex < 0 || endIndex >= [tablature countOfChords]) {
+        endIndex = [tablature countOfChords] - 1;
     }
     
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(startIndex,
@@ -394,8 +394,8 @@
     NSPoint convertedPoint = [self convertPoint:[theEvent locationInWindow]
                                        fromView:nil];
     focusChordIndex = [self chordIndexAtPoint:convertedPoint];
-    if (focusChordIndex >= [tablature tabLength]) {
-        focusChordIndex = [tablature tabLength] - 1;
+    if (focusChordIndex >= [tablature countOfChords]) {
+        focusChordIndex = [tablature countOfChords] - 1;
     }
     
     focusNoteString = [self stringAtPoint:convertedPoint];
@@ -410,14 +410,14 @@
 - (void)focusNextChord
 {
     focusChordIndex++;
-    [selectionManager selectItems:[NSSet setWithObject:[tablature chordAtIndex:focusChordIndex]]
+    [selectionManager selectItems:[NSSet setWithObject:[tablature objectInChordsAtIndex:focusChordIndex]]
              byExtendingSelection:NO];
 }
 
 - (void)focusPrevChord
 {
     focusChordIndex--;
-    [selectionManager selectItems:[NSSet setWithObject:[tablature chordAtIndex:focusChordIndex]]
+    [selectionManager selectItems:[NSSet setWithObject:[tablature objectInChordsAtIndex:focusChordIndex]]
              byExtendingSelection:NO];
 }
 

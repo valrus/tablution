@@ -11,6 +11,7 @@
 @class VTablature;
 @class VTabView;
 @class VTabDocument;
+@class VChord;
 
 @interface VTabController : NSViewController
 {
@@ -42,6 +43,9 @@
 - (void)addNoteOnString:(NSNumber *)whichString
                  onFret:(NSNumber *)whichFret
           reverseString:(bool)doReverse;
+
+- (void)insertChord:(VChord *)chord
+            atIndex:(NSUInteger)index;
 
 - (void)incrementBaseFret;
 - (void)decrementBaseFret;

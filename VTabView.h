@@ -17,8 +17,8 @@
 
 @property (weak) VTablature *tablature;
 @property (strong) TLSelectionManager *selectionManager;
-@property (assign) NSUInteger focusChordIndex;
-@property (assign) NSUInteger focusNoteString;
+@property (assign, readwrite) NSUInteger focusChordIndex;
+@property (assign, readwrite) NSUInteger focusNoteString;
 
 - (void)drawRect:(NSRect)dirtyRect;
 

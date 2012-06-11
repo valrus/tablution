@@ -37,16 +37,19 @@
                    onString:(NSUInteger)string;
 
 // access
-- (VNote *)noteOnString:(NSUInteger)stringNum;
+- (VNote *)objectInNotesAtIndex:(NSUInteger)stringNum;
 - (NSInteger)fretOnString:(NSUInteger)stringNum;
+- (bool)hasNoteOnString:(NSUInteger)stringNum;
 - (NSString *)asText;
 
 // alter
-- (void)addNote:(VNote *)note
-       onString:(NSUInteger)stringNum;
+- (void)replaceObjectInNotesAtIndex:(NSUInteger)stringNum
+                         withObject:(VNote *)note;
 - (void)addFret:(NSInteger)fret
        onString:(NSUInteger)stringNum;
-- (void)deleteNoteOnString:(NSUInteger)stringNum;
+- (void)insertObject:(VNote *)note
+      inNotesAtIndex:(NSUInteger)stringNum;
+- (void)removeObjectFromNotesAtIndex:(NSUInteger)stringNum;
 
 // NSFastEnumeration protocol
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state

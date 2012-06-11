@@ -14,6 +14,7 @@
 
 @implementation VTablature
 
+@synthesize chords;
 @synthesize numStrings;
 
 - (id)initWithStrings:(NSUInteger)num
@@ -22,9 +23,7 @@
     self = [super init];
     if (self) {
         numStrings = 6; // TODO: make not hardcoded
-
-        tabData = [NSMutableArray arrayWithCapacity:10];
-        
+        chords = [NSMutableArray arrayWithCapacity:10];
         return self;
     } else {
         return nil;
@@ -37,6 +36,14 @@
     return [self initWithStrings:numStrings];
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    NSLog(@"VTablature sees a change in a chord's %@!", keyPath);
+}
+
 + (VTablature *)tablatureWithString:(NSString *)tabText
 {
     VTablature *newTab = [[VTablature alloc] init];
@@ -44,12 +51,17 @@
     for (NSString *chordText in chordTexts) {
         [newTab addChordFromString:chordText];
     }
+    [[newTab chords] addObserver:newTab
+              toObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [newTab countOfChords])]
+                      forKeyPath:@"notes"
+                         options:0
+                         context:NULL];
     return newTab;
 }
 
 - (NSArray *)asArrayOfStrings
 {
-    return [tabData valueForKey:@"asText"];
+    return [chords valueForKey:@"asText"];
 }
 
 - (NSString *)asText
@@ -58,21 +70,21 @@
     return @"";
 }
 
-- (NSInteger)fretAtindex:(NSUInteger)index
+- (NSInteger)fretAtIndex:(NSUInteger)index
                 onString:(NSUInteger)stringNum
 {
     VChord *soughtChord;
-    if ((soughtChord = [tabData objectAtIndex:index])) {
-        return [[soughtChord noteOnString:stringNum] fret];
+    if ((soughtChord = [chords objectAtIndex:index])) {
+        return [[soughtChord objectInNotesAtIndex:stringNum] fret];
     } else {
         return -1;
     }
 }
 
-- (VChord *)chordAtIndex:(NSUInteger)index
+- (id)objectInChordsAtIndex:(NSUInteger)index
 {
     VChord *soughtChord;
-    if ((soughtChord = [tabData objectAtIndex:index])) {
+    if ((soughtChord = [chords objectAtIndex:index])) {
         return soughtChord;
     } else {
         return nil;
@@ -81,52 +93,63 @@
 
 - (NSArray *)chordsAtIndexes:(NSIndexSet *)indexSet
 {
-    return [tabData objectsAtIndexes:indexSet];
+    return [chords objectsAtIndexes:indexSet];
 }
 
 - (VChord *)lastChord
 {
-    return [self chordAtIndex:[self tabLength] - 1];
+    return [self objectInChordsAtIndex:[self countOfChords] - 1];
 }
 
-- (NSUInteger)tabLength
+- (NSUInteger)countOfChords
 {
-    return [tabData count]; 
+    return [chords count]; 
 }
 
 - (void)insertNoteAtIndex:(NSUInteger)index
                  onString:(NSUInteger)stringNum
                    onFret:(NSUInteger)fretNum
 {
+    [self insertNote:[VNote noteAtFret:fretNum]
+             atIndex:index
+            onString:stringNum];
+}
+
+- (void)insertNote:(VNote *)note
+           atIndex:(NSUInteger)index
+          onString:(NSUInteger)stringNum
+{
     id chordAlready;
-    id newChord;
-    if ((chordAlready = [tabData objectAtIndex:index])) {
-        [chordAlready addFret:fretNum
-                     onString:stringNum];
+    [self willChangeValueForKey:@"chords"];
+    if ((chordAlready = [chords objectAtIndex:index])) {
+        [chordAlready replaceObjectInNotesAtIndex:stringNum
+                                       withObject:note];
     } else {
+        id newChord;
         newChord = [VChord chordWithStrings:numStrings
-                                   withFret:fretNum
+                                   withNote:note
                                    onString:stringNum];
+        [chords replaceObjectAtIndex:index withObject:newChord];
     }
-    [tabData replaceObjectAtIndex:index withObject:newChord];
+    [self didChangeValueForKey:@"chords"];
 }
 
 - (void)insertChordFromArray:(NSArray *)chordArray
                      atIndex:(NSUInteger)index
 {
-    [self insertChord:[VChord chordWithArray:chordArray]
-              atIndex:index];
+    [self insertObject:[VChord chordWithArray:chordArray]
+              inChordsAtIndex:index];
 }
 
-- (void)insertChord:(VChord *)chord
-            atIndex:(NSUInteger)index
+- (void)insertObject:(VChord *)chord
+     inChordsAtIndex:(NSUInteger)index
 {
-    [tabData insertObject:chord atIndex:index];
+    [chords insertObject:chord atIndex:index];
 }
 
 - (void)addChordFromArray:(NSArray *)chordArray
 {
-    [tabData addObject:[VChord chordWithArray:chordArray]];
+    [chords addObject:[VChord chordWithArray:chordArray]];
 }
 
 - (void)addChordFromString:(NSString *)chordString
@@ -134,7 +157,7 @@
     VChord *newChord;
     if ((newChord = [VChord chordWithStrings:numStrings
                                     fromText:chordString])) {
-        [tabData addObject:newChord];
+        [chords addObject:newChord];
     }
     else {
         // invalid chord
@@ -144,18 +167,20 @@
 - (void)deleteNoteAtIndex:(NSUInteger)index
                  onString:(NSUInteger)stringNum
 {
+    [self willChangeValueForKey:@"chords"];
     [self insertNoteAtIndex:index onString:stringNum onFret:NO_FRET];
+    [self didChangeValueForKey:@"chords"];
 }
 
-- (void)deleteChordAtIndex:(NSUInteger)index
+- (void)removeObjectFromChordsAtIndex:(NSUInteger)index
 {
-    if (index < [self tabLength]) {
-        [tabData removeObjectAtIndex:index];
+    if (index < [self countOfChords]) {
+        [chords removeObjectAtIndex:index];
     }
 }
+
 - (void)extend
 {
-    NSLog(@"Extend tab length");
     [self addChordFromString:@"-1 -1 -1 -1 -1 -1"];
 }
 
@@ -184,7 +209,7 @@
                                     count:(NSUInteger)len
 {
     // just "delegate" this to internal NSMutableArray
-    return [tabData countByEnumeratingWithState:state objects:stackbuf count:len];
+    return [chords countByEnumeratingWithState:state objects:stackbuf count:len];
 }
 
 @end
