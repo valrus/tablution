@@ -1,501 +1,0 @@
-Ttablution
-v7
-r0
-t291353804.480959
-cCheck dependencies
-cProcessInfoPlistFile /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Info.plist Info.plist
-cCpResource build/Release/tablution.app/Contents/Resources/English.lproj/Credits.rtf English.lproj/Credits.rtf
-cStripNIB /Users/valrus/Code/tablution/English.lproj/MainMenu.nib
-cStripNIB /Users/valrus/Code/tablution/English.lproj/TabDocument.nib
-cCopyStringsFile /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/English.lproj/InfoPlist.strings English.lproj/InfoPlist.strings
-cCopyStringsFile /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/InfoPlist.strings English.lproj/InfoPlist.strings
-cProcessPCH /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-gpxajcjyntonrcdawcojsswnaeva/tablution_Prefix.pch.gch tablution_Prefix.pch normal ppc objective-c com.apple.compilers.gcc.4_2
-cProcessPCH /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-depxoepivfqpxcdyulkrnuefiknu/tablution_Prefix.pch.gch tablution_Prefix.pch normal i386 objective-c com.apple.compilers.gcc.4_2
-cCompileC build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTabDocument.o /Users/valrus/Code/tablution/VTabDocument.m normal ppc objective-c com.apple.compilers.gcc.4_2
-cCompileC build/tablution.build/Release/tablution.build/Objects-normal/ppc/main.o /Users/valrus/Code/tablution/main.m normal ppc objective-c com.apple.compilers.gcc.4_2
-cCompileC build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTablature.o /Users/valrus/Code/tablution/VTablature.m normal ppc objective-c com.apple.compilers.gcc.4_2
-cCompileC build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTabController.o /Users/valrus/Code/tablution/VTabController.m normal ppc objective-c com.apple.compilers.gcc.4_2
-cCompileC build/tablution.build/Release/tablution.build/Objects-normal/i386/VTabDocument.o /Users/valrus/Code/tablution/VTabDocument.m normal i386 objective-c com.apple.compilers.gcc.4_2
-cCompileC build/tablution.build/Release/tablution.build/Objects-normal/i386/main.o /Users/valrus/Code/tablution/main.m normal i386 objective-c com.apple.compilers.gcc.4_2
-cCompileC build/tablution.build/Release/tablution.build/Objects-normal/i386/VTablature.o /Users/valrus/Code/tablution/VTablature.m normal i386 objective-c com.apple.compilers.gcc.4_2
-cCompileC build/tablution.build/Release/tablution.build/Objects-normal/i386/VTabController.o /Users/valrus/Code/tablution/VTabController.m normal i386 objective-c com.apple.compilers.gcc.4_2
-cLd /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/tablution normal ppc
-cLd /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/tablution normal i386
-cCreateUniversalBinary /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/MacOS/tablution normal "ppc i386"
-cGenerateDSYMFile /Users/valrus/Code/tablution/build/Release/tablution.app.dSYM /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/MacOS/tablution
-cTouch /Users/valrus/Code/tablution/build/Release/tablution.app
-
-N/Developer/SDKs/MacOSX10.5.sdk
-c000000004BAB91A900000000000000EE
-t1269535145
-s238
-
-N/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/Cocoa.framework/Headers/Cocoa.h
-c0000000040C4AA6800000000000001E5
-t1086630504
-s485
-
-N/Developer/SDKs/MacOSX10.6.sdk
-c000000004BAB91B700000000000000EE
-t1269535159
-s238
-
-N/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Cocoa.framework/Headers/Cocoa.h
-c0000000040C4AA6800000000000001E5
-t1086630504
-s485
-
-N/System/Library/Frameworks/Cocoa.framework/Cocoa
-c000000004A1F2D63000000000000A5E0
-t1243557219
-s42464
-
-N/Users/valrus/Code/tablution/English.lproj/Credits.rtf
-c0000000048E2D6B600000000000001B4
-t1222825654
-s436
-
-N/Users/valrus/Code/tablution/English.lproj/InfoPlist.strings
-c0000000048E2D6B600000000000000CC
-t1222825654
-s204
-
-N/Users/valrus/Code/tablution/English.lproj/MainMenu.nib
-c0000000048E2D6B60000000000000088
-t1222825654
-s136
-
-N/Users/valrus/Code/tablution/English.lproj/TabDocument.nib
-c0000000049603F700000000000000088
-t1231044464
-s136
-
-N/Users/valrus/Code/tablution/VTabController.h
-c0000000049600B1C0000000000000244
-t1231031068
-s580
-i<Cocoa/Cocoa.h>
-i"VTablature.h"
-
-N/Users/valrus/Code/tablution/VTabController.m
-c000000004BAD7D490000000000001DF4
-t1269661001
-s7668
-i"VTabController.h"
-i"VTabDocument.h"
-
-N/Users/valrus/Code/tablution/VTabDocument.h
-c000000004BAD7AA500000000000004B1
-t1269660325
-s1201
-i<Cocoa/Cocoa.h>
-i"VTablature.h"
-i"VTabController.h"
-
-N/Users/valrus/Code/tablution/VTabDocument.m
-c000000004BAD7AC000000000000011E0
-t1269660352
-s4576
-i"VTabDocument.h"
-
-N/Users/valrus/Code/tablution/VTablature.h
-c00000000495EF7AB0000000000000374
-t1230960555
-s884
-i<Cocoa/Cocoa.h>
-
-N/Users/valrus/Code/tablution/VTablature.m
-c000000004BAD48E20000000000000F49
-t1269647586
-s3913
-i"VTablature.h"
-
-N/Users/valrus/Code/tablution/build/Release/tablution.app
-t1269661004
-s102
-
-N/Users/valrus/Code/tablution/build/Release/tablution.app.dSYM
-t1269661004
-s102
-
-N/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Info.plist
-t1269578580
-s1200
-
-N/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/MacOS/tablution
-t1269661004
-s71216
-
-N/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/PkgInfo
-t1269578580
-s8
-
-N/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/English.lproj/Credits.rtf
-t1223488499
-s436
-
-N/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/English.lproj/InfoPlist.strings
-t1269578580
-s204
-
-N/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/English.lproj/MainMenu.nib
-t1269578580
-s17384
-
-N/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/English.lproj/TabDocument.nib
-t1269578580
-s9553
-
-N/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/InfoPlist.strings
-t1269578580
-s204
-
-N/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/editChars.plist
-t1231031622
-s4843
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/VTabController.o
-t1269661004
-s40924
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/VTabDocument.o
-t1269660356
-s29048
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/VTablature.o
-t1269657403
-s14160
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/main.o
-t1269646319
-s4832
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/tablution
-t1269661004
-s30256
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/tablution.LinkFileList
-c000000004BAC3B5400000000000001B0
-t1269578580
-s432
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTabController.o
-t1269661004
-s44144
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTabDocument.o
-t1269660354
-s29988
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTablature.o
-t1269657399
-s15748
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/main.o
-t1269646318
-s4860
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/tablution
-t1269661004
-s34144
-
-N/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/tablution.LinkFileList
-c000000004BAC3B5400000000000001AC
-t1269578580
-s428
-
-N/Users/valrus/Code/tablution/editChars.plist
-c00000000000000000000000000000000
-t2
-s0
-
-N/Users/valrus/Code/tablution/main.m
-c0000000048E2D6B600000000000000FD
-t1222825654
-s253
-i<Cocoa/Cocoa.h>
-
-N/Users/valrus/Code/tablution/tablution_Prefix.pch
-c0000000048E2D6B60000000000000095
-t1222825654
-s149
-i<Cocoa/Cocoa.h>
-
-N/var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-befgsqbtzpxztudizihnplwtgncl/tablution_Prefix.pch.gch
-t1269578586
-s52748688
-
-N/var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-depxoepivfqpxcdyulkrnuefiknu/tablution_Prefix.pch.gch
-t1269646317
-s55412496
-
-N/var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-fkvwscddhzegsndzwofvmdzjgnms/tablution_Prefix.pch.gch
-t1269578586
-s49991888
-
-N/var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-gpxajcjyntonrcdawcojsswnaeva/tablution_Prefix.pch.gch
-t1269646317
-s52655664
-
-NInfo.plist
-c0000000048ECF3D40000000000000527
-t1223488468
-s1319
-
-CCheck dependencies
-r0
-lSLF07#2@18"Check dependencies291353803#291353803#0(0"0(0#1#0"7947009927035180032#0"0#
-
-CCompileC build/tablution.build/Release/tablution.build/Objects-normal/i386/VTabController.o /Users/valrus/Code/tablution/VTabController.m normal i386 objective-c com.apple.compilers.gcc.4_2
-s291353803.926341
-e291353804.388726
-r1
-xCompileC
-xbuild/tablution.build/Release/tablution.build/Objects-normal/i386/VTabController.o
-x/Users/valrus/Code/tablution/VTabController.m
-xnormal
-xi386
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@53"Compile /Users/valrus/Code/tablution/VTabController.m291353803#291353804#0(0"0(0#0#45"/Users/valrus/Code/tablution/VTabController.m4300885448#1061"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c -arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -fvisibility=hidden -mmacosx-version-min=10.6 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/i386 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -include /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-depxoepivfqpxcdyulkrnuefiknu/tablution_Prefix.pch -c /Users/valrus/Code/tablution/VTabController.m -o /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/VTabController.o0#
-
-CCompileC build/tablution.build/Release/tablution.build/Objects-normal/i386/VTabDocument.o /Users/valrus/Code/tablution/VTabDocument.m normal i386 objective-c com.apple.compilers.gcc.4_2
-s291353154.922246
-e291353156.590868
-r1
-xCompileC
-xbuild/tablution.build/Release/tablution.build/Objects-normal/i386/VTabDocument.o
-x/Users/valrus/Code/tablution/VTabDocument.m
-xnormal
-xi386
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@51"Compile /Users/valrus/Code/tablution/VTabDocument.m291353154#291353156#0(0"0(0#0#43"/Users/valrus/Code/tablution/VTabDocument.m4300885448#1057"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c -arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -fvisibility=hidden -mmacosx-version-min=10.6 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/i386 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -include /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-depxoepivfqpxcdyulkrnuefiknu/tablution_Prefix.pch -c /Users/valrus/Code/tablution/VTabDocument.m -o /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/VTabDocument.o0#
-
-CCompileC build/tablution.build/Release/tablution.build/Objects-normal/i386/VTablature.o /Users/valrus/Code/tablution/VTablature.m normal i386 objective-c com.apple.compilers.gcc.4_2
-s291350198.016170
-e291350203.756169
-r1
-xCompileC
-xbuild/tablution.build/Release/tablution.build/Objects-normal/i386/VTablature.o
-x/Users/valrus/Code/tablution/VTablature.m
-xnormal
-xi386
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@49"Compile /Users/valrus/Code/tablution/VTablature.m291350198#291350203#0(0"0(0#0#41"/Users/valrus/Code/tablution/VTablature.m4300885448#1053"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c -arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -fvisibility=hidden -mmacosx-version-min=10.6 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/i386 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -include /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-depxoepivfqpxcdyulkrnuefiknu/tablution_Prefix.pch -c /Users/valrus/Code/tablution/VTablature.m -o /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/VTablature.o0#
-
-CCompileC build/tablution.build/Release/tablution.build/Objects-normal/i386/main.o /Users/valrus/Code/tablution/main.m normal i386 objective-c com.apple.compilers.gcc.4_2
-s291339118.904929
-e291339119.108154
-r1
-xCompileC
-xbuild/tablution.build/Release/tablution.build/Objects-normal/i386/main.o
-x/Users/valrus/Code/tablution/main.m
-xnormal
-xi386
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@43"Compile /Users/valrus/Code/tablution/main.m291339118#291339119#0(0"0(0#0#35"/Users/valrus/Code/tablution/main.m4300885448#1041"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c -arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -fvisibility=hidden -mmacosx-version-min=10.6 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/i386 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -include /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-depxoepivfqpxcdyulkrnuefiknu/tablution_Prefix.pch -c /Users/valrus/Code/tablution/main.m -o /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/main.o0#
-
-CCompileC build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTabController.o /Users/valrus/Code/tablution/VTabController.m normal ppc objective-c com.apple.compilers.gcc.4_2
-s291353803.608918
-e291353804.360332
-r1
-xCompileC
-xbuild/tablution.build/Release/tablution.build/Objects-normal/ppc/VTabController.o
-x/Users/valrus/Code/tablution/VTabController.m
-xnormal
-xppc
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@53"Compile /Users/valrus/Code/tablution/VTabController.m291353803#291353804#0(0"0(0#0#45"/Users/valrus/Code/tablution/VTabController.m4300885448#1055"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c -arch ppc -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -mtune=G5 -fvisibility=hidden -mmacosx-version-min=10.6 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/ppc -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -include /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-gpxajcjyntonrcdawcojsswnaeva/tablution_Prefix.pch -c /Users/valrus/Code/tablution/VTabController.m -o /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTabController.o0#
-
-CCompileC build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTabDocument.o /Users/valrus/Code/tablution/VTabDocument.m normal ppc objective-c com.apple.compilers.gcc.4_2
-s291353154.269576
-e291353154.922123
-r1
-xCompileC
-xbuild/tablution.build/Release/tablution.build/Objects-normal/ppc/VTabDocument.o
-x/Users/valrus/Code/tablution/VTabDocument.m
-xnormal
-xppc
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@51"Compile /Users/valrus/Code/tablution/VTabDocument.m291353154#291353154#0(0"0(0#0#43"/Users/valrus/Code/tablution/VTabDocument.m3275089324280537600#1051"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c -arch ppc -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -mtune=G5 -fvisibility=hidden -mmacosx-version-min=10.6 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/ppc -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -include /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-gpxajcjyntonrcdawcojsswnaeva/tablution_Prefix.pch -c /Users/valrus/Code/tablution/VTabDocument.m -o /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTabDocument.o0#
-
-CCompileC build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTablature.o /Users/valrus/Code/tablution/VTablature.m normal ppc objective-c com.apple.compilers.gcc.4_2
-s291350196.487893
-e291350199.218466
-r1
-xCompileC
-xbuild/tablution.build/Release/tablution.build/Objects-normal/ppc/VTablature.o
-x/Users/valrus/Code/tablution/VTablature.m
-xnormal
-xppc
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@49"Compile /Users/valrus/Code/tablution/VTablature.m291350196#291350199#0(0"0(0#0#41"/Users/valrus/Code/tablution/VTablature.m4300885448#1047"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c -arch ppc -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -mtune=G5 -fvisibility=hidden -mmacosx-version-min=10.6 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/ppc -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -include /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-gpxajcjyntonrcdawcojsswnaeva/tablution_Prefix.pch -c /Users/valrus/Code/tablution/VTablature.m -o /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/VTablature.o0#
-
-CCompileC build/tablution.build/Release/tablution.build/Objects-normal/ppc/main.o /Users/valrus/Code/tablution/main.m normal ppc objective-c com.apple.compilers.gcc.4_2
-s291339117.988569
-e291339118.231565
-r1
-xCompileC
-xbuild/tablution.build/Release/tablution.build/Objects-normal/ppc/main.o
-x/Users/valrus/Code/tablution/main.m
-xnormal
-xppc
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@43"Compile /Users/valrus/Code/tablution/main.m291339117#291339118#0(0"0(0#0#35"/Users/valrus/Code/tablution/main.m4300885448#1035"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c -arch ppc -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -mtune=G5 -fvisibility=hidden -mmacosx-version-min=10.6 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/ppc -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -include /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-gpxajcjyntonrcdawcojsswnaeva/tablution_Prefix.pch -c /Users/valrus/Code/tablution/main.m -o /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/main.o0#
-
-CCopyPlistFile /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/editChars.plist editChars.plist
-r0
-
-CCopyStringsFile /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/English.lproj/InfoPlist.strings English.lproj/InfoPlist.strings
-s291271380.492794
-e291271380.964474
-r1
-xCopyStringsFile
-x/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/English.lproj/InfoPlist.strings
-xEnglish.lproj/InfoPlist.strings
-lSLF07#2@36"Copy English.lproj/InfoPlist.strings291271380#291271380#0(0"0(0#0#60"/Users/valrus/Code/tablution/English.lproj/InfoPlist.strings4300885448#350"    cd /Users/valrus/Code/tablution    setenv ICONV /usr/bin/iconv    /Developer/Library/Xcode/Plug-ins/CoreBuildTasks.xcplugin/Contents/Resources/copystrings --validate --inputencoding utf-16 --outputencoding UTF-16 English.lproj/InfoPlist.strings --outdir /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/English.lproj0#
-
-CCopyStringsFile /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/InfoPlist.strings English.lproj/InfoPlist.strings
-s291271380.498699
-e291271380.962061
-r1
-xCopyStringsFile
-x/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/InfoPlist.strings
-xEnglish.lproj/InfoPlist.strings
-oEnglish.lproj/InfoPlist.strings: warning: the specified encoding is utf-8, but file contents appear to be UTF-16; treating as UTF-16
-lSLF07#2@36"Copy English.lproj/InfoPlist.strings291271380#291271380#0(133"English.lproj/InfoPlist.strings: warning: the specified encoding is utf-8, but file contents appear to be UTF-16; treating as UTF-160(0#0#60"/Users/valrus/Code/tablution/English.lproj/InfoPlist.strings4300885448#335"    cd /Users/valrus/Code/tablution    setenv ICONV /usr/bin/iconv    /Developer/Library/Xcode/Plug-ins/CoreBuildTasks.xcplugin/Contents/Resources/copystrings --validate --inputencoding utf-8 --outputencoding UTF-16 English.lproj/InfoPlist.strings --outdir /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources0#
-
-CCpResource build/Release/tablution.app/Contents/Resources/English.lproj/Credits.rtf English.lproj/Credits.rtf
-r0
-
-CCreateUniversalBinary /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/MacOS/tablution normal "ppc i386"
-s291353804.451160
-e291353804.455289
-r1
-xCreateUniversalBinary
-x/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/MacOS/tablution
-xnormal
-xppc i386
-lSLF07#2@92"CreateUniversalBinary build/Release/tablution.app/Contents/MacOS/tablution normal "ppc i386"291353804#291353804#0(0"0(0#0#37"/Users/valrus/Code/tablution/ppc i3864300885448#361"    cd /Users/valrus/Code/tablution    /usr/bin/lipo -create /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/tablution /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/tablution -output /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/MacOS/tablution0#
-
-CGenerateDSYMFile /Users/valrus/Code/tablution/build/Release/tablution.app.dSYM /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/MacOS/tablution
-s291353804.455386
-e291353804.474861
-r1
-xGenerateDSYMFile
-x/Users/valrus/Code/tablution/build/Release/tablution.app.dSYM
-x/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/MacOS/tablution
-lSLF07#2@102"GenerateDSYMFile build/Release/tablution.app.dSYM build/Release/tablution.app/Contents/MacOS/tablution291353804#291353804#0(0"0(0#0#81"/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/MacOS/tablution4300885448#215"    cd /Users/valrus/Code/tablution    /Developer/usr/bin/dsymutil /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/MacOS/tablution -o /Users/valrus/Code/tablution/build/Release/tablution.app.dSYM0#
-
-CLd /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/tablution normal i386
-s291353804.388826
-e291353804.451047
-r1
-xLd
-x/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/tablution
-xnormal
-xi386
-lSLF07#2@109"Link /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/tablution291353804#291353804#0(0"0(0#0#0"4300885448#529"    cd /Users/valrus/Code/tablution    setenv MACOSX_DEPLOYMENT_TARGET 10.6    /Developer/usr/bin/gcc-4.2 -arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk -L/Users/valrus/Code/tablution/build/Release -F/Users/valrus/Code/tablution/build/Release -filelist /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/tablution.LinkFileList -mmacosx-version-min=10.6 -framework Cocoa -o /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/i386/tablution0#
-
-CLd /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/tablution normal ppc
-s291353804.360427
-e291353804.413653
-r1
-xLd
-x/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/tablution
-xnormal
-xppc
-lSLF07#2@108"Link /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/tablution291353804#291353804#0(0"0(0#0#0"4300885448#526"    cd /Users/valrus/Code/tablution    setenv MACOSX_DEPLOYMENT_TARGET 10.6    /Developer/usr/bin/gcc-4.2 -arch ppc -isysroot /Developer/SDKs/MacOSX10.6.sdk -L/Users/valrus/Code/tablution/build/Release -F/Users/valrus/Code/tablution/build/Release -filelist /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/tablution.LinkFileList -mmacosx-version-min=10.6 -framework Cocoa -o /Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/Objects-normal/ppc/tablution0#
-
-CProcessInfoPlistFile /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Info.plist Info.plist
-s291271380.184827
-e291271380.248806
-r1
-xProcessInfoPlistFile
-x/Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Info.plist
-xInfo.plist
-lSLF07#2@18"Process Info.plist291271380#291271380#0(0"0(0#0#39"/Users/valrus/Code/tablution/Info.plist31244173394051188#280"    cd /Users/valrus/Code/tablution    builtin-infoPlistUtility Info.plist -genpkginfo /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/PkgInfo -expandbuildsettings -platform macosx -o /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Info.plist0#
-
-CProcessPCH /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-befgsqbtzpxztudizihnplwtgncl/tablution_Prefix.pch.gch tablution_Prefix.pch normal i386 objective-c com.apple.compilers.gcc.4_2
-s291271380.966902
-e291271386.360667
-r1
-xProcessPCH
-x/var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-befgsqbtzpxztudizihnplwtgncl/tablution_Prefix.pch.gch
-xtablution_Prefix.pch
-xnormal
-xi386
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@31"Precompile tablution_Prefix.pch291271380#291271386#0(0"0(0#0#49"/Users/valrus/Code/tablution/tablution_Prefix.pch4300885448#955"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c-header -arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.5.sdk -fvisibility=hidden -mmacosx-version-min=10.5 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/i386 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -c /Users/valrus/Code/tablution/tablution_Prefix.pch -o /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-befgsqbtzpxztudizihnplwtgncl/tablution_Prefix.pch.gch0#
-
-CProcessPCH /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-depxoepivfqpxcdyulkrnuefiknu/tablution_Prefix.pch.gch tablution_Prefix.pch normal i386 objective-c com.apple.compilers.gcc.4_2
-s291339111.596660
-e291339117.986940
-r1
-xProcessPCH
-x/var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-depxoepivfqpxcdyulkrnuefiknu/tablution_Prefix.pch.gch
-xtablution_Prefix.pch
-xnormal
-xi386
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@31"Precompile tablution_Prefix.pch291339111#291339117#0(0"0(0#0#49"/Users/valrus/Code/tablution/tablution_Prefix.pch4300885448#955"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c-header -arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -fvisibility=hidden -mmacosx-version-min=10.6 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/i386 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -c /Users/valrus/Code/tablution/tablution_Prefix.pch -o /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-depxoepivfqpxcdyulkrnuefiknu/tablution_Prefix.pch.gch0#
-
-CProcessPCH /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-fkvwscddhzegsndzwofvmdzjgnms/tablution_Prefix.pch.gch tablution_Prefix.pch normal ppc objective-c com.apple.compilers.gcc.4_2
-s291271380.964755
-e291271386.207043
-r1
-xProcessPCH
-x/var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-fkvwscddhzegsndzwofvmdzjgnms/tablution_Prefix.pch.gch
-xtablution_Prefix.pch
-xnormal
-xppc
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@31"Precompile tablution_Prefix.pch291271380#291271386#0(0"0(0#0#49"/Users/valrus/Code/tablution/tablution_Prefix.pch4300885448#950"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c-header -arch ppc -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.5.sdk -mtune=G5 -fvisibility=hidden -mmacosx-version-min=10.5 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/ppc -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -c /Users/valrus/Code/tablution/tablution_Prefix.pch -o /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-fkvwscddhzegsndzwofvmdzjgnms/tablution_Prefix.pch.gch0#
-
-CProcessPCH /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-gpxajcjyntonrcdawcojsswnaeva/tablution_Prefix.pch.gch tablution_Prefix.pch normal ppc objective-c com.apple.compilers.gcc.4_2
-s291339111.592447
-e291339117.722604
-r1
-xProcessPCH
-x/var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-gpxajcjyntonrcdawcojsswnaeva/tablution_Prefix.pch.gch
-xtablution_Prefix.pch
-xnormal
-xppc
-xobjective-c
-xcom.apple.compilers.gcc.4_2
-lSLF07#2@31"Precompile tablution_Prefix.pch291339111#291339117#0(0"0(0#0#49"/Users/valrus/Code/tablution/tablution_Prefix.pch4300885448#950"    cd /Users/valrus/Code/tablution    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x objective-c-header -arch ppc -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -Os -mdynamic-no-pic -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -mtune=G5 -fvisibility=hidden -mmacosx-version-min=10.6 -gdwarf-2 -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/tablution.hmap -F/Users/valrus/Code/tablution/build/Release -I/Users/valrus/Code/tablution/build/Release/include -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources/ppc -I/Users/valrus/Code/tablution/build/tablution.build/Release/tablution.build/DerivedSources -c /Users/valrus/Code/tablution/tablution_Prefix.pch -o /var/folders/HV/HVEIZ1-oGmSan2683JU5JE+++TI/-Caches-/com.apple.Xcode.501/SharedPrecompiledHeaders/tablution_Prefix-gpxajcjyntonrcdawcojsswnaeva/tablution_Prefix.pch.gch0#
-
-CStripNIB /Users/valrus/Code/tablution/English.lproj/MainMenu.nib
-s291271380.248994
-e291271380.492688
-r1
-xStripNIB
-x/Users/valrus/Code/tablution/English.lproj/MainMenu.nib
-lSLF07#2@35"StripNIB English.lproj/MainMenu.nib291271380#291271380#0(0"0(0#0#55"/Users/valrus/Code/tablution/English.lproj/MainMenu.nib4300885448#269"    cd /Users/valrus/Code/tablution    /Developer/usr/bin/ibtool --strip /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/English.lproj/MainMenu.nib --output-format human-readable-text /Users/valrus/Code/tablution/English.lproj/MainMenu.nib0#
-
-CStripNIB /Users/valrus/Code/tablution/English.lproj/TabDocument.nib
-s291271380.250634
-e291271380.498595
-r1
-xStripNIB
-x/Users/valrus/Code/tablution/English.lproj/TabDocument.nib
-lSLF07#2@38"StripNIB English.lproj/TabDocument.nib291271380#291271380#0(0"0(0#0#58"/Users/valrus/Code/tablution/English.lproj/TabDocument.nib4300885448#275"    cd /Users/valrus/Code/tablution    /Developer/usr/bin/ibtool --strip /Users/valrus/Code/tablution/build/Release/tablution.app/Contents/Resources/English.lproj/TabDocument.nib --output-format human-readable-text /Users/valrus/Code/tablution/English.lproj/TabDocument.nib0#
-
-CTouch /Users/valrus/Code/tablution/build/Release/tablution.app
-s291353804.474962
-e291353804.480902
-r1
-xTouch
-x/Users/valrus/Code/tablution/build/Release/tablution.app
-lSLF07#2@62"Touch /Users/valrus/Code/tablution/build/Release/tablution.app291353804#291353804#0(0"0(0#0#0"4300885448#115"    cd /Users/valrus/Code/tablution    /usr/bin/touch -c /Users/valrus/Code/tablution/build/Release/tablution.app0#
-
