@@ -38,11 +38,11 @@
 // Editing functions
 
 - (void)addOpenString:(NSNumber *)whichString
-        reverseString:(bool)doReverse;
+        reverseString:(BOOL)doReverse;
 
 - (void)addNoteOnString:(NSNumber *)whichString
                  onFret:(NSNumber *)whichFret
-          reverseString:(bool)doReverse;
+          reverseString:(BOOL)doReverse;
 
 - (void)insertChord:(VChord *)chord
             atIndex:(NSUInteger)index;

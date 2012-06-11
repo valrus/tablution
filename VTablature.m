@@ -70,12 +70,23 @@
     return @"";
 }
 
-- (NSInteger)fretAtIndex:(NSUInteger)index
-                onString:(NSUInteger)stringNum
+- (VNote *)noteAtIndex:(NSUInteger)index
+              onString:(NSUInteger)stringNum
 {
     VChord *soughtChord;
     if ((soughtChord = [chords objectAtIndex:index])) {
-        return [[soughtChord objectInNotesAtIndex:stringNum] fret];
+        return [soughtChord objectInNotesAtIndex:stringNum];
+    } else {
+        return nil;
+    }
+}
+
+- (NSInteger)fretAtIndex:(NSUInteger)index
+                onString:(NSUInteger)stringNum
+{
+    VNote *soughtNote;
+    if ((soughtNote = [self noteAtIndex:index onString:stringNum])) {
+        return [soughtNote fret];
     } else {
         return -1;
     }
@@ -167,9 +178,8 @@
 - (void)deleteNoteAtIndex:(NSUInteger)index
                  onString:(NSUInteger)stringNum
 {
-    [self willChangeValueForKey:@"chords"];
-    [self insertNoteAtIndex:index onString:stringNum onFret:NO_FRET];
-    [self didChangeValueForKey:@"chords"];
+    [self insertNote:[VNote blankNote]
+             atIndex:index onString:stringNum];
 }
 
 - (void)removeObjectFromChordsAtIndex:(NSUInteger)index

@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VChord.h"
+#import "VNote.h"
 
 @interface VTablature : NSObject {
     NSMutableArray *chords;
@@ -26,6 +27,8 @@
 // get information about tab
 - (NSArray *)asArrayOfStrings;
 - (NSString *)asText;
+- (VNote *)noteAtIndex:(NSUInteger)index
+              onString:(NSUInteger)stringNum;
 - (NSInteger)fretAtIndex:(NSUInteger)index
                 onString:(NSUInteger)stringNum;
 - (id)objectInChordsAtIndex:(NSUInteger)index;

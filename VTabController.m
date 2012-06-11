@@ -14,6 +14,13 @@
 
 #define MAX_FRET 22
 
+@interface VTabController (Private)
+
+- (void)prepareUndoForChangeFromNote:(VNote *)previousNote
+                            onString:(NSUInteger)whichString;
+
+@end
+
 @implementation VTabController
 
 @synthesize tabDoc;
@@ -43,26 +50,35 @@
 
 // Editing selectors
 
-- (void)addOpenString:(NSNumber *)whichString
-        reverseString:(bool)doReverse
+- (void)prepareUndoForChangeFromNote:(VNote *)previousNote
+                            onString:(NSUInteger)whichString
 {
-    if ([whichString intValue] < [tablature numStrings]) {
-        [tablature insertNoteAtIndex:[tabView focusChordIndex]
-                            onString:doReverse ? [tablature numStrings] - [whichString intValue] - 1
-                                               : [whichString intValue]
-                              onFret:0];
-    }
+    [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
+     insertNote:previousNote
+     atIndex:[tabView focusChordIndex]
+     onString:whichString];
+    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Change Note", @"change note undo")];
+}
 
+- (void)addOpenString:(NSNumber *)whichString
+        reverseString:(BOOL)doReverse
+{
+    [self addNoteOnString:whichString
+                   onFret:0
+            reverseString:doReverse];
 }
 
 - (void)addNoteOnString:(NSNumber *)whichString
                  onFret:(NSNumber *)whichFret
-          reverseString:(bool)doReverse
+          reverseString:(BOOL)doReverse
 {
+    NSUInteger stringNum = doReverse ? [tablature numStrings] - [whichString intValue] - 1
+                                     : [whichString intValue];
     if ([whichString intValue] < [tablature numStrings]) {
+        [self prepareUndoForChangeFromNote:[[tabView focusChord] objectInNotesAtIndex:stringNum]
+                                  onString:stringNum];
         [tablature insertNoteAtIndex:[tabView focusChordIndex]
-                            onString:doReverse ? [tablature numStrings] - [whichString intValue] - 1
-                                               : [whichString intValue]
+                            onString:stringNum
                               onFret:[whichFret intValue] + [[tabDoc baseFret] intValue]];
     }
 }
@@ -102,13 +118,10 @@
 
 - (void)deleteFocusNote
 {
-    VNote *currentNote = [[tabView focusChord] objectInNotesAtIndex:[tabView focusNoteString]];
+    VNote *currentNote = [tabView focusNote];
     if ([currentNote hasFret]) {
-        [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
-         insertNote:currentNote
-            atIndex:[tabView focusChordIndex]
-           onString:[tabView focusNoteString]];
-        [[tabDoc undoManager] setActionName:NSLocalizedString(@"Delete Note", @"delete note undo")];
+        [self prepareUndoForChangeFromNote:currentNote
+                                  onString:[tabView focusNoteString]];
         [tablature deleteNoteAtIndex:[tabView focusChordIndex]
                             onString:[tabView focusNoteString]];
     }
