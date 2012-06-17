@@ -178,6 +178,10 @@
 		<string>addOpenString:</string>
 		<integer>3</integer>
 	</array>
+	<key>`</key>
+	<array>
+		<string>toggleSoloMode</string>
+	</array>
 	<key>%</key>
 	<array>
 		<string>addOpenString:</string>

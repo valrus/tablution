@@ -31,6 +31,7 @@
 		D4EB0DAC14395DA20034F48C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAA14395DA20034F48C /* InfoPlist.strings */; };
 		D4EB0DAE14395DA20034F48C /* TablutionTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAD14395DA20034F48C /* TablutionTests.h */; };
 		D4EB0DB014395DA20034F48C /* TablutionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EB0DAF14395DA20034F48C /* TablutionTests.m */; };
+		D4F9DF501589A6BA006CAB36 /* VEditModeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F9DF4F1589A6BA006CAB36 /* VEditModeTransformer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,8 @@
 		D4EB0DAD14395DA20034F48C /* TablutionTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TablutionTests.h; sourceTree = "<group>"; };
 		D4EB0DAF14395DA20034F48C /* TablutionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TablutionTests.m; sourceTree = "<group>"; };
 		D4EB0DB114395DA20034F48C /* TablutionTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TablutionTests-Prefix.pch"; sourceTree = "<group>"; };
+		D4F9DF4E1589A6BA006CAB36 /* VEditModeTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEditModeTransformer.h; sourceTree = "<group>"; };
+		D4F9DF4F1589A6BA006CAB36 /* VEditModeTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEditModeTransformer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +152,7 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				D4F9DF4D1589A64C006CAB36 /* editModeTransformer */,
 				D426E9C914C35A4A0031F745 /* TLSelectionManager.h */,
 				D426E9CA14C35A4A0031F745 /* TLSelectionManager.m */,
 				D45EBA7E149463AD0067EE82 /* Fraction.h */,
@@ -220,6 +224,15 @@
 				D4EB0DB114395DA20034F48C /* TablutionTests-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D4F9DF4D1589A64C006CAB36 /* editModeTransformer */ = {
+			isa = PBXGroup;
+			children = (
+				D4F9DF4E1589A6BA006CAB36 /* VEditModeTransformer.h */,
+				D4F9DF4F1589A6BA006CAB36 /* VEditModeTransformer.m */,
+			);
+			name = editModeTransformer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -341,6 +354,7 @@
 				D4D54D8B13C940F400399D9B /* VNote.m in Sources */,
 				D45EBA80149463AE0067EE82 /* Fraction.m in Sources */,
 				D426E9CB14C35A4A0031F745 /* TLSelectionManager.m in Sources */,
+				D4F9DF501589A6BA006CAB36 /* VEditModeTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

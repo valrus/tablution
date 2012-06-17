@@ -10,4 +10,16 @@
 
 @implementation VEditModeTransformer
 
++ (Class)transformedValueClass { return [NSString class]; }
+
++ (BOOL)allowsReverseTransformation { return YES; }
+
+- (id)transformedValue:(id)value {
+    return [value boolValue] ? @"Solo Mode" : @"Chord Mode";
+}
+
+- (id)reverseTransformedValue:(id)value {
+    return [NSNumber numberWithBool:[value isEqualToString:@"Solo Mode"]];
+}
+
 @end

@@ -48,7 +48,8 @@
     [tabView setNeedsDisplay:YES];
 }
 
-// Editing selectors
+#pragma mark -
+#pragma mark Editing selectors
 
 - (void)prepareUndoForChangeFromNote:(VNote *)previousNote
                             onString:(NSUInteger)whichString
@@ -75,11 +76,25 @@
     NSUInteger stringNum = doReverse ? [tablature numStrings] - [whichString intValue] - 1
                                      : [whichString intValue];
     if ([whichString intValue] < [tablature numStrings]) {
-        [self prepareUndoForChangeFromNote:[[tabView focusChord] objectInNotesAtIndex:stringNum]
-                                  onString:stringNum];
-        [tablature insertNoteAtIndex:[tabView focusChordIndex]
-                            onString:stringNum
-                              onFret:[whichFret intValue] + [[tabDoc baseFret] intValue]];
+        if ([[tabDoc soloMode] boolValue]) {
+            VChord *newChord = [VChord chordWithStrings:[tablature numStrings]
+                                               withFret:[whichFret intValue]
+                                               onString:[whichString intValue]];
+            [[[tabDoc undoManager] prepareWithInvocationTarget:self]
+             removeChordAtIndex:[tabView focusChordIndex] + 1];
+            [[tabDoc undoManager] setActionName:NSLocalizedString(@"Add Solo Note", @"add solo note undo")];
+            [tablature insertObject:newChord
+                    inChordsAtIndex:[tabView focusChordIndex] + 1];
+            [tabView focusNextChord];
+        }
+        else {
+            [self prepareUndoForChangeFromNote:[[tabView focusChord] objectInNotesAtIndex:stringNum]
+                                      onString:stringNum];
+            [tablature insertNoteAtIndex:[tabView focusChordIndex]
+                                onString:stringNum
+                                  onFret:[whichFret intValue] + [[tabDoc baseFret] intValue]];
+            [tabView setFocusNoteString:stringNum];
+        }
     }
 }
 
@@ -89,6 +104,14 @@
     [tablature insertObject:chord inChordsAtIndex:index];
     if (index <= [tabView focusChordIndex]) {
         [self focusNextChord];
+    }
+}
+
+- (void)removeChordAtIndex:(NSUInteger)index
+{
+    [tablature removeObjectFromChordsAtIndex:index];
+    if (index <= [tabView focusChordIndex]) {
+        [self focusPrevChord];
     }
 }
 
@@ -106,6 +129,12 @@
     if (currFret > 0) {
         [tabDoc setBaseFret:[NSNumber numberWithInt:currFret - 1]];
     }
+}
+
+- (void)toggleSoloMode
+{
+    BOOL currentMode = [[tabDoc soloMode] boolValue];
+    [tabDoc setSoloMode:[NSNumber numberWithBool:!currentMode]];
 }
 
 - (void)advance
@@ -166,9 +195,6 @@
 #pragma mark -
 #pragma mark inputManager overrides
 
-// Editing: selectors from input manager or whatever
-// TODO: change drawing to use replaceCharactersInRange:
-
 - (IBAction)moveRight:(id)sender
 {
     [self focusNextChord];
@@ -205,7 +231,8 @@
     }
 }
 
-// KVO methods
+#pragma mark -
+#pragma mark KVO observing
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
@@ -218,7 +245,8 @@
     switch (changeKind) {
         case NSKeyValueChangeInsertion: {
             NSIndexSet *indexes = [change valueForKey:@"indexes"];
-            NSUInteger indexesBeforeFocus = [indexes countOfIndexesInRange:NSMakeRange(0, [tabView focusChordIndex] + 1)];
+            NSUInteger indexesBeforeFocus = 
+                [indexes countOfIndexesInRange:NSMakeRange(0, [tabView focusChordIndex] + 1)];
             [tabView setFocusChordIndex:[tabView focusChordIndex] + indexesBeforeFocus];
             break;
         }

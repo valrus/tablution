@@ -10,11 +10,13 @@
 #import "VTablature.h"
 #import "VTabController.h"
 #import "Fraction.h"
+#import "VEditModeTransformer.h"
 
 @implementation VTabDocument
 
 @synthesize baseFret;
 @synthesize tablature;
+@synthesize soloMode;
 
 // setup
 
@@ -22,10 +24,12 @@
 {
     self = [super init];
     if (self) {
-        
+        NSValueTransformer *transformer = [[VEditModeTransformer alloc] init];
+        [NSValueTransformer setValueTransformer:transformer forName:@"VEditModeTransformer"];
         if (tablature == nil) {
             tablature = [[VTablature alloc] initWithStrings:6];
             baseFret = [NSNumber numberWithInt:0];
+            soloMode = [NSNumber numberWithBool:NO];
             [tablature addChordFromString:@"0 2 2 1 0 0"];
             [tablature addChordFromString:@"0 0 2 2 2 0"];           
         }
@@ -44,7 +48,7 @@
 - (NSData *)dataOfType:(NSString *)typeName
                  error:(NSError **)outError
 {
-    NSString *tabText = [[self tablature] toSerialString];
+    NSString *tabText = [tablature toSerialString];
     NSLog(@"Saving doc with string: %@", tabText);
     NSData *data = [tabText dataUsingEncoding:NSUTF8StringEncoding];
     

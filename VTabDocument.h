@@ -15,10 +15,12 @@
 {
 	VTablature *tablature;
     NSNumber *baseFret;
+    NSNumber *soloMode;
     IBOutlet VTabController *controller;
 }
 
 @property (strong) VTablature *tablature;
 @property (strong) NSNumber *baseFret;
+@property (strong) NSNumber *soloMode;
 
 @end

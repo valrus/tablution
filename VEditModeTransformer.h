@@ -8,6 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@interface VEditModeTransformer : NSValueTransformer
+@interface VEditModeTransformer : NSValueTransformer {}
 
 @end

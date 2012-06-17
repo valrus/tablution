@@ -18,6 +18,7 @@
     // View stuff
     IBOutlet VTabView *tabView;
     IBOutlet NSTextField *currentFretField;
+    IBOutlet NSTextField *chordModeField;
     
     NSDictionary *keyBindings;
     
@@ -46,9 +47,11 @@
 
 - (void)insertChord:(VChord *)chord
             atIndex:(NSUInteger)index;
+- (void)removeChordAtIndex:(NSUInteger)index;
 
 - (void)incrementBaseFret;
 - (void)decrementBaseFret;
+- (void)toggleSoloMode;
 
 - (void)deleteFocusNote;
 - (bool)focusNextChord;
