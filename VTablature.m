@@ -131,36 +131,55 @@
           onString:(NSUInteger)stringNum
 {
     id chordAlready;
-    [self willChangeValueForKey:@"chords"];
+    VChord *newChord;
+    [self willChange:NSKeyValueChangeReplacement
+     valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
+              forKey:@"chords"];
+    [[chords objectAtIndex:index] removeObserver:self];
     if ((chordAlready = [chords objectAtIndex:index])) {
-        [chordAlready replaceObjectInNotesAtIndex:stringNum
-                                       withObject:note];
+        newChord = [VChord chordWithChord:chordAlready];
+        [newChord replaceObjectInNotesAtIndex:stringNum
+                                   withObject:note];
+        [chords replaceObjectAtIndex:index withObject:newChord];
     } else {
-        id newChord;
         newChord = [VChord chordWithStrings:numStrings
                                    withNote:note
                                    onString:stringNum];
         [chords replaceObjectAtIndex:index withObject:newChord];
     }
-    [self didChangeValueForKey:@"chords"];
+    [newChord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
+    [self didChange:NSKeyValueChangeReplacement
+    valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
+             forKey:@"chords"];
 }
 
 - (void)insertChordFromArray:(NSArray *)chordArray
                      atIndex:(NSUInteger)index
 {
-    [self insertObject:[VChord chordWithArray:chordArray]
-              inChordsAtIndex:index];
+    VChord *newChord = [VChord chordWithArray:chordArray];
+    [self insertObject:newChord
+       inChordsAtIndex:index];
+    [newChord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
 }
 
 - (void)insertObject:(VChord *)chord
      inChordsAtIndex:(NSUInteger)index
 {
     [chords insertObject:chord atIndex:index];
+    [chord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
+}
+
+- (void)insertChords:chordArray
+           atIndexes:indexes
+{
+    [chords insertObjects:chordArray atIndexes:indexes];
 }
 
 - (void)addChordFromArray:(NSArray *)chordArray
 {
-    [chords addObject:[VChord chordWithArray:chordArray]];
+    VChord *newChord = [VChord chordWithArray:chordArray];
+    [chords addObject:newChord];
+    [newChord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
 }
 
 - (void)addChordFromString:(NSString *)chordString
@@ -185,6 +204,10 @@
 - (void)removeObjectFromChordsAtIndex:(NSUInteger)index
 {
     if (index < [self countOfChords]) {
+        [chords removeObserver:self
+          fromObjectsAtIndexes:[NSIndexSet indexSetWithIndex:index]
+                    forKeyPath:@"notes"
+                       context:NULL];
         [chords removeObjectAtIndex:index];
     }
 }

@@ -27,6 +27,8 @@
 - (NSString *)stringValue;
 - (NSString *)stringValueOrDash;
 
+- (BOOL)isEqualToNote:(VNote *)otherNote;
+
 - (BOOL)hasFret;
 
 // - (VChord *)plusNoteOnString:(NSUInteger)stringNum

@@ -63,14 +63,24 @@
     return stringHeight;
 }
 
-- (void)drawFocusRectAtPoint:(NSPoint)origin
-                      ofSize:(NSSize)size
-                     inColor:(NSColor *)strokeColor
+- (void)drawFocusRectForChordAtPoint:(NSPoint)origin
+                             inColor:(NSColor *)strokeColor
 {
+    NSSize size;
+    CGFloat rectRadius;
+    if ([tabController isInSoloMode]) {
+        size = NSMakeSize(1.0, [self lineHeight]);
+        origin = NSMakePoint(origin.x + CHORD_SPACE - 1.0, origin.y);
+        rectRadius = 1.0;
+    }
+    else {
+        size = NSMakeSize(CHORD_SPACE, [self lineHeight]);
+        rectRadius = 3.0;
+    }
     NSRect focusRect = {origin, size};
     NSBezierPath *focusPath = [NSBezierPath bezierPathWithRoundedRect:focusRect
-                                                              xRadius:3.0
-                                                              yRadius:3.0];
+                                                              xRadius:rectRadius
+                                                              yRadius:rectRadius];
     [[strokeColor colorWithAlphaComponent:0.5] setStroke];
     [focusPath stroke];
 }
@@ -123,9 +133,8 @@
         }
         y = tabHeight;
         if (chord == [self focusChord]) {
-            [self drawFocusRectAtPoint:NSMakePoint(x, y)
-                                ofSize:NSMakeSize(CHORD_SPACE, [self lineHeight])
-                               inColor:selectionColor];
+            [self drawFocusRectForChordAtPoint:NSMakePoint(x, y)
+                                       inColor:selectionColor];
         }
         if (selectionStarted && (!inSelection || chord == [tablature lastChord])) {
             if ((inSelection) && (chord == [tablature lastChord])) {
@@ -201,6 +210,7 @@
         [self setFocusChordIndex:0];
         [self setFocusNoteString:0];
     }
+    [self setNeedsDisplay:YES];
     return;
 }
 
@@ -209,6 +219,23 @@
 - (BOOL)acceptsFirstResponder
 {
     return YES;
+}
+
+- (NSSet *)selectedChords
+{
+    return [selectionManager selectedItems];
+}
+
+- (void)selectChords:(NSArray *)chords
+{
+    [selectionManager selectItems:[NSSet setWithArray:chords]
+             byExtendingSelection:NO];
+}
+
+- (void)clearSelection
+{
+    [selectionManager selectItems:[NSSet set]
+             byExtendingSelection:NO];
 }
 
 - (VChord *)focusChord
@@ -410,15 +437,13 @@
 - (void)focusNextChord
 {
     focusChordIndex++;
-    [selectionManager selectItems:[NSSet setWithObject:[tablature objectInChordsAtIndex:focusChordIndex]]
-             byExtendingSelection:NO];
+    [self clearSelection];
 }
 
 - (void)focusPrevChord
 {
     focusChordIndex--;
-    [selectionManager selectItems:[NSSet setWithObject:[tablature objectInChordsAtIndex:focusChordIndex]]
-             byExtendingSelection:NO];
+    [self clearSelection];
 }
 
 - (void)focusUpString

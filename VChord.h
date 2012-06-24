@@ -17,6 +17,7 @@
 @property (readwrite, strong) NSDictionary *attrs;
 
 // construct
++ (VChord *)chordWithChord:(VChord *)oldChord;
 + (VChord *)chordWithArray:(NSArray *)fretArray;
 + (VChord *)chordWithStrings:(NSUInteger)numStrings
                     withNote:(VNote *)note
@@ -37,10 +38,11 @@
                    onString:(NSUInteger)string;
 
 // access
-- (VNote *)objectInNotesAtIndex:(NSUInteger)stringNum;
+- (VNote *)objectInNotesAtIndex:(NSInteger)stringNum;
 - (NSInteger)fretOnString:(NSUInteger)stringNum;
 - (bool)hasNoteOnString:(NSUInteger)stringNum;
 - (NSString *)asText;
+- (NSIndexSet *)indexesOfChangedNotesFrom:(VChord *)otherChord;
 
 // alter
 - (void)replaceObjectInNotesAtIndex:(NSUInteger)stringNum

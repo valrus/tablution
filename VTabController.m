@@ -44,8 +44,18 @@
     [tabView setTablature:[tabDoc tablature]];
     [self setTablature:[tabDoc tablature]];
     [self setupKeyBindings];
-    [tablature addObserver:self forKeyPath:@"chords" options:0 context:NULL];
-    [tabView setNeedsDisplay:YES];
+    [tablature addObserver:self
+                forKeyPath:@"chords" 
+                   options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
+                   context:NULL];
+}
+
+#pragma mark -
+#pragma mark Communication
+
+- (BOOL)isInSoloMode
+{
+    return [[tabDoc soloMode] boolValue];
 }
 
 #pragma mark -
@@ -85,7 +95,6 @@
             [[tabDoc undoManager] setActionName:NSLocalizedString(@"Add Solo Note", @"add solo note undo")];
             [tablature insertObject:newChord
                     inChordsAtIndex:[tabView focusChordIndex] + 1];
-            [tabView focusNextChord];
         }
         else {
             [self prepareUndoForChangeFromNote:[[tabView focusChord] objectInNotesAtIndex:stringNum]
@@ -102,17 +111,19 @@
             atIndex:(NSUInteger)index
 {
     [tablature insertObject:chord inChordsAtIndex:index];
-    if (index <= [tabView focusChordIndex]) {
-        [self focusNextChord];
-    }
+}
+
+- (void)insertAndSelectChords:(NSArray *)chordArray
+                    atIndexes:(NSIndexSet *)indexes
+{
+    [tablature insertChords:chordArray
+                  atIndexes:indexes];
+    [tabView selectChords:chordArray];
 }
 
 - (void)removeChordAtIndex:(NSUInteger)index
 {
     [tablature removeObjectFromChordsAtIndex:index];
-    if (index <= [tabView focusChordIndex]) {
-        [self focusPrevChord];
-    }
 }
 
 - (void)incrementBaseFret
@@ -135,6 +146,8 @@
 {
     BOOL currentMode = [[tabDoc soloMode] boolValue];
     [tabDoc setSoloMode:[NSNumber numberWithBool:!currentMode]];
+    [tabView clearSelection];
+    [tabView setFocusNoteString:NO_FRET];
 }
 
 - (void)advance
@@ -223,13 +236,25 @@
 - (IBAction)deleteBackward:(id)sender
 {
     if ([tabView focusChordIndex] > 0) {
-        [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
-         insertObject:[tablature objectInChordsAtIndex:[tabView focusChordIndex] - 1]
-         inChordsAtIndex:[tabView focusChordIndex] - 1];
-        [[tabDoc undoManager] setActionName:NSLocalizedString(@"Delete Chord", @"delete chord undo")];
-        [tablature removeObjectFromChordsAtIndex:[tabView focusChordIndex] - 1];
+        NSSet *selection = [tabView selectedChords];
+        if ([selection count] == 0) {
+            [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
+             insertObject:[tablature objectInChordsAtIndex:[tabView focusChordIndex]]
+             inChordsAtIndex:[tabView focusChordIndex]];
+            [[tabDoc undoManager] setActionName:NSLocalizedString(@"Delete Chord", @"delete chord undo")];
+            [tablature removeObjectFromChordsAtIndex:[tabView focusChordIndex]];           
+        }
+        else {
+            // XXX Change me
+            [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
+             insertObject:[tablature objectInChordsAtIndex:[tabView focusChordIndex]]
+             inChordsAtIndex:[tabView focusChordIndex]];
+            [[tabDoc undoManager] setActionName:NSLocalizedString(@"Delete Chord", @"delete chord undo")];
+            [tablature removeObjectFromChordsAtIndex:[tabView focusChordIndex]];           
+        }
     }
 }
+
 
 #pragma mark -
 #pragma mark KVO observing
@@ -243,17 +268,32 @@
     NSNumber *changeKindNumber = [change valueForKey:@"kind"];
     NSKeyValueChange changeKind = [changeKindNumber intValue];
     switch (changeKind) {
+        case NSKeyValueChangeReplacement: {
+            NSArray *oldChordArray = [change valueForKey:NSKeyValueChangeOldKey];
+            NSArray *newChordArray = [change valueForKey:NSKeyValueChangeNewKey];
+            if ([oldChordArray count] == 1 && [newChordArray count] == 1) {
+                VChord *oldChord = [oldChordArray objectAtIndex:0];
+                VChord *newChord = [newChordArray objectAtIndex:0];
+                NSIndexSet *changedNotesIndexes = [newChord indexesOfChangedNotesFrom:oldChord];
+                if ([changedNotesIndexes count] == 1) {
+                    [tabView setFocusNoteString:[changedNotesIndexes firstIndex]];
+                }               
+            }
+            break;
+        }
+            
         case NSKeyValueChangeInsertion: {
             NSIndexSet *indexes = [change valueForKey:@"indexes"];
-            NSUInteger indexesBeforeFocus = 
-                [indexes countOfIndexesInRange:NSMakeRange(0, [tabView focusChordIndex] + 1)];
+            NSUInteger indexForFocusAdjustment = [tabView focusChordIndex] + ([self isInSoloMode] ? 2 : 0);
+            NSUInteger indexesBeforeFocus = [indexes countOfIndexesInRange:NSMakeRange(0, indexForFocusAdjustment)];
             [tabView setFocusChordIndex:[tabView focusChordIndex] + indexesBeforeFocus];
             break;
         }
             
         case NSKeyValueChangeRemoval: {
             NSIndexSet *indexes = [change valueForKey:@"indexes"];
-            NSUInteger indexesBeforeFocus = [indexes countOfIndexesInRange:NSMakeRange(0, [tabView focusChordIndex])];
+            NSUInteger indexForFocusAdjustment = [tabView focusChordIndex] + ([self isInSoloMode] ? 1 : 0);
+            NSUInteger indexesBeforeFocus = [indexes countOfIndexesInRange:NSMakeRange(0, indexForFocusAdjustment)];
             [tabView setFocusChordIndex:[tabView focusChordIndex] - indexesBeforeFocus];
             break;
         }

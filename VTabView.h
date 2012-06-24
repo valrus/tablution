@@ -28,8 +28,11 @@
 
 - (BOOL)acceptsFirstResponder;
 
-- (VChord *)focusChord;
+- (NSSet *)selectedChords;
+- (void)selectChords:(NSArray *)chords;
+- (void)clearSelection;
 
+- (VChord *)focusChord;
 - (VNote *)focusNote;
 
 // Input handling

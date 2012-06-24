@@ -47,6 +47,8 @@
                      atIndex:(NSUInteger)index;
 - (void)insertObject:(VChord *)chord
      inChordsAtIndex:(NSUInteger)index;
+- (void)insertChords:chordArray
+           atIndexes:indexes;
 - (void)addChordFromArray:(NSArray *)chordArray;
 - (void)addChordFromString:(NSString *)chordString;
 - (void)deleteNoteAtIndex:(NSUInteger)index

@@ -36,6 +36,10 @@
 
 - (void)awakeFromNib;
 
+// Information
+
+- (BOOL)isInSoloMode;
+
 // Editing functions
 
 - (void)addOpenString:(NSNumber *)whichString
@@ -47,6 +51,8 @@
 
 - (void)insertChord:(VChord *)chord
             atIndex:(NSUInteger)index;
+- (void)insertAndSelectChords:(NSArray *)chordArray
+                    atIndexes:(NSIndexSet *)indexes;
 - (void)removeChordAtIndex:(NSUInteger)index;
 
 - (void)incrementBaseFret;

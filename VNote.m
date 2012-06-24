@@ -50,6 +50,18 @@
     }
 }
 
+- (BOOL)isEqualToNote:(VNote *)otherNote
+{
+    if ([self fret] != [otherNote fret]) {
+        return NO;
+    }
+    if (([self attrs] != nil && [otherNote attrs] != nil) &&
+        ![[self attrs] isEqualToDictionary:[otherNote attrs]]) {
+        return NO;
+    }
+    return YES;
+}
+
 - (BOOL)hasFret
 {
     return (fret != NO_FRET);

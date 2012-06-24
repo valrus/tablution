@@ -13,7 +13,16 @@
 @synthesize notes;
 @synthesize attrs;
 
-// construct
+#pragma mark -
+#pragma mark Constructors
+
++ (VChord *)chordWithChord:(VChord *)oldChord;
+{
+    VChord *newChord = [[self alloc] init];
+    [newChord setNotes:[oldChord notes] == nil ? nil : [NSMutableArray arrayWithArray:[oldChord notes]]];
+    [newChord setAttrs:[oldChord attrs] == nil ? nil : [NSMutableDictionary dictionaryWithDictionary:[oldChord attrs]]];
+    return newChord;
+}
 
 + (VChord *)chordWithArray:(NSArray *)fretArray
 {
@@ -54,7 +63,16 @@
     }
 }
 
-// init
+#pragma mark -
+#pragma mark Initializers
+
+- (VChord *)init
+{
+    self = [super init];
+    notes = nil;
+    attrs = nil;
+    return self;
+}
 
 - (VChord *)initWithArray:(NSArray *)fretArray
 {
@@ -104,10 +122,15 @@
                         onString:string];
 }
 
-// access
-- (VNote *)objectInNotesAtIndex:(NSUInteger)stringNum
+#pragma mark -
+#pragma mark Accessors
+
+- (VNote *)objectInNotesAtIndex:(NSInteger)stringNum
 {
-    assert(stringNum >= 0 && stringNum <= [[self notes] count]);
+    assert(stringNum == NO_FRET || (stringNum >= 0 && stringNum <= [[self notes] count]));
+    if (stringNum == NO_FRET) {
+        return nil;
+    }
     return [notes objectAtIndex:stringNum];
 }
 
@@ -126,7 +149,19 @@
     return [[notes valueForKey:@"stringValue"] componentsJoinedByString:@" "];
 }
 
-// modify
+- (NSIndexSet *)indexesOfChangedNotesFrom:(VChord *)otherChord
+{
+    NSUInteger stringCount = [[self notes] count];
+    assert(stringCount == [[otherChord notes] count]);
+    return [[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, stringCount)]
+            indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
+                return ![[self objectInNotesAtIndex:idx] isEqualToNote:[otherChord objectInNotesAtIndex:idx]];
+            }];
+}
+
+#pragma mark -
+#pragma mark Mutators
+
 - (void)replaceObjectInNotesAtIndex:(NSUInteger)stringNum
                          withObject:(VNote *)note;
 {
@@ -151,6 +186,9 @@
 {
     [self addFret:NO_FRET onString:stringNum];
 }
+
+#pragma mark -
+#pragma mark Fast iteration
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                   objects:(id __unsafe_unretained [])stackbuf
