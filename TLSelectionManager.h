@@ -25,6 +25,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+#define NO_HIT -1
 
 enum {
 	TLSelectionManagerModelAddition = 0,
@@ -36,24 +37,24 @@ typedef NSUInteger TLSelectionManagerModel;
 @private
 	id __unsafe_unretained delegate;
 	
-	NSSet* selectedItems;
+	NSIndexSet* selectedIndexes;
 	
 	TLSelectionManagerModel continuousSelectionModel;
-	NSSet* anchorItems;
-	NSSet* previousHitItems;
+	NSIndexSet* anchorIndexes;
+	NSIndexSet* previousHitIndexes;
 	
 	NSUInteger dragMode;
-	NSSet* selectionBeforeDrag;
+	NSIndexSet* selectionBeforeDrag;
 	NSEvent* mouseDownEvent;
-	NSSet* deferredDeselection;
+	NSIndexSet* deferredDeselection;
 }
 
 @property (nonatomic, unsafe_unretained) id delegate;
 
 @property (nonatomic, assign) TLSelectionManagerModel continuousSelectionModel;
 
-@property (nonatomic, copy) NSSet* selectedItems;
-- (void)selectItems:(NSSet*)items byExtendingSelection:(BOOL)shouldExtend;
+@property (nonatomic, copy) NSIndexSet* selectedIndexes;
+- (void)selectIndexes:(NSIndexSet*)indexes byExtendingSelection:(BOOL)shouldExtend;
 
 - (void)mouseDown:(NSEvent*)mouseEvent userInfo:(void*)userInfo;
 - (void)mouseDragged:(NSEvent*)mouseEvent userInfo:(void*)userInfo;
@@ -66,30 +67,30 @@ typedef NSUInteger TLSelectionManagerModel;
 
 - (void)selectionManagerDidChangeSelection:(TLSelectionManager*)manager;
 
-- (BOOL)selectionManagerShouldSelectMultipleItems:(TLSelectionManager*)manager
+- (BOOL)selectionManagerShouldSelectMultipleIndexes:(TLSelectionManager*)manager
 										withEvent:(NSEvent*)mouseDownEvent
 										 userInfo:(void*)userInfo;
 
 // may return nil
-- (id)selectionManager:(TLSelectionManager*)manager
-		itemUnderPoint:(NSPoint)windowPoint
-			  userInfo:(void*)userInfo;
+- (NSInteger)selectionManager:(TLSelectionManager*)manager
+              indexUnderPoint:(NSPoint)windowPoint
+                     userInfo:(void*)userInfo;
 
 // may return nil or an empty set
-- (NSSet*)selectionManager:(TLSelectionManager*)manager
-		allItemsUnderPoint:(NSPoint)windowPoint
-				  userInfo:(void*)userInfo;
+- (NSIndexSet*)selectionManager:(TLSelectionManager*)manager
+              indexesUnderPoint:(NSPoint)windowPoint
+                       userInfo:(void*)userInfo;
 
 
-- (NSSet*)selectionManager:(TLSelectionManager*)manager
-		 itemsBetweenItems:(NSSet*)items1
-				  andItems:(NSSet*)items2
-				  userInfo:(void*)userInfo;
+- (NSIndexSet*)selectionManager:(TLSelectionManager*)manager
+          indexesBetweenIndexes:(NSIndexSet*)indexes1
+                     andIndexes:(NSIndexSet*)indexes2
+                       userInfo:(void*)userInfo;
 
 
-- (NSSet*)selectionManager:(TLSelectionManager*)manager
-				itemsInBox:(NSRect)windowRect
-				  userInfo:(void*)userInfo;
+- (NSIndexSet*)selectionManager:(TLSelectionManager*)manager
+                   indexesInBox:(NSRect)windowRect
+                       userInfo:(void*)userInfo;
 
 
 - (BOOL)selectionManagerShouldInitiateDragLater:(TLSelectionManager*)manager

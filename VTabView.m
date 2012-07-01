@@ -111,8 +111,10 @@
     bool selectionStarted = NO;
     bool inSelection = NO;
     for (chordNum = firstChord; chordNum < firstChord + numChords; ++chordNum) {
+        /// XXX
         VChord *chord = [tablature objectInChordsAtIndex:chordNum];
-        inSelection = [[selectionManager selectedItems] containsObject:chord];
+        inSelection = [[selectionManager selectedIndexes] containsIndex:chordNum];
+        ///
         if (inSelection && !selectionStarted) {
             selectRect.origin = NSMakePoint(x, y);
             selectionStarted = YES;
@@ -205,8 +207,10 @@
     [tabController setNextResponder:[self nextResponder]];
     [self setNextResponder:tabController];
     if ([tablature countOfChords] >= 1) {
-        [selectionManager selectItems:[NSSet setWithObject:[tablature objectInChordsAtIndex:0]]
-                 byExtendingSelection:NO];
+        // XXX
+        [selectionManager selectIndexes:[NSIndexSet indexSetWithIndex:0]
+                   byExtendingSelection:NO];
+        //
         [self setFocusChordIndex:0];
         [self setFocusNoteString:0];
     }
@@ -221,21 +225,21 @@
     return YES;
 }
 
-- (NSSet *)selectedChords
+- (NSIndexSet *)selectedIndexes
 {
-    return [selectionManager selectedItems];
+    return [selectionManager selectedIndexes];
 }
 
-- (void)selectChords:(NSArray *)chords
+- (void)selectIndexes:(NSIndexSet *)indexes
 {
-    [selectionManager selectItems:[NSSet setWithArray:chords]
-             byExtendingSelection:NO];
+    [selectionManager selectIndexes:indexes
+               byExtendingSelection:NO];
 }
 
 - (void)clearSelection
 {
-    [selectionManager selectItems:[NSSet set]
-             byExtendingSelection:NO];
+    [selectionManager selectIndexes:[NSIndexSet indexSet]
+               byExtendingSelection:NO];
 }
 
 - (VChord *)focusChord
@@ -262,7 +266,7 @@
 {
     NSInteger chordIndex = [self chordIndexAtPoint:thePoint];
     if (([tablature countOfChords] > chordIndex) &&
-        (chordIndex != -1)) {
+        (chordIndex != NO_HIT)) {
         return [tablature objectInChordsAtIndex:chordIndex];
     } else {
         return nil;    
@@ -276,7 +280,7 @@
     // number of full lines of tab above click location
     NSUInteger skipLines = (int)(y / ([self lineHeight] + LINE_SPACE));
     if (fmod(y, skipLines) > [self lineHeight]) {
-        return -1;
+        return NO_HIT;
     }
     else {
         NSUInteger skipChords = (int)(x / CHORD_SPACE);
@@ -308,12 +312,12 @@
 #pragma mark -
 #pragma mark TLSelectionList delegate method
 
-- (id)selectionManager:(TLSelectionManager*)manager
-        itemUnderPoint:(NSPoint)windowPoint
-              userInfo:(void*)userInfo
+- (NSUInteger)selectionManager:(TLSelectionManager*)manager
+               indexUnderPoint:(NSPoint)windowPoint
+                      userInfo:(void*)userInfo
 {
-    return [self chordAtPoint:[self convertPoint:windowPoint
-                                        fromView:nil]];
+    return [self chordIndexAtPoint:[self convertPoint:windowPoint
+                                             fromView:nil]];
 }
 
 //- (BOOL)selectionManagerShouldInitiateDragLater:(TLSelectionManager*)manager
@@ -324,9 +328,9 @@
 //    return YES;
 //}
 
-- (NSSet*)selectionManager:(TLSelectionManager*)manager
-				itemsInBox:(NSRect)windowRect
-				  userInfo:(void*)userInfo
+- (NSIndexSet *)selectionManager:(TLSelectionManager*)manager
+                    indexesInBox:(NSRect)windowRect
+                        userInfo:(void*)userInfo
 {
     NSRect viewRect = [self convertRect:windowRect
                                fromView:nil];
@@ -341,10 +345,7 @@
         endIndex = [tablature countOfChords] - 1;
     }
     
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(startIndex,
-                                                                              endIndex - startIndex + 1)];
-    
-    return [NSSet setWithArray:[tablature chordsAtIndexes:indexSet]];
+    return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(startIndex, endIndex - startIndex + 1)];
 }
 
 - (BOOL)shouldResetExistingSelection {

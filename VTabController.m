@@ -11,6 +11,7 @@
 #import "VTablature.h"
 #import "VTabView.h"
 #import "VNote.h"
+#import "HandyTools.h"
 
 #define MAX_FRET 22
 
@@ -118,7 +119,7 @@
 {
     [tablature insertChords:chordArray
                   atIndexes:indexes];
-    [tabView selectChords:chordArray];
+    [tabView selectIndexes:indexes];
 }
 
 - (void)removeChordAtIndex:(NSUInteger)index
@@ -236,8 +237,8 @@
 - (IBAction)deleteBackward:(id)sender
 {
     if ([tabView focusChordIndex] > 0) {
-        NSSet *selection = [tabView selectedChords];
-        if ([selection count] == 0) {
+        NSIndexSet *selectedIndexes = [tabView selectedIndexes];
+        if (IsEmpty(selectedIndexes)) {
             [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
              insertObject:[tablature objectInChordsAtIndex:[tabView focusChordIndex]]
              inChordsAtIndex:[tabView focusChordIndex]];
@@ -245,16 +246,16 @@
             [tablature removeObjectFromChordsAtIndex:[tabView focusChordIndex]];           
         }
         else {
-            // XXX Change me
-            [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
-             insertObject:[tablature objectInChordsAtIndex:[tabView focusChordIndex]]
-             inChordsAtIndex:[tabView focusChordIndex]];
-            [[tabDoc undoManager] setActionName:NSLocalizedString(@"Delete Chord", @"delete chord undo")];
-            [tablature removeObjectFromChordsAtIndex:[tabView focusChordIndex]];           
+            // Implement objectsInChordsAtIndexes
+            [[[tabDoc undoManager] prepareWithInvocationTarget:self]
+             insertAndSelectChords:[tablature chordsAtIndexes:selectedIndexes]
+             atIndexes:selectedIndexes];
+            [[tabDoc undoManager] setActionName:NSLocalizedString(@"Delete Selection", @"delete selection undo")];
+            [tablature removeChordsAtIndexes:selectedIndexes];
+            [tabView clearSelection];
         }
     }
 }
-
 
 #pragma mark -
 #pragma mark KVO observing

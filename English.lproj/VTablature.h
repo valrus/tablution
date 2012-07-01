@@ -32,7 +32,7 @@
 - (NSInteger)fretAtIndex:(NSUInteger)index
                 onString:(NSUInteger)stringNum;
 - (id)objectInChordsAtIndex:(NSUInteger)index;
-- (NSArray *)chordsAtIndexes:(NSIndexSet *)indexSet;
+- (NSArray *)chordsAtIndexes:(NSIndexSet *)indexes;
 - (VChord *)lastChord;
 - (NSUInteger)countOfChords;
 
@@ -54,6 +54,7 @@
 - (void)deleteNoteAtIndex:(NSUInteger)index
                  onString:(NSUInteger)stringNum;
 - (void)removeObjectFromChordsAtIndex:(NSUInteger)index;
+- (void)removeChordsAtIndexes:(NSIndexSet *)indexes;
 - (void)extend;
 
 // convert tab data to text

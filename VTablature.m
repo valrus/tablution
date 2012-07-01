@@ -17,6 +17,9 @@
 @synthesize chords;
 @synthesize numStrings;
 
+#pragma mark -
+#pragma mark Init and setup
+
 - (id)initWithStrings:(NSUInteger)num
 {
     // Returns an initialized VTablature.
@@ -36,14 +39,6 @@
     return [self initWithStrings:numStrings];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
-{
-    NSLog(@"VTablature sees a change in a chord's %@!", keyPath);
-}
-
 + (VTablature *)tablatureWithString:(NSString *)tabText
 {
     VTablature *newTab = [[VTablature alloc] init];
@@ -59,38 +54,16 @@
     return newTab;
 }
 
-- (NSArray *)asArrayOfStrings
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
 {
-    return [chords valueForKey:@"asText"];
+    NSLog(@"VTablature sees a change in a chord's %@!", keyPath);
 }
 
-- (NSString *)asText
-{
-    // FIXME: stub
-    return @"";
-}
-
-- (VNote *)noteAtIndex:(NSUInteger)index
-              onString:(NSUInteger)stringNum
-{
-    VChord *soughtChord;
-    if ((soughtChord = [chords objectAtIndex:index])) {
-        return [soughtChord objectInNotesAtIndex:stringNum];
-    } else {
-        return nil;
-    }
-}
-
-- (NSInteger)fretAtIndex:(NSUInteger)index
-                onString:(NSUInteger)stringNum
-{
-    VNote *soughtNote;
-    if ((soughtNote = [self noteAtIndex:index onString:stringNum])) {
-        return [soughtNote fret];
-    } else {
-        return -1;
-    }
-}
+#pragma mark -
+#pragma mark KVC-compliant accessors
 
 - (id)objectInChordsAtIndex:(NSUInteger)index
 {
@@ -107,59 +80,9 @@
     return [chords objectsAtIndexes:indexSet];
 }
 
-- (VChord *)lastChord
-{
-    return [self objectInChordsAtIndex:[self countOfChords] - 1];
-}
-
 - (NSUInteger)countOfChords
 {
     return [chords count]; 
-}
-
-- (void)insertNoteAtIndex:(NSUInteger)index
-                 onString:(NSUInteger)stringNum
-                   onFret:(NSUInteger)fretNum
-{
-    [self insertNote:[VNote noteAtFret:fretNum]
-             atIndex:index
-            onString:stringNum];
-}
-
-- (void)insertNote:(VNote *)note
-           atIndex:(NSUInteger)index
-          onString:(NSUInteger)stringNum
-{
-    id chordAlready;
-    VChord *newChord;
-    [self willChange:NSKeyValueChangeReplacement
-     valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
-              forKey:@"chords"];
-    [[chords objectAtIndex:index] removeObserver:self];
-    if ((chordAlready = [chords objectAtIndex:index])) {
-        newChord = [VChord chordWithChord:chordAlready];
-        [newChord replaceObjectInNotesAtIndex:stringNum
-                                   withObject:note];
-        [chords replaceObjectAtIndex:index withObject:newChord];
-    } else {
-        newChord = [VChord chordWithStrings:numStrings
-                                   withNote:note
-                                   onString:stringNum];
-        [chords replaceObjectAtIndex:index withObject:newChord];
-    }
-    [newChord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
-    [self didChange:NSKeyValueChangeReplacement
-    valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
-             forKey:@"chords"];
-}
-
-- (void)insertChordFromArray:(NSArray *)chordArray
-                     atIndex:(NSUInteger)index
-{
-    VChord *newChord = [VChord chordWithArray:chordArray];
-    [self insertObject:newChord
-       inChordsAtIndex:index];
-    [newChord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
 }
 
 - (void)insertObject:(VChord *)chord
@@ -212,10 +135,98 @@
     }
 }
 
+- (void)removeChordsAtIndexes:(NSIndexSet *)indexes
+{
+    [chords removeObjectsAtIndexes:indexes];
+}
+
+#pragma mark -
+#pragma mark Other accessors
+
+- (VChord *)lastChord
+{
+    return [self objectInChordsAtIndex:[self countOfChords] - 1];
+}
+
+- (VNote *)noteAtIndex:(NSUInteger)index
+              onString:(NSUInteger)stringNum
+{
+    VChord *soughtChord;
+    if ((soughtChord = [chords objectAtIndex:index])) {
+        return [soughtChord objectInNotesAtIndex:stringNum];
+    } else {
+        return nil;
+    }
+}
+
+- (NSInteger)fretAtIndex:(NSUInteger)index
+                onString:(NSUInteger)stringNum
+{
+    VNote *soughtNote;
+    if ((soughtNote = [self noteAtIndex:index onString:stringNum])) {
+        return [soughtNote fret];
+    } else {
+        return -1;
+    }
+}
+
+#pragma mark Tab-level mutators
+
 - (void)extend
 {
     [self addChordFromString:@"-1 -1 -1 -1 -1 -1"];
 }
+
+#pragma mark Note-level mutators
+
+- (void)insertNoteAtIndex:(NSUInteger)index
+                 onString:(NSUInteger)stringNum
+                   onFret:(NSUInteger)fretNum
+{
+    [self insertNote:[VNote noteAtFret:fretNum]
+             atIndex:index
+            onString:stringNum];
+}
+
+- (void)insertNote:(VNote *)note
+           atIndex:(NSUInteger)index
+          onString:(NSUInteger)stringNum
+{
+    id chordAlready;
+    VChord *newChord;
+    [self willChange:NSKeyValueChangeReplacement
+     valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
+              forKey:@"chords"];
+    [[chords objectAtIndex:index] removeObserver:self];
+    if ((chordAlready = [chords objectAtIndex:index])) {
+        newChord = [VChord chordWithChord:chordAlready];
+        [newChord replaceObjectInNotesAtIndex:stringNum
+                                   withObject:note];
+        [chords replaceObjectAtIndex:index withObject:newChord];
+    }
+    else {
+        newChord = [VChord chordWithStrings:numStrings
+                                   withNote:note
+                                   onString:stringNum];
+        [chords replaceObjectAtIndex:index withObject:newChord];
+    }
+    [newChord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
+    [self didChange:NSKeyValueChangeReplacement
+    valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
+             forKey:@"chords"];
+}
+
+- (void)insertChordFromArray:(NSArray *)chordArray
+                     atIndex:(NSUInteger)index
+{
+    VChord *newChord = [VChord chordWithArray:chordArray];
+    [self insertObject:newChord
+       inChordsAtIndex:index];
+    [newChord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
+}
+
+#pragma mark -
+#pragma mark Converting to strings
 
 + (NSString *)getNoteTextForString:(NSString *)fretText
 {
@@ -236,6 +247,20 @@
 {
     return [[self asArrayOfStrings] componentsJoinedByString:@"\n"];
 }
+
+- (NSArray *)asArrayOfStrings
+{
+    return [chords valueForKey:@"asText"];
+}
+
+- (NSString *)asText
+{
+    // FIXME: stub
+    return @"";
+}
+
+#pragma mark -
+#pragma mark NSFastEnumeration protocol
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                   objects:(id __unsafe_unretained [])stackbuf

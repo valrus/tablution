@@ -24,7 +24,7 @@
  */
 
 #import "TLSelectionManager.h"
-
+#import "NSIndexSet+SetOperations.h"
 
 #define TLBooleanCast !!
 static inline CGFloat TLPointDistance(NSPoint a, NSPoint b);
@@ -32,16 +32,16 @@ static inline CGFloat TLPointDistance(NSPoint a, NSPoint b);
 
 static const NSUInteger TLSMContinuousSelectionMask = NSShiftKeyMask;
 static const NSUInteger TLSMDiscontinuousSelectionMask = NSCommandKeyMask;
-static const NSUInteger TLSMClickMultipleItemsMask = NSAlternateKeyMask;
+static const NSUInteger TLSMClickMultipleIndexesMask = NSAlternateKeyMask;
 
 
 @interface TLSelectionManager ()
-- (void)deselectItems:(NSSet*)unwantedItems;
+- (void)deselectIndexes:(NSIndexSet*)unwantedIndexes;
 @property (nonatomic, strong) NSEvent* mouseDownEvent;
-@property (nonatomic, copy) NSSet* deferredDeselection;
-@property (nonatomic, copy) NSSet* anchorItems;
-@property (nonatomic, copy) NSSet* previousHitItems;
-@property (nonatomic, copy) NSSet* selectionBeforeDrag;
+@property (nonatomic, copy) NSIndexSet* deferredDeselection;
+@property (nonatomic, copy) NSIndexSet* anchorIndexes;
+@property (nonatomic, copy) NSIndexSet* previousHitIndexes;
+@property (nonatomic, copy) NSIndexSet* selectionBeforeDrag;
 - (CGFloat)dragThreshold;
 - (BOOL)shouldResetExistingSelection;
 @end
@@ -74,38 +74,38 @@ typedef NSUInteger TLSMDragMode;
 
 @synthesize delegate;
 @synthesize continuousSelectionModel;
-@synthesize selectedItems;
+@synthesize selectedIndexes;
 @synthesize mouseDownEvent;
 @synthesize deferredDeselection;
-@synthesize anchorItems;
-@synthesize previousHitItems;
+@synthesize anchorIndexes;
+@synthesize previousHitIndexes;
 @synthesize selectionBeforeDrag;
 
-- (void)setSelectedItems:(NSSet*)newSelectedItems {
-	if (!selectedItems && !newSelectedItems) return;
-	else if ([selectedItems isEqualToSet:newSelectedItems]) return;
-	selectedItems = [newSelectedItems copy];
+- (void)setSelectedIndexes:(NSIndexSet*)newSelectedIndexes {
+	if ((!selectedIndexes && !newSelectedIndexes) ||
+        ([selectedIndexes isEqualToIndexSet:newSelectedIndexes])) {
+        return;
+    }
+	selectedIndexes = [newSelectedIndexes copy];
 	if ([[self delegate] respondsToSelector:@selector(selectionManagerDidChangeSelection:)]) {
 		[[self delegate] selectionManagerDidChangeSelection:self];
 	}
 }
 
-- (void)selectItems:(NSSet*)items byExtendingSelection:(BOOL)shouldExtend {
-	if (shouldExtend && [self selectedItems]) {
-		NSSet* extendedSelection = [[self selectedItems] setByAddingObjectsFromSet:items];
-		[self setSelectedItems:extendedSelection];
+- (void)selectIndexes:(NSIndexSet*)indexes byExtendingSelection:(BOOL)shouldExtend {
+	if (shouldExtend && [self selectedIndexes]) {
+		[self setSelectedIndexes:[[self selectedIndexes] indexSetByAddingIndexes:indexes]];
 	}
 	else {
-		[self setSelectedItems:items];
+		[self setSelectedIndexes:indexes];
 	}
 }
 
-- (void)deselectItems:(NSSet*)unwantedItems {
-	NSSet* previousSelection = [self selectedItems];
+- (void)deselectIndexes:(NSIndexSet*)unwantedIndexes {
+	NSIndexSet* previousSelection = [self selectedIndexes];
 	if (!previousSelection) return;
-	NSMutableSet* newSelection = [NSMutableSet setWithSet:previousSelection];
-	[newSelection minusSet:unwantedItems];
-	[self setSelectedItems:newSelection];
+	NSMutableIndexSet* newSelection = [previousSelection indexSetByRemovingIndexes:unwantedIndexes];
+	[self setSelectedIndexes:newSelection];
 }
 
 - (CGFloat)dragThreshold {
@@ -121,92 +121,94 @@ typedef NSUInteger TLSMDragMode;
 
 #pragma mark Mouse handling
 
-- (NSSet*)continuousSelectionBasedOnHitItems:(NSSet*)hitItems userInfo:(void*)userInfo {
+- (NSIndexSet*)continuousSelectionBasedOnHitIndexes:(NSIndexSet*)hitIndexes userInfo:(void*)userInfo {
 	/*
 	 Continous selection seems to be the least consistently implemented selection method amongst all of AppKit's views.
 	 There are two basic models: "fixed-point" and "addition". Fixed-point anchors the selection at the last "normally"
-	 selected items and all continuous selection is between those items and the new items. Addition either "adds on" or
+	 selected indexes and all continuous selection is between those indexes and the new indexes. Addition either "adds on" or
 	 it "chops off" (as little as possible).
 	 
 	 (See http://developer.apple.com/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGUserInput/chapter_12_section_4.html
 	 #//apple_ref/doc/uid/TP30000361-TPXREF24 as well as http://daringfireball.net/2006/08/highly_selective for other discussion.)
 	 
-	 As far as implementation, there are three pertinent item sets:
-	 - anchorItems
-	 - previousHitItems
-	 - hitItems (i.e. the current ones)
+	 As far as implementation, there are three pertinent index sets:
+	 - anchorIndexes
+	 - previousHitIndexes
+	 - hitIndexes (i.e. the current ones)
 	 
-	 The current hitItems should be always be recorded in previousHitItems. In any non-continous selection,
-	 the anchorItems are set to nil which signals they are the same as previousHitItems. 
+	 The current hitIndexes should be always be recorded in previousHitIndexes. In any non-continous selection,
+	 the anchorIndexes are set to nil which signals they are the same as previousHitIndexes. 
 	 
-	 If in "fixed-point" mode, the anchorItems are not updated except when nil.
-	 If in "addition" mode, the current anchorItems and previousHitItems compete. Whichever yields the largest
-	 selection vis-a-vis the current hitItems gets set as the anchorItems. Then in either continuous selection mode,
-	 the new selection includes the hitItems, the achorItems and everything in between.
+	 If in "fixed-point" mode, the anchorIndexes are not updated except when nil.
+	 If in "addition" mode, the current anchorIndexes and previousHitIndexes compete. Whichever yields the largest
+	 selection vis-a-vis the current hitIndexes gets set as the anchorIndexes. Then in either continuous selection mode,
+	 the new selection includes the hitIndexes, the achorIndexes and everything in between.
 	 */
 	
 	// check to make sure we have enough information
-	NSAssert([delegate respondsToSelector:@selector(selectionManager:itemsBetweenItems:andItems:userInfo:)],
+	NSAssert([delegate respondsToSelector:@selector(selectionManager:indexesBetweenIndexes:andIndexes:userInfo:)],
 			 @"Caller must verify continuous selection delegate support");
 	BOOL anchorAndPreviousSame = NO;
-	if (![[self previousHitItems] count]) {
-		NSAssert(![self anchorItems], @"Selection anchor items left in unkempt state");
-		return hitItems;
+	if (![[self previousHitIndexes] count]) {
+		NSAssert(![self anchorIndexes], @"Selection anchor indexes left in unkempt state");
+		return hitIndexes;
 	}
-	if (![[self anchorItems] count]) {
-		[self setAnchorItems:[self previousHitItems]];
+	if (![[self anchorIndexes] count]) {
+		[self setAnchorIndexes:[self previousHitIndexes]];
 		anchorAndPreviousSame = YES;
 	}
 	
-	NSSet* itemsBetween = nil;
+	NSIndexSet* indexesBetween = nil;
 	if (anchorAndPreviousSame || [self continuousSelectionModel] == TLSelectionManagerModelFixedPoint) {
-		itemsBetween = [delegate selectionManager:self
-								itemsBetweenItems:[self anchorItems]
-										 andItems:hitItems
+		indexesBetween = [delegate selectionManager:self
+								indexesBetweenIndexes:[self anchorIndexes]
+										 andIndexes:hitIndexes
 										 userInfo:userInfo];
 	}
 	else {	// assume ([self continuousSelectionModel] == TLSelectionManagerModelAddition)
-		NSSet* anchorResult = [delegate selectionManager:self
-									   itemsBetweenItems:[self anchorItems]
-												andItems:hitItems
+		NSIndexSet* anchorResult = [delegate selectionManager:self
+									   indexesBetweenIndexes:[self anchorIndexes]
+												andIndexes:hitIndexes
 												userInfo:userInfo];
-		NSSet* previousResult = [delegate selectionManager:self
-										 itemsBetweenItems:[self previousHitItems]
-												  andItems:hitItems
+		NSIndexSet* previousResult = [delegate selectionManager:self
+										 indexesBetweenIndexes:[self previousHitIndexes]
+												  andIndexes:hitIndexes
 												  userInfo:userInfo];
 		if ([previousResult count] > [anchorResult count]) {
-			[self setAnchorItems:[self previousHitItems]];
-			itemsBetween = previousResult;
+			[self setAnchorIndexes:[self previousHitIndexes]];
+			indexesBetween = previousResult;
 		}
 		else {
-			itemsBetween = anchorResult;
+			indexesBetween = anchorResult;
 		}
 	}
 	
-	NSMutableSet* allItems = [NSMutableSet setWithSet:itemsBetween];
-	[allItems unionSet:hitItems];
-	[allItems unionSet:[self anchorItems]];
-	return allItems;
+	NSMutableIndexSet* allIndexes = [[NSMutableIndexSet alloc] initWithIndexSet:indexesBetween];
+	[allIndexes addIndexes:hitIndexes];
+	[allIndexes addIndexes:[self anchorIndexes]];
+	return allIndexes;
 }
 
 - (void)mouseDown:(NSEvent*)mouseEvent userInfo:(void*)userInfo {
 	[self setMouseDownEvent:mouseEvent];
 	
-	// see if multiple items should be requested from delegate
-	BOOL attemptMultiple = TLBooleanCast([mouseEvent modifierFlags] & TLSMClickMultipleItemsMask);
-	if ([delegate respondsToSelector:@selector(selectionManagerShouldSelectMultipleItems:withEvent:userInfo:)]) {
-		attemptMultiple = [delegate selectionManagerShouldSelectMultipleItems:self withEvent:mouseEvent userInfo:userInfo];
+	// see if multiple indexes should be requested from delegate
+	BOOL attemptMultiple = TLBooleanCast([mouseEvent modifierFlags] & TLSMClickMultipleIndexesMask);
+	if ([delegate respondsToSelector:@selector(selectionManagerShouldSelectMultipleIndexes:withEvent:userInfo:)]) {
+		attemptMultiple = [delegate selectionManagerShouldSelectMultipleIndexes:self withEvent:mouseEvent userInfo:userInfo];
 	}
 	
-	// get hit item(s)
-	NSSet* hitItems = nil;
+	// get hit index(s)
+	NSIndexSet* hitIndexes = nil;
 	NSPoint windowPoint = [mouseEvent locationInWindow];
-	if (attemptMultiple && [delegate respondsToSelector:@selector(selectionManager:allItemsUnderPoint:userInfo:)]) {
-		hitItems = [delegate selectionManager:self allItemsUnderPoint:windowPoint userInfo:userInfo];
+	if (attemptMultiple && [delegate respondsToSelector:@selector(selectionManager:allIndexesUnderPoint:userInfo:)]) {
+		hitIndexes = [delegate selectionManager:self indexesUnderPoint:windowPoint userInfo:userInfo];
 	}
-	else if ([delegate respondsToSelector:@selector(selectionManager:itemUnderPoint:userInfo:)]) {
-		id hitItem = [delegate selectionManager:self itemUnderPoint:windowPoint userInfo:userInfo];
-		if (hitItem) hitItems = [NSSet setWithObject:hitItem];
+	else if ([delegate respondsToSelector:@selector(selectionManager:indexUnderPoint:userInfo:)]) {
+		NSInteger hitIndex = [delegate selectionManager:self indexUnderPoint:windowPoint userInfo:userInfo];
+		if (hitIndex != NO_HIT) {
+            hitIndexes = [NSIndexSet indexSetWithIndex:hitIndex];
+        }
 	}
 	
 	BOOL isContinuousSelection = TLBooleanCast([mouseEvent modifierFlags] & TLSMContinuousSelectionMask);
@@ -215,7 +217,7 @@ typedef NSUInteger TLSMDragMode;
 		// discontinuous overrides continuous
 		isContinuousSelection = NO;
 	}
-	if (isContinuousSelection && ![delegate respondsToSelector:@selector(selectionManager:itemsBetweenItems:andItems:userInfo:)]) {
+	if (isContinuousSelection && ![delegate respondsToSelector:@selector(selectionManager:indexesBetweenIndexes:andIndexes:userInfo:)]) {
 		// treat as discontinuous if delegate doesn't provide support for continuous selection
 		isContinuousSelection = NO;
 		isDiscontinuousSelection = YES;
@@ -225,51 +227,49 @@ typedef NSUInteger TLSMDragMode;
 	 This is not how table views do it, but it is how column views work.
 	 Outline views never seem to clear their selection. */
 	BOOL keepSelection = TLBooleanCast(isDiscontinuousSelection || isContinuousSelection);
-    BOOL itemsWereAlreadySelected = [[self selectedItems] intersectsSet:hitItems];
+    BOOL indexesWereAlreadySelected = [[self selectedIndexes] intersectsIndexes:hitIndexes];
 
-	if ([hitItems count]) {
+	if ([hitIndexes count]) {
 		/* Unless a brand new selection is being started, we deselect on mouse *up*.
 		 Unlike column views, outline and table views don't defer deselection, but that seems broken. */
-		if (itemsWereAlreadySelected) {
+		if (indexesWereAlreadySelected) {
 			if (isContinuousSelection) {
-				NSSet* resultingSelection = [self continuousSelectionBasedOnHitItems:hitItems userInfo:userInfo];
-				NSMutableSet* unselectedItems = [NSMutableSet setWithSet:[self selectedItems]];
-				[unselectedItems minusSet:resultingSelection];
-				[self setDeferredDeselection:unselectedItems];
+				NSIndexSet* resultingSelection = [self continuousSelectionBasedOnHitIndexes:hitIndexes userInfo:userInfo];
+				NSIndexSet* unselectedIndexes = [[self selectedIndexes] indexSetByRemovingIndexes:resultingSelection];
+				[self setDeferredDeselection:unselectedIndexes];
 			}
 			if (isDiscontinuousSelection) {
-				[self setDeferredDeselection:hitItems];
+				[self setDeferredDeselection:hitIndexes];
 			}
 			else {
 				if ([self shouldResetExistingSelection]) {
-					NSMutableSet* missedItems = [NSMutableSet setWithSet:[self selectedItems]];
-					[missedItems minusSet:hitItems];
-					[self setDeferredDeselection:missedItems];
+					NSIndexSet* missedIndexes = [[self selectedIndexes] indexSetByRemovingIndexes:hitIndexes];
+					[self setDeferredDeselection:missedIndexes];
 				}
 			}
 		}
 		else {
 			if (isContinuousSelection) {
-				NSSet* resultingSelection = [self continuousSelectionBasedOnHitItems:hitItems userInfo:userInfo];
-				[self selectItems:resultingSelection byExtendingSelection:NO];
+				NSIndexSet* resultingSelection = [self continuousSelectionBasedOnHitIndexes:hitIndexes userInfo:userInfo];
+				[self selectIndexes:resultingSelection byExtendingSelection:NO];
 			}
 			else if (isDiscontinuousSelection) {
-				[self selectItems:hitItems byExtendingSelection:YES];
+				[self selectIndexes:hitIndexes byExtendingSelection:YES];
 			}
 			else {
-				[self selectItems:hitItems byExtendingSelection:NO];
+				[self selectIndexes:hitIndexes byExtendingSelection:NO];
 			}
 		}
 		dragMode = TLSMDragModeAttemptDrag;
-		[self setPreviousHitItems:hitItems];
-		if (!isContinuousSelection) [self setAnchorItems:nil];
+		[self setPreviousHitIndexes:hitIndexes];
+		if (!isContinuousSelection) [self setAnchorIndexes:nil];
 	}
     else if (!keepSelection) {
-        [self setSelectedItems:nil];
-        [self setPreviousHitItems:nil];
-        [self setAnchorItems:nil];
+        [self setSelectedIndexes:nil];
+        [self setPreviousHitIndexes:nil];
+        [self setAnchorIndexes:nil];
     }
-	if (!itemsWereAlreadySelected) {
+	if (!indexesWereAlreadySelected) {
 		if ([mouseEvent modifierFlags] & NSCommandKeyMask) {
 			dragMode = TLSMDragModeFlipSelection;
 		}
@@ -279,10 +279,10 @@ typedef NSUInteger TLSMDragMode;
 	}
 }
 
-- (void)mouseDraggedItems:(NSEvent*)dragEvent userInfo:(void*)userInfo {
+- (void)mouseDraggedIndexes:(NSEvent*)dragEvent userInfo:(void*)userInfo {
 	NSEvent* downEvent = [self mouseDownEvent];
 	
-	if (![[self selectedItems] count]) return;
+	if (![[self selectedIndexes] count]) return;
 	
 	CGFloat dragDistance = TLPointDistance([dragEvent locationInWindow], [downEvent locationInWindow]);
 	if (dragDistance < [self dragThreshold]) return;
@@ -305,10 +305,10 @@ typedef NSUInteger TLSMDragMode;
 - (void)mouseDraggedSelection:(NSEvent*)dragEvent userInfo:(void*)userInfo {
 	(void)userInfo;
 	
-	NSSet* originalSelection = [self selectionBeforeDrag];
+	NSIndexSet* originalSelection = [self selectionBeforeDrag];
 	if (!originalSelection) {
 		// remember original selection at beginning of drag
-		originalSelection = [self selectedItems] ? [self selectedItems] : [NSSet set];
+		originalSelection = [self selectedIndexes] ? [self selectedIndexes] : [NSIndexSet indexSet];
 		[self setSelectionBeforeDrag:originalSelection];
 	}
 	
@@ -319,27 +319,25 @@ typedef NSUInteger TLSMDragMode;
 									 (CGFloat)fabs(point2.x - point1.x),
 									 (CGFloat)fabs(point2.y - point1.y));
 	
-	NSSet* itemsInBox = nil;
-	if ([[self delegate] respondsToSelector:@selector(selectionManager:itemsInBox:userInfo:)]) {
-		itemsInBox = [[self delegate] selectionManager:self itemsInBox:selectionBox userInfo:userInfo];
+	NSIndexSet* indexesInBox = nil;
+	if ([[self delegate] respondsToSelector:@selector(selectionManager:indexesInBox:userInfo:)]) {
+		indexesInBox = [[self delegate] selectionManager:self indexesInBox:selectionBox userInfo:userInfo];
 	}
 	else {
-		itemsInBox = [NSSet set];
+		indexesInBox = [NSIndexSet indexSet];
 	}
 	
-	NSSet* newSelection = nil;
+	NSMutableIndexSet* newSelection = nil;
 	if (dragMode == TLSMDragModeFlipSelection) {
-		NSMutableSet* addedItems = [NSMutableSet setWithSet:itemsInBox];
-		[addedItems minusSet:originalSelection];
-		newSelection = [NSMutableSet setWithSet:originalSelection];
-		[(NSMutableSet*)newSelection minusSet:itemsInBox];
-		[(NSMutableSet*)newSelection unionSet:addedItems];
+		NSIndexSet* addedIndexes = [indexesInBox indexSetByRemovingIndexes:originalSelection];
+		newSelection = [originalSelection indexSetByRemovingIndexes:indexesInBox];
+		[newSelection addIndexes:addedIndexes];
 	}
 	else if	(dragMode == TLSMDragModeExtendSelection) {
-		newSelection = [originalSelection setByAddingObjectsFromSet:itemsInBox];
+		newSelection = [originalSelection indexSetByAddingIndexes:indexesInBox];
 	}
 	NSAssert1(newSelection, @"Bad drag mode (%lu)", (long unsigned)dragMode);
-	[self setSelectedItems:newSelection];
+	[self setSelectedIndexes:newSelection];
 }
 
 - (void)mouseDragged:(NSEvent*)dragEvent userInfo:(void*)userInfo {
@@ -347,7 +345,7 @@ typedef NSUInteger TLSMDragMode;
 	NSAssert([self mouseDownEvent], @"No mouse down event stored for drag");
 	
 	if (dragMode == TLSMDragModeAttemptDrag) {
-		[self mouseDraggedItems:dragEvent userInfo:userInfo];
+		[self mouseDraggedIndexes:dragEvent userInfo:userInfo];
 	}
 	else {
 		[self mouseDraggedSelection:dragEvent userInfo:userInfo];
@@ -358,7 +356,7 @@ typedef NSUInteger TLSMDragMode;
 	(void)mouseEvent;
 	
 	if ([self mouseDownEvent]) {
-		[self deselectItems:[self deferredDeselection]];
+		[self deselectIndexes:[self deferredDeselection]];
 		[self setDeferredDeselection:nil];
 		[self setMouseDownEvent:nil];
 		[self setSelectionBeforeDrag:nil];

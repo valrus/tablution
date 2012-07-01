@@ -28,8 +28,8 @@
 
 - (BOOL)acceptsFirstResponder;
 
-- (NSSet *)selectedChords;
-- (void)selectChords:(NSArray *)chords;
+- (NSIndexSet *)selectedIndexes;
+- (void)selectIndexes:(NSIndexSet *)indexes;
 - (void)clearSelection;
 
 - (VChord *)focusChord;

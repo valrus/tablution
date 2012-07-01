@@ -31,6 +31,7 @@
 		D4EB0DAC14395DA20034F48C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAA14395DA20034F48C /* InfoPlist.strings */; };
 		D4EB0DAE14395DA20034F48C /* TablutionTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAD14395DA20034F48C /* TablutionTests.h */; };
 		D4EB0DB014395DA20034F48C /* TablutionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EB0DAF14395DA20034F48C /* TablutionTests.m */; };
+		D4F072391597AA7100CFC587 /* NSIndexSet+SetOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F072381597AA7100CFC587 /* NSIndexSet+SetOperations.m */; };
 		D4F9DF501589A6BA006CAB36 /* VEditModeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F9DF4F1589A6BA006CAB36 /* VEditModeTransformer.m */; };
 /* End PBXBuildFile section */
 
@@ -83,6 +84,9 @@
 		D4EB0DAD14395DA20034F48C /* TablutionTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TablutionTests.h; sourceTree = "<group>"; };
 		D4EB0DAF14395DA20034F48C /* TablutionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TablutionTests.m; sourceTree = "<group>"; };
 		D4EB0DB114395DA20034F48C /* TablutionTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TablutionTests-Prefix.pch"; sourceTree = "<group>"; };
+		D4F072371597AA7100CFC587 /* NSIndexSet+SetOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+SetOperations.h"; sourceTree = "<group>"; };
+		D4F072381597AA7100CFC587 /* NSIndexSet+SetOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+SetOperations.m"; sourceTree = "<group>"; };
+		D4F0723A1597C5D600CFC587 /* HandyTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HandyTools.h; sourceTree = "<group>"; };
 		D4F9DF4E1589A6BA006CAB36 /* VEditModeTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEditModeTransformer.h; sourceTree = "<group>"; };
 		D4F9DF4F1589A6BA006CAB36 /* VEditModeTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEditModeTransformer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -155,6 +159,9 @@
 				D4F9DF4D1589A64C006CAB36 /* editModeTransformer */,
 				D426E9C914C35A4A0031F745 /* TLSelectionManager.h */,
 				D426E9CA14C35A4A0031F745 /* TLSelectionManager.m */,
+				D4F0723A1597C5D600CFC587 /* HandyTools.h */,
+				D4F072371597AA7100CFC587 /* NSIndexSet+SetOperations.h */,
+				D4F072381597AA7100CFC587 /* NSIndexSet+SetOperations.m */,
 				D45EBA7E149463AD0067EE82 /* Fraction.h */,
 				D45EBA7F149463AD0067EE82 /* Fraction.m */,
 				D48A317C13C2784C00A0594D /* VTabView.h */,
@@ -355,6 +362,7 @@
 				D45EBA80149463AE0067EE82 /* Fraction.m in Sources */,
 				D426E9CB14C35A4A0031F745 /* TLSelectionManager.m in Sources */,
 				D4F9DF501589A6BA006CAB36 /* VEditModeTransformer.m in Sources */,
+				D4F072391597AA7100CFC587 /* NSIndexSet+SetOperations.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
