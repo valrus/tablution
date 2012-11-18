@@ -27,7 +27,6 @@
 		D48A317E13C2784C00A0594D /* VTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = D48A317D13C2784C00A0594D /* VTabView.m */; };
 		D4D54D8813C939AA00399D9B /* VChord.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D54D8713C939AA00399D9B /* VChord.m */; };
 		D4D54D8B13C940F400399D9B /* VNote.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D54D8A13C940F400399D9B /* VNote.m */; };
-		D4EB0D9C1438DBB40034F48C /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4EB0D9B1438DBB40034F48C /* SenTestingKit.framework */; };
 		D4EB0DAC14395DA20034F48C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAA14395DA20034F48C /* InfoPlist.strings */; };
 		D4EB0DAE14395DA20034F48C /* TablutionTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAD14395DA20034F48C /* TablutionTests.h */; };
 		D4EB0DB014395DA20034F48C /* TablutionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EB0DAF14395DA20034F48C /* TablutionTests.m */; };
@@ -97,7 +96,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
-				D4EB0D9C1438DBB40034F48C /* SenTestingKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,7 +286,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = C05733CB08A9546B00998B17 /* Build configuration list for PBXProject "tablution" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -437,6 +435,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -467,6 +466,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -518,6 +518,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/tablution.app/Contents/MacOS/tablution";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -555,6 +556,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/tablution.app/Contents/MacOS/tablution";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (

@@ -10,6 +10,7 @@
 
 @class VTablature;
 @class VTabController;
+@class VTabView;
 
 @interface VTabDocument : NSDocument
 {
@@ -17,10 +18,14 @@
     NSNumber *baseFret;
     NSNumber *soloMode;
     IBOutlet VTabController *controller;
+    IBOutlet VTabView *tabView;
 }
 
 @property (strong) VTablature *tablature;
 @property (strong) NSNumber *baseFret;
 @property (strong) NSNumber *soloMode;
+
+- (IBAction)copy:(id)sender;
+- (IBAction)paste:(id)sender;
 
 @end

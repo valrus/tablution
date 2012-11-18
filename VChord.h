@@ -8,7 +8,8 @@
 #import <Foundation/Foundation.h>
 @class VNote;
 
-@interface VChord : NSObject {
+@interface VChord : NSObject
+{
     NSMutableArray *notes;
     NSDictionary *attrs;
 }

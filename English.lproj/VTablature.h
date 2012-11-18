@@ -10,7 +10,8 @@
 #import "VChord.h"
 #import "VNote.h"
 
-@interface VTablature : NSObject {
+@interface VTablature : NSObject <NSPasteboardWriting, NSPasteboardReading>
+{
     NSMutableArray *chords;
     
     NSUInteger numStrings;
@@ -23,10 +24,14 @@
 - (id)initWithStrings:(NSUInteger)num;
 - (id)init;
 + (VTablature *)tablatureWithString:(NSString *)tabText;
++ (VTablature *)tablatureWithChords:(NSArray *)chords;
+
+// teardown stuff
+
+- (void) dealloc;
 
 // get information about tab
 - (NSArray *)asArrayOfStrings;
-- (NSString *)asText;
 - (VNote *)noteAtIndex:(NSUInteger)index
               onString:(NSUInteger)stringNum;
 - (NSInteger)fretAtIndex:(NSUInteger)index
@@ -47,14 +52,16 @@
                      atIndex:(NSUInteger)index;
 - (void)insertObject:(VChord *)chord
      inChordsAtIndex:(NSUInteger)index;
-- (void)insertChords:chordArray
-           atIndexes:indexes;
+- (void)insertChords:(NSArray *)chordArray
+           atIndexes:(NSIndexSet *)indexes;
 - (void)addChordFromArray:(NSArray *)chordArray;
 - (void)addChordFromString:(NSString *)chordString;
 - (void)deleteNoteAtIndex:(NSUInteger)index
                  onString:(NSUInteger)stringNum;
 - (void)removeObjectFromChordsAtIndex:(NSUInteger)index;
 - (void)removeChordsAtIndexes:(NSIndexSet *)indexes;
+- (void)replaceChordsAtIndexes:(NSIndexSet *)indexes
+                    withChords:(NSArray *)array;
 - (void)extend;
 
 // convert tab data to text
@@ -66,5 +73,18 @@
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                   objects:(id __unsafe_unretained [])stackbuf
                                     count:(NSUInteger)len;
+
+// NSPasteboardWriting protocol
+- (NSArray *)writableTypesForPasteboard:(NSPasteboard *)pasteboard;
+- (NSPasteboardWritingOptions)writingOptionsForType:(NSString *)type
+                                         pasteboard:(NSPasteboard *)pasteboard;
+- (id)pasteboardPropertyListForType:(NSString *)type;
+
+// NSPasteboardReading protocol
++ (NSArray *)readableTypesForPasteboard:(NSPasteboard *)pasteboard;
++ (NSPasteboardReadingOptions)readingOptionsForType:(NSString *)type
+                                         pasteboard:(NSPasteboard *)pasteboard;
+- (id)initWithPasteboardPropertyList:(id)propertyList
+                              ofType:(NSString *)type;
 
 @end

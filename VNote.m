@@ -37,7 +37,7 @@
 
 - (NSString *)stringValue
 {
-    return [NSString stringWithFormat:@"%i", fret];
+    return [NSString stringWithFormat:@"%li", fret];
 }
 
 - (NSString *)stringValueOrDash

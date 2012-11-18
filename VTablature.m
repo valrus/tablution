@@ -17,6 +17,8 @@
 @synthesize chords;
 @synthesize numStrings;
 
+NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
+
 #pragma mark -
 #pragma mark Init and setup
 
@@ -54,12 +56,30 @@
     return newTab;
 }
 
++ (VTablature *)tablatureWithChords:(NSArray *)chords
+{
+    VTablature *newTab = [[VTablature alloc] init];
+    [newTab insertChords:[NSArray arrayWithArray:chords]
+               atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [chords count])]];
+    return newTab;
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary *)change
                        context:(void *)context
 {
     NSLog(@"VTablature sees a change in a chord's %@!", keyPath);
+}
+
+#pragma mark -
+#pragma mark Teardown
+
+- (void) dealloc
+{
+    [chords removeObserver:self
+      fromObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [chords count])]
+                forKeyPath:@"notes"];
 }
 
 #pragma mark -
@@ -92,17 +112,25 @@
     [chord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
 }
 
-- (void)insertChords:chordArray
-           atIndexes:indexes
+- (void)insertChords:(NSArray *)chordArray
+           atIndexes:(NSIndexSet *)indexes
 {
     [chords insertObjects:chordArray atIndexes:indexes];
+    [chords addObserver:self
+     toObjectsAtIndexes:indexes
+             forKeyPath:@"notes"
+                options:0
+                context:NULL];
 }
 
 - (void)addChordFromArray:(NSArray *)chordArray
 {
     VChord *newChord = [VChord chordWithArray:chordArray];
     [chords addObject:newChord];
-    [newChord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
+    [newChord addObserver:self
+               forKeyPath:@"notes"
+                  options:0
+                  context:NULL];
 }
 
 - (void)addChordFromString:(NSString *)chordString
@@ -137,7 +165,17 @@
 
 - (void)removeChordsAtIndexes:(NSIndexSet *)indexes
 {
+    [chords removeObserver:self
+      fromObjectsAtIndexes:indexes
+                forKeyPath:@"notes"
+                   context:NULL];
     [chords removeObjectsAtIndexes:indexes];
+}
+
+- (void)replaceChordsAtIndexes:(NSIndexSet *)indexes
+                    withChords:(NSArray *)array
+{
+    
 }
 
 #pragma mark -
@@ -197,7 +235,9 @@
     [self willChange:NSKeyValueChangeReplacement
      valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
               forKey:@"chords"];
-    [[chords objectAtIndex:index] removeObserver:self];
+    [chords removeObserver:self
+      fromObjectsAtIndexes:[NSIndexSet indexSetWithIndex:index]
+                forKeyPath:@"notes"];
     if ((chordAlready = [chords objectAtIndex:index])) {
         newChord = [VChord chordWithChord:chordAlready];
         [newChord replaceObjectInNotesAtIndex:stringNum
@@ -240,7 +280,7 @@
 
 + (NSString *)getNoteTextForValue:(NSUInteger)fretNum
 {
-    return [self getNoteTextForString:[NSString stringWithFormat:@"%i", fretNum]];
+    return [self getNoteTextForString:[NSString stringWithFormat:@"%lu", fretNum]];
 }
 
 - (NSString *)toSerialString
@@ -268,6 +308,64 @@
 {
     // just "delegate" this to internal NSMutableArray
     return [chords countByEnumeratingWithState:state objects:stackbuf count:len];
+}
+
+#pragma mark -
+#pragma mark NSPasteboardWriting protocol
+
+- (NSArray *)writableTypesForPasteboard:(NSPasteboard *)pasteboard
+{
+    return [NSArray arrayWithObject:VTABLATURE_DATA_UTI];
+}
+
+- (NSPasteboardWritingOptions)writingOptionsForType:(NSString *)type
+                                         pasteboard:(NSPasteboard *)pasteboard
+{
+    return 0;
+}
+
+- (id)pasteboardPropertyListForType:(NSString *)type
+{
+    if ([type isEqualToString:VTABLATURE_DATA_UTI]) {
+        return [self toSerialString];
+    }
+    return nil;
+}
+
+#pragma mark -
+#pragma mark NSPasteboardReading protocol
+
++ (NSArray *)readableTypesForPasteboard:(NSPasteboard *)pasteboard
+{
+    return [NSArray arrayWithObject:VTABLATURE_DATA_UTI];
+}
+
++ (NSPasteboardReadingOptions)readingOptionsForType:(NSString *)type
+                                         pasteboard:(NSPasteboard *)pasteboard
+{
+    if ([type isEqualToString:VTABLATURE_DATA_UTI]) {
+        return NSPasteboardReadingAsString;
+    }
+    return 0;
+}
+
+- (id)initWithPasteboardPropertyList:(id)propertyList
+                              ofType:(NSString *)type
+{
+    if ([type isEqualToString:VTABLATURE_DATA_UTI]) {
+        return [VTablature tablatureWithString:propertyList];
+    }
+    return nil;
+}
+
+#pragma mark -
+#pragma mark NSCoding protocol
+
+#define kChords     @"chords"
+#define kStrings    @"numStrings"
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:[self chords] forKey:kChords];
 }
 
 @end

@@ -29,6 +29,7 @@
 - (BOOL)acceptsFirstResponder;
 
 - (NSIndexSet *)selectedIndexes;
+- (NSArray *)selectedChords;
 - (void)selectIndexes:(NSIndexSet *)indexes;
 - (void)clearSelection;
 

@@ -200,6 +200,11 @@
     return YES;
 }
 
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
 - (void)awakeFromNib
 {
     [self setSelectionManager:[TLSelectionManager new]];
@@ -207,10 +212,8 @@
     [tabController setNextResponder:[self nextResponder]];
     [self setNextResponder:tabController];
     if ([tablature countOfChords] >= 1) {
-        // XXX
         [selectionManager selectIndexes:[NSIndexSet indexSetWithIndex:0]
                    byExtendingSelection:NO];
-        //
         [self setFocusChordIndex:0];
         [self setFocusNoteString:0];
     }
@@ -218,16 +221,17 @@
     return;
 }
 
-// MVC and controller interaction
-
-- (BOOL)acceptsFirstResponder
-{
-    return YES;
-}
+#pragma mark -
+#pragma mark Selection handling
 
 - (NSIndexSet *)selectedIndexes
 {
     return [selectionManager selectedIndexes];
+}
+
+- (NSArray *)selectedChords
+{
+    return [tablature chordsAtIndexes:[self selectedIndexes]];
 }
 
 - (void)selectIndexes:(NSIndexSet *)indexes
@@ -351,8 +355,6 @@
 - (BOOL)shouldResetExistingSelection {
 	return YES;
 }
-
-/* Input Handling -------------------------------------------------------------------- */
 
 #pragma mark -
 #pragma mark Input Handling

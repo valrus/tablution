@@ -59,8 +59,39 @@
     return [[tabDoc soloMode] boolValue];
 }
 
-#pragma mark -
-#pragma mark Editing selectors
+#pragma mark - Editing selectors -
+#pragma mark Chord-level changes
+
+- (void)insertChord:(VChord *)chord
+            atIndex:(NSUInteger)index
+{
+    [tablature insertObject:chord inChordsAtIndex:index];
+}
+
+- (void)insertAndSelectChords:(NSArray *)chordArray
+                    atIndexes:(NSIndexSet *)indexes
+{
+    [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
+     removeChordsAtIndexes:indexes];
+    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Insert Chords", @"insert chords undo")];
+    [tablature insertChords:chordArray
+                  atIndexes:indexes];
+    [tabView selectIndexes:indexes];
+}
+
+- (void)removeChordAtIndex:(NSUInteger)index
+{
+    [tablature removeObjectFromChordsAtIndex:index];
+}
+
+- (void)replaceSelectedChordsWithChords:(NSArray *)chordArray
+{
+    // FIXME: Need to handle case where selection is not same size as chordArray
+    [tablature replaceChordsAtIndexes:[tabView selectedIndexes]
+                           withChords:chordArray];
+}
+
+#pragma mark Note-level changes
 
 - (void)prepareUndoForChangeFromNote:(VNote *)previousNote
                             onString:(NSUInteger)whichString
@@ -108,24 +139,18 @@
     }
 }
 
-- (void)insertChord:(VChord *)chord
-            atIndex:(NSUInteger)index
+- (void)deleteFocusNote
 {
-    [tablature insertObject:chord inChordsAtIndex:index];
+    VNote *currentNote = [tabView focusNote];
+    if ([currentNote hasFret]) {
+        [self prepareUndoForChangeFromNote:currentNote
+                                  onString:[tabView focusNoteString]];
+        [tablature deleteNoteAtIndex:[tabView focusChordIndex]
+                            onString:[tabView focusNoteString]];
+    }
 }
 
-- (void)insertAndSelectChords:(NSArray *)chordArray
-                    atIndexes:(NSIndexSet *)indexes
-{
-    [tablature insertChords:chordArray
-                  atIndexes:indexes];
-    [tabView selectIndexes:indexes];
-}
-
-- (void)removeChordAtIndex:(NSUInteger)index
-{
-    [tablature removeObjectFromChordsAtIndex:index];
-}
+#pragma mark Mode changes
 
 - (void)incrementBaseFret
 {
@@ -151,22 +176,13 @@
     [tabView setFocusNoteString:NO_FRET];
 }
 
+#pragma mark Focus changes
+
 - (void)advance
 {
     if (![self focusNextChord]) {
         [tablature extend];
         [self focusNextChord];
-    }
-}
-
-- (void)deleteFocusNote
-{
-    VNote *currentNote = [tabView focusNote];
-    if ([currentNote hasFret]) {
-        [self prepareUndoForChangeFromNote:currentNote
-                                  onString:[tabView focusNoteString]];
-        [tablature deleteNoteAtIndex:[tabView focusChordIndex]
-                            onString:[tabView focusNoteString]];
     }
 }
 
@@ -246,7 +262,6 @@
             [tablature removeObjectFromChordsAtIndex:[tabView focusChordIndex]];           
         }
         else {
-            // Implement objectsInChordsAtIndexes
             [[[tabDoc undoManager] prepareWithInvocationTarget:self]
              insertAndSelectChords:[tablature chordsAtIndexes:selectedIndexes]
              atIndexes:selectedIndexes];
@@ -298,6 +313,10 @@
             [tabView setFocusChordIndex:[tabView focusChordIndex] - indexesBeforeFocus];
             break;
         }
+            
+        default:
+            // I'm pretty sure this shouldn't happen
+            break;
     }
     [tabView setNeedsDisplay:YES];
 }

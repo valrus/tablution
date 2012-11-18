@@ -11,7 +11,8 @@
 
 @class VChord;
 
-@interface VNote : NSObject {
+@interface VNote : NSObject
+{
     NSInteger fret;
     NSDictionary *attrs;
 }

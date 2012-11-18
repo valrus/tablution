@@ -9,8 +9,9 @@
 #import "VTabDocument.h"
 #import "VTablature.h"
 #import "VTabController.h"
-#import "Fraction.h"
+#import "VTabView.h"
 #import "VEditModeTransformer.h"
+#import "HandyTools.h"
 
 @implementation VTabDocument
 
@@ -30,8 +31,6 @@
             tablature = [[VTablature alloc] initWithStrings:6];
             baseFret = [NSNumber numberWithInt:0];
             soloMode = [NSNumber numberWithBool:NO];
-            [tablature addChordFromString:@"0 2 2 1 0 0"];
-            [tablature addChordFromString:@"0 0 2 2 2 0"];           
         }
         [controller setTablature:tablature];
     }
@@ -75,6 +74,32 @@
 - (void)windowControllerDidLoadNib:(NSWindowController *) aController
 {
     
+}
+
+- (IBAction)copy:(id)sender
+{
+    NSArray *selectedChords = [tabView selectedChords];
+    if (!IsEmpty(selectedChords)) {
+        NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+        [pasteboard clearContents];
+        VTablature *tabWithSelection = [VTablature tablatureWithChords:selectedChords];
+        [pasteboard writeObjects:[NSArray arrayWithObject:tabWithSelection]];
+    }
+}
+
+- (IBAction)paste:(id)sender
+{
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+    NSArray *classArray = [NSArray arrayWithObject:[VTablature class]];
+    NSDictionary *options = [NSDictionary dictionary];
+    
+    if ([pasteboard canReadObjectForClasses:classArray options:options]) {
+        NSArray *objectsToPaste = [pasteboard readObjectsForClasses:classArray options:options];
+        VTablature *tabToPaste = [objectsToPaste objectAtIndex:0];
+        NSRange indexRange = NSMakeRange([[tabView selectedIndexes] firstIndex], [tabToPaste countOfChords]);
+        [controller insertAndSelectChords:[tabToPaste chords]
+                                atIndexes:[NSIndexSet indexSetWithIndexesInRange:indexRange]];
+    }
 }
 
 @end

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface NSIndexSet (SetOperations)
+{}
 
 - (NSMutableIndexSet *)indexSetByAddingIndexes:(NSIndexSet *)indexes;
 - (NSMutableIndexSet *)indexSetByRemovingIndexes:(NSIndexSet *)indexes;
