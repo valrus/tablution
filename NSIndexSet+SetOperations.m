@@ -41,4 +41,28 @@
     return YES;
 }
 
+- (NSArray *)contiguousRanges
+{
+    __block NSMutableArray *rangeArray = [NSArray array];
+    if ([self count] == 0) {
+        return rangeArray;
+    }
+    
+    __block NSUInteger lastIndex = 0;
+    __block NSUInteger currentStart = 0;
+    __block BOOL first = YES;
+    [self enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        if (first) {
+            currentStart = idx;
+        }
+        else if (idx != lastIndex + 1) {
+            [rangeArray addObject:[NSValue valueWithRange:NSMakeRange(currentStart, lastIndex - currentStart)]];
+            first = YES;
+        }
+        lastIndex = idx;
+    }];
+    [rangeArray addObject:[NSValue valueWithRange:NSMakeRange(currentStart, lastIndex - currentStart)]];
+    return rangeArray;
+}
+
 @end

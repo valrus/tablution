@@ -16,4 +16,6 @@
 
 - (BOOL)intersectsIndexes:(NSIndexSet *)otherIndexes;
 
+- (NSArray *)contiguousRanges;
+
 @end
