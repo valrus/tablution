@@ -224,6 +224,11 @@
 #pragma mark -
 #pragma mark Selection handling
 
+- (BOOL)hasSelection
+{
+    return ([[selectionManager selectedIndexes] count] > 0);
+}
+
 - (NSIndexSet *)selectedIndexes
 {
     return [selectionManager selectedIndexes];

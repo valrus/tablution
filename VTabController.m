@@ -86,7 +86,12 @@
 
 - (void)replaceSelectedChordsWithChords:(NSArray *)chordArray
 {
-    // FIXME: Need to handle case where selection is not same size as chordArray
+    NSRange selectionRange = NSMakeRange([[tabView selectedIndexes] firstIndex],
+                                         [chordArray count]);
+    [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
+     replaceChordsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:selectionRange]
+                 withChords:[tabView selectedChords]];
+    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Replace Selected Chords", @"replace selection undo")];
     [tablature replaceChordsAtIndexes:[tabView selectedIndexes]
                            withChords:chordArray];
 }

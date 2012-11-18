@@ -96,9 +96,14 @@
     if ([pasteboard canReadObjectForClasses:classArray options:options]) {
         NSArray *objectsToPaste = [pasteboard readObjectsForClasses:classArray options:options];
         VTablature *tabToPaste = [objectsToPaste objectAtIndex:0];
-        NSRange indexRange = NSMakeRange([[tabView selectedIndexes] firstIndex], [tabToPaste countOfChords]);
-        [controller insertAndSelectChords:[tabToPaste chords]
-                                atIndexes:[NSIndexSet indexSetWithIndexesInRange:indexRange]];
+        if ([tabView hasSelection]) {
+            [controller replaceSelectedChordsWithChords:[tabToPaste chords]];
+        }
+        else {
+            NSRange indexRange = NSMakeRange([tabView focusChordIndex], [tabToPaste countOfChords]);
+            [controller insertAndSelectChords:[tabToPaste chords]
+                                    atIndexes:[NSIndexSet indexSetWithIndexesInRange:indexRange]];
+        }
     }
 }
 

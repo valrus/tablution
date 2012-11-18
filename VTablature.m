@@ -175,7 +175,9 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
 - (void)replaceChordsAtIndexes:(NSIndexSet *)indexes
                     withChords:(NSArray *)array
 {
-    
+    [self removeChordsAtIndexes:indexes];
+    NSRange insertRange = NSMakeRange([indexes firstIndex], [array count]);
+    [self insertChords:array atIndexes:[NSIndexSet indexSetWithIndexesInRange:insertRange]];
 }
 
 #pragma mark -
