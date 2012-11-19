@@ -138,7 +138,7 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
     VChord *newChord;
     if ((newChord = [VChord chordWithStrings:numStrings
                                     fromText:chordString])) {
-        [chords addObject:newChord];
+        [self insertObject:newChord inChordsAtIndex:[[self chords] count]];
     }
     else {
         // invalid chord
@@ -177,7 +177,8 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
 {
     [self removeChordsAtIndexes:indexes];
     NSRange insertRange = NSMakeRange([indexes firstIndex], [array count]);
-    [self insertChords:array atIndexes:[NSIndexSet indexSetWithIndexesInRange:insertRange]];
+    [self insertChords:array
+             atIndexes:[NSIndexSet indexSetWithIndexesInRange:insertRange]];
 }
 
 #pragma mark -
@@ -232,30 +233,24 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
            atIndex:(NSUInteger)index
           onString:(NSUInteger)stringNum
 {
-    id chordAlready;
-    VChord *newChord;
-    [self willChange:NSKeyValueChangeReplacement
-     valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
-              forKey:@"chords"];
     [chords removeObserver:self
       fromObjectsAtIndexes:[NSIndexSet indexSetWithIndex:index]
                 forKeyPath:@"notes"];
-    if ((chordAlready = [chords objectAtIndex:index])) {
-        newChord = [VChord chordWithChord:chordAlready];
-        [newChord replaceObjectInNotesAtIndex:stringNum
-                                   withObject:note];
-        [chords replaceObjectAtIndex:index withObject:newChord];
-    }
-    else {
-        newChord = [VChord chordWithStrings:numStrings
-                                   withNote:note
-                                   onString:stringNum];
-        [chords replaceObjectAtIndex:index withObject:newChord];
-    }
-    [newChord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
+
+    [self willChange:NSKeyValueChangeReplacement
+     valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
+              forKey:@"chords"];
+    [[chords objectAtIndex:index] replaceObjectInNotesAtIndex:stringNum
+                                                   withObject:note];
     [self didChange:NSKeyValueChangeReplacement
     valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
              forKey:@"chords"];
+
+    [chords addObserver:self
+     toObjectsAtIndexes:[NSIndexSet indexSetWithIndex:index]
+             forKeyPath:@"notes"
+                options:0
+                context:NULL];
 }
 
 - (void)insertChordFromArray:(NSArray *)chordArray

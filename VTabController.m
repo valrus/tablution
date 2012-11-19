@@ -84,6 +84,17 @@
     [tablature removeObjectFromChordsAtIndex:index];
 }
 
+- (void)deleteSelectedChords
+{
+    NSIndexSet *selectedIndexes = [tabView selectedIndexes];
+    [[[tabDoc undoManager] prepareWithInvocationTarget:self]
+     insertAndSelectChords:[tablature chordsAtIndexes:selectedIndexes]
+     atIndexes:selectedIndexes];
+    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Delete Selection", @"delete selection undo")];
+    [tablature removeChordsAtIndexes:selectedIndexes];
+    [tabView clearSelection];
+}
+
 - (void)replaceSelectedChordsWithChords:(NSArray *)chordArray
 {
     NSRange selectionRange = NSMakeRange([[tabView selectedIndexes] firstIndex],
@@ -257,22 +268,17 @@
 
 - (IBAction)deleteBackward:(id)sender
 {
+    // test
     if ([tabView focusChordIndex] > 0) {
-        NSIndexSet *selectedIndexes = [tabView selectedIndexes];
-        if (IsEmpty(selectedIndexes)) {
+        if ([tabView hasSelection]) {
+            [self deleteSelectedChords];
+        }
+        else {
             [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
              insertObject:[tablature objectInChordsAtIndex:[tabView focusChordIndex]]
              inChordsAtIndex:[tabView focusChordIndex]];
             [[tabDoc undoManager] setActionName:NSLocalizedString(@"Delete Chord", @"delete chord undo")];
-            [tablature removeObjectFromChordsAtIndex:[tabView focusChordIndex]];           
-        }
-        else {
-            [[[tabDoc undoManager] prepareWithInvocationTarget:self]
-             insertAndSelectChords:[tablature chordsAtIndexes:selectedIndexes]
-             atIndexes:selectedIndexes];
-            [[tabDoc undoManager] setActionName:NSLocalizedString(@"Delete Selection", @"delete selection undo")];
-            [tablature removeChordsAtIndexes:selectedIndexes];
-            [tabView clearSelection];
+            [tablature removeObjectFromChordsAtIndex:[tabView focusChordIndex]];
         }
     }
 }

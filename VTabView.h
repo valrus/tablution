@@ -11,12 +11,14 @@
 {
     IBOutlet VTabController *tabController;
     TLSelectionManager *selectionManager;
+    NSUInteger lastFocusChordIndex;
     NSUInteger focusChordIndex;
     NSUInteger focusNoteString;
 }
 
 @property (weak) VTablature *tablature;
 @property (strong) TLSelectionManager *selectionManager;
+@property (assign, readwrite) NSUInteger lastFocusChordIndex;
 @property (assign, readwrite) NSUInteger focusChordIndex;
 @property (assign, readwrite) NSUInteger focusNoteString;
 

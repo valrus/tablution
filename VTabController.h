@@ -54,6 +54,7 @@
 - (void)insertAndSelectChords:(NSArray *)chordArray
                     atIndexes:(NSIndexSet *)indexes;
 - (void)removeChordAtIndex:(NSUInteger)index;
+- (void)deleteSelectedChords;
 - (void)replaceSelectedChordsWithChords:(NSArray *)chordArray;
 
 - (void)incrementBaseFret;

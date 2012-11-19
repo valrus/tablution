@@ -35,6 +35,7 @@
 
 @synthesize tablature;
 @synthesize selectionManager;
+@synthesize lastFocusChordIndex;
 @synthesize focusChordIndex;
 @synthesize focusNoteString;
 
@@ -405,36 +406,48 @@
 {
     if ([[tabController keyBindings] objectForKey:[theEvent characters]]) {
         [self handleBoundKey:[theEvent characters]];
-        [self setNeedsDisplay:YES];
     }
     else {
         [self interpretKeyEvents:[NSArray arrayWithObject:theEvent]];
-        [self setNeedsDisplay:YES];
     }
+    [self setNeedsDisplay:YES];
+}
+
+- (void)reFocusAtPoint:(NSPoint)thePoint
+{
+    focusChordIndex = [self chordIndexAtPoint:thePoint];
+    if (focusChordIndex >= [tablature countOfChords]) {
+        focusChordIndex = [tablature countOfChords] - 1;
+    }
+    
+    focusNoteString = [self stringAtPoint:thePoint];
+    [self setNeedsDisplay:YES];
 }
 
 - (void)mouseDown:(NSEvent*)theEvent
 {
+    [self setLastFocusChordIndex:[self focusChordIndex]];
     [selectionManager mouseDown:theEvent userInfo:NULL];
+    [self reFocusAtPoint:[self convertPoint:[theEvent locationInWindow]
+                                   fromView:nil]];
 }
 
 - (void)mouseDragged:(NSEvent*)theEvent
 {
     [selectionManager mouseDragged:theEvent userInfo:NULL];
+    [self reFocusAtPoint:[self convertPoint:[theEvent locationInWindow]
+                                   fromView:nil]];
 }
 
 - (void)mouseUp:(NSEvent*)theEvent
 {
     [selectionManager mouseUp:theEvent];
-    NSPoint convertedPoint = [self convertPoint:[theEvent locationInWindow]
-                                       fromView:nil];
-    focusChordIndex = [self chordIndexAtPoint:convertedPoint];
-    if (focusChordIndex >= [tablature countOfChords]) {
-        focusChordIndex = [tablature countOfChords] - 1;
+    if ([[selectionManager selectedIndexes] count] == 1 &&
+        [[selectionManager selectedIndexes] firstIndex] != [self lastFocusChordIndex]) {
+        [self clearSelection];
     }
-    
-    focusNoteString = [self stringAtPoint:convertedPoint];
-    [self setNeedsDisplay:YES];
+    [self reFocusAtPoint:[self convertPoint:[theEvent locationInWindow]
+                                   fromView:nil]];
 }
 
 - (void)selectionManagerDidChangeSelection:(TLSelectionManager*)manager

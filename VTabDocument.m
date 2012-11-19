@@ -31,6 +31,7 @@
             tablature = [[VTablature alloc] initWithStrings:6];
             baseFret = [NSNumber numberWithInt:0];
             soloMode = [NSNumber numberWithBool:NO];
+            [tablature addChordFromString:@"-1 -1 -1 -1 -1 -1"];
         }
         [controller setTablature:tablature];
     }
@@ -105,6 +106,12 @@
                                     atIndexes:[NSIndexSet indexSetWithIndexesInRange:indexRange]];
         }
     }
+}
+
+- (IBAction)cut:(id)sender
+{
+    [self copy:sender];
+    [controller deleteSelectedChords];
 }
 
 @end
