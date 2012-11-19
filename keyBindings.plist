@@ -2,6 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>l</key>
+	<array>
+		<string>focusUpString</string>
+	</array>
+	<key>k</key>
+	<array>
+		<string>focusDownString</string>
+	</array>
+	<key>;</key>
+	<array>
+		<string>focusNextChord</string>
+	</array>
+	<key>j</key>
+	<array>
+		<string>focusPrevChord</string>
+	</array>
 	<key>1</key>
 	<array>
 		<string>addNoteOnString:onFret:</string>
