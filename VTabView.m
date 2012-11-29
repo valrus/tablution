@@ -38,6 +38,7 @@
 @synthesize lastFocusChordIndex;
 @synthesize focusChordIndex;
 @synthesize focusNoteString;
+@synthesize mouseDownEvent;
 
 #pragma mark -
 #pragma mark Drawing Functions
@@ -86,12 +87,50 @@
     [focusPath stroke];
 }
 
+- (void)drawChord:(VChord *)chord
+     withCornerAt:(NSPoint)topLeft
+      normalStyle:(NSDictionary *)tabAttrs
+     focusedStyle:(NSDictionary *)focusNoteAttrs
+{
+    for (VNote *note in chord) {
+        bool focused = (note == [self focusNote]);
+        NSDictionary *attrsToUse = focused ? focusNoteAttrs : tabAttrs;
+        NSString *text = [note hasFret] ? [note stringValue] : @"•";
+        if ([note hasFret] || focused) {
+            [text drawAtPoint:NSMakePoint(topLeft.x + CHORD_SPACE/3, topLeft.y)
+               withAttributes:attrsToUse];
+        }
+        topLeft.y += STRING_SPACE;
+    }
+}
+
+- (void)drawSelectionForChordRange:(NSRange)chordRange
+                     withTopLeftAt:(NSPoint)topLeft
+                        usingColor:(NSColor *)selectionColor
+{
+    NSRect selectRect;
+    NSIndexSet *thisRangeSelection = [[selectionManager selectedIndexes]
+                                      indexesInRange:chordRange
+                                             options:0
+                                         passingTest:^(NSUInteger idx, BOOL *stop) { return YES; }];
+    NSRange thisRowRange = NSMakeRange([thisRangeSelection firstIndex] - chordRange.location,
+                                       [thisRangeSelection lastIndex] - [thisRangeSelection firstIndex] + 1);
+
+    selectRect.origin = NSMakePoint(topLeft.x + thisRowRange.location * CHORD_SPACE,
+                                    topLeft.y);
+    selectRect.size = NSMakeSize(thisRowRange.length * CHORD_SPACE, [self lineHeight]);
+    NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRoundedRect:selectRect
+                                                                  xRadius:3.0
+                                                                  yRadius:3.0];
+    [[selectionColor colorWithAlphaComponent:0.3] setFill];
+    [selectionPath fill];
+}
+
 - (void)drawOneLineOfTabAtHeight:(CGFloat)tabHeight
                  fromChordNumber:(NSUInteger)firstChord
                   numberOfChords:(NSUInteger)numChords
 {
-    NSUInteger x = LEFT_MARGIN;
-    NSUInteger y = tabHeight;
+    NSPoint currentCoords = NSMakePoint(LEFT_MARGIN, tabHeight);
     NSUInteger chordNum = firstChord;
     NSDictionary *tabAttrs = [NSDictionary dictionary];
     NSMutableDictionary *focusNoteAttrs = [NSMutableDictionary dictionaryWithDictionary:tabAttrs];
@@ -108,51 +147,21 @@
 //    NSStrokeWidthAttributeName : -3.0
     NSColor *selectionColor = [NSColor blueColor];
     [selectionColor set];
-    NSRect selectRect;
-    bool selectionStarted = NO;
-    bool inSelection = NO;
+    [self drawSelectionForChordRange:NSMakeRange(firstChord, numChords)
+                       withTopLeftAt:currentCoords
+                          usingColor:selectionColor];
     for (chordNum = firstChord; chordNum < firstChord + numChords; ++chordNum) {
-        /// XXX
         VChord *chord = [tablature objectInChordsAtIndex:chordNum];
-        inSelection = [[selectionManager selectedIndexes] containsIndex:chordNum];
-        ///
-        if (inSelection && !selectionStarted) {
-            selectRect.origin = NSMakePoint(x, y);
-            selectionStarted = YES;
-        }
-        for (VNote *note in chord) {
-            if ([note hasFret]) {
-                NSString *text = [note stringValue];
-                if (note == [self focusNote]) {
-                    [text drawAtPoint:NSMakePoint(x + CHORD_SPACE/3, y)
-                       withAttributes:focusNoteAttrs];
-                }
-                else {
-                    [text drawAtPoint:NSMakePoint(x + CHORD_SPACE/3, y)
-                       withAttributes:tabAttrs];
-                }
-            }
-            y += STRING_SPACE;
-        }
-        y = tabHeight;
+        [self drawChord:chord
+           withCornerAt:currentCoords
+            normalStyle:tabAttrs
+           focusedStyle:focusNoteAttrs];
+        currentCoords.y = tabHeight;
         if (chord == [self focusChord]) {
-            [self drawFocusRectForChordAtPoint:NSMakePoint(x, y)
+            [self drawFocusRectForChordAtPoint:currentCoords
                                        inColor:selectionColor];
         }
-        if (selectionStarted && (!inSelection || chord == [tablature lastChord])) {
-            if ((inSelection) && (chord == [tablature lastChord])) {
-                x += CHORD_SPACE;
-            }
-            selectRect.size = NSMakeSize(x - selectRect.origin.x,
-                                         y + [self lineHeight] - selectRect.origin.y);
-            NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRoundedRect:selectRect
-                                                                          xRadius:3.0
-                                                                          yRadius:3.0];
-            [[selectionColor colorWithAlphaComponent:0.3] setFill];
-            [selectionPath fill];
-            selectionStarted = NO;
-        }
-        x += CHORD_SPACE;
+        currentCoords.x += CHORD_SPACE;
     }
 }
 
@@ -294,7 +303,9 @@
     }
     else {
         NSUInteger skipChords = (int)(x / CHORD_SPACE);
-        return skipLines * [self chordsPerLine] + skipChords;
+        NSUInteger chordIndex = skipLines * [self chordsPerLine] + skipChords;
+        NSLog(@"Chord index: %lu", chordIndex);
+        return chordIndex;
     }
 }
 
@@ -322,9 +333,9 @@
 #pragma mark -
 #pragma mark TLSelectionList delegate method
 
-- (NSUInteger)selectionManager:(TLSelectionManager*)manager
+- (NSUInteger)selectionManager:(TLSelectionManager *)manager
                indexUnderPoint:(NSPoint)windowPoint
-                      userInfo:(void*)userInfo
+                      userInfo:(void *)userInfo
 {
     return [self chordIndexAtPoint:[self convertPoint:windowPoint
                                              fromView:nil]];
@@ -338,24 +349,32 @@
 //    return YES;
 //}
 
-- (NSIndexSet *)selectionManager:(TLSelectionManager*)manager
+- (NSIndexSet *)selectionManager:(TLSelectionManager *)manager
                     indexesInBox:(NSRect)windowRect
-                        userInfo:(void*)userInfo
+                        userInfo:(void *)userInfo
 {
     NSRect viewRect = [self convertRect:windowRect
                                fromView:nil];
     NSPoint topLeft = viewRect.origin;
+    NSPoint topRight = NSMakePoint(topLeft.x + viewRect.size.width, viewRect.origin.y);
+    NSPoint bottomLeft = NSMakePoint(viewRect.origin.x, topLeft.y + viewRect.size.height);
     NSPoint bottomRight = NSMakePoint(topLeft.x + viewRect.size.width,
                                       topLeft.y + viewRect.size.height);
     
-    NSInteger startIndex = MAX([self chordIndexAtPoint:topLeft], 0);
-    NSInteger endIndex = [self chordIndexAtPoint:bottomRight];
-    
-    if (endIndex < 0 || endIndex >= [tablature countOfChords]) {
-        endIndex = [tablature countOfChords] - 1;
+    NSPoint mouseDownPoint = [self convertPoint:[[self mouseDownEvent] locationInWindow]
+                                       fromView:nil];
+    NSInteger startIndex, endIndex;
+    if (NSEqualPoints(mouseDownPoint, topLeft) || NSEqualPoints(mouseDownPoint, bottomRight)) {
+        startIndex = MAX([self chordIndexAtPoint:topLeft], 0);
+        endIndex = MIN([self chordIndexAtPoint:bottomRight], [tablature countOfChords] - 1);
+    }
+    else {
+        startIndex = MAX([self chordIndexAtPoint:topRight], 0);
+        endIndex = MIN([self chordIndexAtPoint:bottomLeft], [tablature countOfChords] - 1);
     }
     
-    return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(startIndex, endIndex - startIndex + 1)];
+    return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(MIN(startIndex, endIndex),
+                                                              abs(endIndex - startIndex) + 1)];
 }
 
 - (BOOL)shouldResetExistingSelection {
@@ -427,6 +446,7 @@
 - (void)mouseDown:(NSEvent*)theEvent
 {
     [self setLastFocusChordIndex:[self focusChordIndex]];
+    [self setMouseDownEvent:theEvent];
     [selectionManager mouseDown:theEvent userInfo:NULL];
     [self reFocusAtPoint:[self convertPoint:[theEvent locationInWindow]
                                    fromView:nil]];

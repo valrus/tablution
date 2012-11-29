@@ -13,7 +13,7 @@
 @class VTabDocument;
 @class VChord;
 
-@interface VTabController : NSViewController
+@interface VTabController : NSViewController <NSApplicationDelegate>
 {
     // View stuff
     IBOutlet VTabView *tabView;

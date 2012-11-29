@@ -14,6 +14,7 @@
     NSUInteger lastFocusChordIndex;
     NSUInteger focusChordIndex;
     NSUInteger focusNoteString;
+    NSEvent *mouseDownEvent;
 }
 
 @property (weak) VTablature *tablature;
@@ -21,6 +22,7 @@
 @property (assign, readwrite) NSUInteger lastFocusChordIndex;
 @property (assign, readwrite) NSUInteger focusChordIndex;
 @property (assign, readwrite) NSUInteger focusNoteString;
+@property (strong) NSEvent *mouseDownEvent;
 
 - (void)drawRect:(NSRect)dirtyRect;
 
