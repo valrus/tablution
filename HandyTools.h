@@ -9,6 +9,8 @@
 #ifndef tablution_HandyTools_h
 #define tablution_HandyTools_h
 
+#define SANDWICH(lower, num, upper) MIN(MAX(num, lower), upper)
+
 // From http://www.wilshipley.com/blog/2005/10/pimp-my-code-interlude-free-code.html
 
 static inline BOOL IsEmpty(id thing) {

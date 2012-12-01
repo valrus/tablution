@@ -3,6 +3,7 @@
 #import "VTablature.h"
 #import "VNote.h"
 #import "TLSelectionManager.h"
+#import "HandyTools.h"
 
 #define STRING_SPACE 14.0
 #define LINE_SPACE 24.0
@@ -294,8 +295,8 @@
 
 - (NSInteger)chordIndexAtPoint:(NSPoint)thePoint
 {
-    CGFloat x = thePoint.x - LEFT_MARGIN;
-    CGFloat y = thePoint.y - TOP_MARGIN;
+    CGFloat x = SANDWICH(LEFT_MARGIN, thePoint.x, [self chordsPerLine] * CHORD_SPACE) - LEFT_MARGIN;
+    CGFloat y = SANDWICH(TOP_MARGIN, thePoint.y, [self bounds].size.height) - TOP_MARGIN;
     // number of full lines of tab above click location
     NSUInteger skipLines = (int)(y / ([self lineHeight] + LINE_SPACE));
     if (fmod(y, skipLines) > [self lineHeight]) {
