@@ -15,6 +15,7 @@
 @implementation VTablature
 
 @synthesize chords;
+@synthesize measureBars;
 @synthesize numStrings;
 
 NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
@@ -29,6 +30,7 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
     if (self) {
         numStrings = 6; // TODO: make not hardcoded
         chords = [NSMutableArray arrayWithCapacity:10];
+        measureBars = [NSMutableIndexSet indexSet];
         return self;
     } else {
         return nil;
@@ -53,6 +55,7 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
                       forKeyPath:@"notes"
                          options:0
                          context:NULL];
+    [[newTab measureBars] addObserver:newTab forKeyPath:@"bars" options:0 context:NULL];
     return newTab;
 }
 
@@ -211,11 +214,28 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
     }
 }
 
+- (bool)hasBarAtIndex:(NSUInteger)index
+{
+    return ([measureBars containsIndex:index]);
+}
+
 #pragma mark Tab-level mutators
 
 - (void)extend
 {
     [self addChordFromString:@"-1 -1 -1 -1 -1 -1"];
+}
+
+- (void)toggleBarAtIndex:(NSUInteger)index
+{
+    [self willChangeValueForKey:@"bars"];
+    if ([measureBars containsIndex:index]) {
+        [measureBars removeIndex:index];
+    }
+    else {
+        [measureBars addIndex:index];
+    }
+    [self didChangeValueForKey:@"bars"];
 }
 
 #pragma mark Note-level mutators

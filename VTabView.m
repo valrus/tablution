@@ -127,6 +127,18 @@
     [selectionPath fill];
 }
 
+- (void)drawMeasureBarAfterChordAtPoint:(NSPoint)topLeft
+{
+    [NSBezierPath setDefaultLineWidth:LINE_WIDTH];
+    [[NSColor blackColor] setStroke];
+
+    NSPoint startPoint = NSMakePoint(topLeft.x + CHORD_SPACE,
+                                     topLeft.y);
+    NSPoint endPoint = NSMakePoint(topLeft.x + CHORD_SPACE,
+                                   topLeft.y + [self lineHeight]);
+    [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+}
+
 - (void)drawOneLineOfTabAtHeight:(CGFloat)tabHeight
                  fromChordNumber:(NSUInteger)firstChord
                   numberOfChords:(NSUInteger)numChords
@@ -135,17 +147,10 @@
     NSUInteger chordNum = firstChord;
     NSDictionary *tabAttrs = [NSDictionary dictionary];
     NSMutableDictionary *focusNoteAttrs = [NSMutableDictionary dictionaryWithDictionary:tabAttrs];
-//    NSFontManager *fontManager = [NSFontManager sharedFontManager];
-//    NSFont *boldUserFont = [fontManager convertFont:[NSFont userFontOfSize:12.0]
-//                                        toHaveTrait:NSBoldFontMask];
-//    [focusNoteAttrs setValue:boldUserFont
-//                      forKey:NSFontAttributeName];
     [focusNoteAttrs setValue:[NSColor redColor]
                       forKey:NSForegroundColorAttributeName];
     [focusNoteAttrs setValue:[NSNumber numberWithFloat:-6.0]
                       forKey:NSStrokeWidthAttributeName];
-//    NSForegroundColorAttributeName : [NSColor redColor]
-//    NSStrokeWidthAttributeName : -3.0
     NSColor *selectionColor = [NSColor blueColor];
     [selectionColor set];
     [self drawSelectionForChordRange:NSMakeRange(firstChord, numChords)
@@ -157,6 +162,9 @@
            withCornerAt:currentCoords
             normalStyle:tabAttrs
            focusedStyle:focusNoteAttrs];
+        if ([tablature hasBarAtIndex:chordNum]) {
+            [self drawMeasureBarAfterChordAtPoint:currentCoords];
+        }
         currentCoords.y = tabHeight;
         if (chord == [self focusChord]) {
             [self drawFocusRectForChordAtPoint:currentCoords

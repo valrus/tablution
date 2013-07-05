@@ -65,4 +65,6 @@
 - (bool)focusNextChord;
 - (bool)focusPrevChord;
 
+- (void)toggleMeasureBar;
+
 @end

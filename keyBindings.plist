@@ -208,6 +208,10 @@
 		<string>addOpenString:</string>
 		<integer>5</integer>
 	</array>
+	<key>|</key>
+	<array>
+		<string>toggleMeasureBar</string>
+	</array>
 	<key>-</key>
 	<array>
 		<string>deleteFocusNote</string>

@@ -13,11 +13,13 @@
 @interface VTablature : NSObject <NSPasteboardWriting, NSPasteboardReading>
 {
     NSMutableArray *chords;
+    NSMutableIndexSet *measureBars;
     
     NSUInteger numStrings;
 }
 
 @property (strong) NSMutableArray *chords;
+@property (strong) NSMutableIndexSet *measureBars;
 @property (readonly) NSUInteger numStrings;
 
 // setup stuff
@@ -40,6 +42,7 @@
 - (NSArray *)chordsAtIndexes:(NSIndexSet *)indexes;
 - (VChord *)lastChord;
 - (NSUInteger)countOfChords;
+- (bool)hasBarAtIndex:(NSUInteger)index;
 
 // alter the tab
 - (void)insertNoteAtIndex:(NSUInteger)index
@@ -63,6 +66,7 @@
 - (void)replaceChordsAtIndexes:(NSIndexSet *)indexes
                     withChords:(NSArray *)array;
 - (void)extend;
+- (void)toggleBarAtIndex:(NSUInteger)index;
 
 // convert tab data to text
 + (NSString *)getNoteTextForString:(NSString *)fretText;

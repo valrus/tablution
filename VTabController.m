@@ -49,6 +49,10 @@
                 forKeyPath:@"chords" 
                    options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
                    context:NULL];
+    [tablature addObserver:self
+                forKeyPath:@"bars"
+                   options:0
+                   context:NULL];
 }
 
 #pragma mark -
@@ -105,6 +109,14 @@
     [[tabDoc undoManager] setActionName:NSLocalizedString(@"Replace Selected Chords", @"replace selection undo")];
     [tablature replaceChordsAtIndexes:[tabView selectedIndexes]
                            withChords:chordArray];
+}
+
+- (void)toggleMeasureBar
+{
+    [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
+     toggleBarAtIndex:[tabView focusChordIndex]];
+    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Undo Toggle Measure Bar", @"toggle bar undo")];
+    [tablature toggleBarAtIndex:[tabView focusChordIndex]];
 }
 
 #pragma mark Note-level changes
