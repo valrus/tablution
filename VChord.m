@@ -54,8 +54,8 @@
     NSArray *fretStringsArray;
     NSArray *fretNumsArray;
     fretStringsArray = [chordString componentsSeparatedByString:@" "];
-    if ([fretStringsArray count] == numStrings) {
-        fretNumsArray = [fretStringsArray valueForKey:@"intValue"];
+    if ([fretStringsArray count] >= numStrings) {
+        fretNumsArray = [[fretStringsArray subarrayWithRange:NSMakeRange(0, numStrings)] valueForKey:@"intValue"];
         return [VChord chordWithArray:fretNumsArray];
     }
     else {

@@ -43,19 +43,33 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
     return [self initWithStrings:numStrings];
 }
 
-+ (VTablature *)tablatureWithString:(NSString *)tabText
+- (void)addFeaturesFromTextArray:(NSArray *)textArray
+                         atIndex:(NSUInteger)index
+{
+    for (NSString *featureText in textArray) {
+        if ([featureText isEqual:@"|"]) {
+            // TODO: In general this shouldn't toggle
+            [self toggleBarAtIndex:index];
+        }
+    }
+}
+
++ (VTablature *)tablatureFromText:(NSString *)tabText
 {
     VTablature *newTab = [[VTablature alloc] init];
     NSArray *chordTexts = [tabText componentsSeparatedByString:@"\n"];
     for (NSString *chordText in chordTexts) {
-        [newTab addChordFromString:chordText];
+        if ([chordText length] == 0) {
+            break;
+        }
+        NSArray *fretStringsArray = [chordText componentsSeparatedByString:@" "];
+        if ([fretStringsArray count] >= [newTab numStrings]) {
+            [newTab addFeaturesFromTextArray:[fretStringsArray subarrayWithRange:NSMakeRange([newTab numStrings],
+                                                                                             [fretStringsArray count] - [newTab numStrings])]
+                                     atIndex:[newTab countOfChords]];
+        }
+        [newTab addChordFromArray:[[fretStringsArray subarrayWithRange:NSMakeRange(0, [newTab numStrings])] valueForKey:@"intValue"]];
     }
-    [[newTab chords] addObserver:newTab
-              toObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [newTab countOfChords])]
-                      forKeyPath:@"notes"
-                         options:0
-                         context:NULL];
-    [[newTab measureBars] addObserver:newTab forKeyPath:@"bars" options:0 context:NULL];
     return newTab;
 }
 
@@ -302,7 +316,15 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
 
 - (NSString *)toSerialString
 {
-    return [[self asArrayOfStrings] componentsJoinedByString:@"\n"];
+    NSMutableString *tabString = [NSMutableString string];
+    for (NSUInteger chordIndex = 0; chordIndex < [self countOfChords]; ++chordIndex) {
+        [tabString appendString:[[self objectInChordsAtIndex:chordIndex] asText]];
+        if ([self hasBarAtIndex:chordIndex]) {
+            [tabString appendString:@" |"];
+        }
+        [tabString appendString:@"\n"];
+    }
+    return [NSString stringWithString:tabString];
 }
 
 - (NSArray *)asArrayOfStrings
@@ -370,7 +392,7 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
                               ofType:(NSString *)type
 {
     if ([type isEqualToString:VTABLATURE_DATA_UTI]) {
-        return [VTablature tablatureWithString:propertyList];
+        return [VTablature tablatureFromText:propertyList];
     }
     return nil;
 }

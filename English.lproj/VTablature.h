@@ -25,7 +25,7 @@
 // setup stuff
 - (id)initWithStrings:(NSUInteger)num;
 - (id)init;
-+ (VTablature *)tablatureWithString:(NSString *)tabText;
++ (VTablature *)tablatureFromText:(NSString *)tabText;
 + (VTablature *)tablatureWithChords:(NSArray *)chords;
 
 // teardown stuff

@@ -63,7 +63,7 @@
                error:(NSError **)outError
 {
     NSString *tabText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    VTablature *tablatureToLoad = [VTablature tablatureWithString:tabText];
+    VTablature *tablatureToLoad = [VTablature tablatureFromText:tabText];
     [self setTablature:tablatureToLoad];
         
     if ( *outError != NULL ) {
