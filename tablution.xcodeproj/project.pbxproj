@@ -14,9 +14,6 @@
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		D41C8EC315856EE400CD11FB /* VTablatureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D41C8EC215856EE400CD11FB /* VTablatureTests.m */; };
-		D41C8EC61585746600CD11FB /* VTablature.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C3D730E931A1B00C33AA5 /* VTablature.m */; };
-		D41C8F0A15857AC700CD11FB /* VChord.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D54D8713C939AA00399D9B /* VChord.m */; };
-		D41C8F0B15857AC900CD11FB /* VNote.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D54D8A13C940F400399D9B /* VNote.m */; };
 		D41C8F0C15857CAF00CD11FB /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4EB0D9B1438DBB40034F48C /* SenTestingKit.framework */; };
 		D426E9CB14C35A4A0031F745 /* TLSelectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D426E9CA14C35A4A0031F745 /* TLSelectionManager.m */; };
 		D43327560F0D83650081EBAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D43327550F0D83650081EBAF /* InfoPlist.strings */; };
@@ -370,9 +367,6 @@
 			files = (
 				D4EB0DB014395DA20034F48C /* TablutionTests.m in Sources */,
 				D41C8EC315856EE400CD11FB /* VTablatureTests.m in Sources */,
-				D41C8EC61585746600CD11FB /* VTablature.m in Sources */,
-				D41C8F0A15857AC700CD11FB /* VChord.m in Sources */,
-				D41C8F0B15857AC900CD11FB /* VNote.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
