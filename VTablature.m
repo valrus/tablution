@@ -19,6 +19,7 @@
 @synthesize numStrings;
 
 NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
+NSUInteger const HUMAN_READABLE_WIDTH = 80;
 
 #pragma mark -
 #pragma mark Init and setup
@@ -309,9 +310,11 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
 														   startingAtIndex:0]];
 }
 
-+ (NSString *)getNoteTextForValue:(NSUInteger)fretNum
++ (NSString *)getNoteTextForValue:(NSInteger)fretNum
 {
-    return [self getNoteTextForString:[NSString stringWithFormat:@"%lu", fretNum]];
+    return [self getNoteTextForString:(fretNum >= 0
+                                       ? [NSString stringWithFormat:@"%lu", fretNum]
+                                       : @"-")];
 }
 
 - (NSString *)toSerialString
@@ -327,15 +330,43 @@ NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
     return [NSString stringWithString:tabString];
 }
 
+- (NSString *)toHumanReadableString
+{
+    NSMutableString *tabString = [NSMutableString string];
+    NSMutableString *oneLineString = [NSMutableString stringWithCapacity:81];
+    NSUInteger chordIndex = 0;
+    NSUInteger startingIndexForThisRow = 0;
+    NSUInteger stringIndex = 0;
+    while ((chordIndex < [self countOfChords]) && (stringIndex < [self numStrings])) {
+        NSString *nextPiece = [VTablature getNoteTextForValue:[self fretAtIndex:chordIndex
+                                                                       onString:stringIndex]];
+        if ([oneLineString length] + [nextPiece length] < HUMAN_READABLE_WIDTH) {
+            [oneLineString appendString:nextPiece];
+            chordIndex++;
+        }
+        else {
+            [oneLineString appendString:@"\n"];
+            [tabString appendString:oneLineString];
+            [oneLineString setString:@""];
+            if (stringIndex + 1 < [self numStrings]) {
+                // go to next string, "carriage return" for chord index
+                stringIndex++;
+                chordIndex = startingIndexForThisRow;
+            }
+            else if (chordIndex < [self countOfChords]) {
+                // next line of tab
+                [tabString appendString:@"\n"];
+                startingIndexForThisRow = chordIndex;
+                stringIndex = 0;
+            }
+        }
+    }
+    return tabString;
+}
+
 - (NSArray *)asArrayOfStrings
 {
     return [chords valueForKey:@"asText"];
-}
-
-- (NSString *)asText
-{
-    // FIXME: stub
-    return @"";
 }
 
 #pragma mark -

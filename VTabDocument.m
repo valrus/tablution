@@ -43,18 +43,32 @@
     return @"TabDocument";
 }
 
+//-(NSDocument *)object prepareSavePanel:(NSSavePanel *)savePanel
+//{
+//
+//}
+
 // saving and loading
 
 - (NSData *)dataOfType:(NSString *)typeName
                  error:(NSError **)outError
 {
-    NSString *tabText = [tablature toSerialString];
-    NSLog(@"Saving doc with string: %@", tabText);
-    NSData *data = [tabText dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data;
+    NSString *tabText;
+
+    NSLog(@"Saving doc of type: %@", typeName);
+    if ([typeName  isEqual: @"com.valrusware.tablature"]) {
+        tabText = [tablature toSerialString];
+    }
+    else if ([typeName  isEqual: @"public.plain-text"]) {
+        tabText = [tablature toHumanReadableString];
+    }
     
     if (!data) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
+
+    data = [tabText dataUsingEncoding:NSUTF8StringEncoding];
 	return data;
 }
 
@@ -74,7 +88,6 @@
 
 - (void)windowControllerDidLoadNib:(NSWindowController *) aController
 {
-    
 }
 
 - (IBAction)copy:(id)sender

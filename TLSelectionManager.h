@@ -72,7 +72,7 @@ typedef NSUInteger TLSelectionManagerModel;
 										 userInfo:(void*)userInfo;
 
 // may return nil
-- (NSInteger)selectionManager:(TLSelectionManager*)manager
+- (NSUInteger)selectionManager:(TLSelectionManager*)manager
               indexUnderPoint:(NSPoint)windowPoint
                      userInfo:(void*)userInfo;
 

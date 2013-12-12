@@ -70,8 +70,9 @@
 
 // convert tab data to text
 + (NSString *)getNoteTextForString:(NSString *)fretText;
-+ (NSString *)getNoteTextForValue:(NSUInteger)fretNum;
++ (NSString *)getNoteTextForValue:(NSInteger)fretNum;
 - (NSString *)toSerialString;
+- (NSString *)toHumanReadableString;
 
 // NSFastEnumeration protocol
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
