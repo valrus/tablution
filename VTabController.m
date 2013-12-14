@@ -332,6 +332,9 @@
         case NSKeyValueChangeRemoval: {
             NSIndexSet *indexes = [change valueForKey:@"indexes"];
             NSUInteger indexForFocusAdjustment = [tabView focusChordIndex] + ([self isInSoloMode] ? 1 : 0);
+            if ([tabView focusChordIndex] >= [[self tablature] countOfChords]) {
+                indexForFocusAdjustment += 1;
+            }
             NSUInteger indexesBeforeFocus = [indexes countOfIndexesInRange:NSMakeRange(0, indexForFocusAdjustment)];
             [tabView setFocusChordIndex:[tabView focusChordIndex] - indexesBeforeFocus];
             break;
