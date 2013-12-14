@@ -141,35 +141,6 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
                 context:NULL];
 }
 
-- (void)addChordFromArray:(NSArray *)chordArray
-{
-    VChord *newChord = [VChord chordWithArray:chordArray];
-    [chords addObject:newChord];
-    [newChord addObserver:self
-               forKeyPath:@"notes"
-                  options:0
-                  context:NULL];
-}
-
-- (void)addChordFromString:(NSString *)chordString
-{
-    VChord *newChord;
-    if ((newChord = [VChord chordWithStrings:numStrings
-                                    fromText:chordString])) {
-        [self insertObject:newChord inChordsAtIndex:[[self chords] count]];
-    }
-    else {
-        // invalid chord
-    }
-}
-
-- (void)deleteNoteAtIndex:(NSUInteger)index
-                 onString:(NSUInteger)stringNum
-{
-    [self insertNote:[VNote blankNote]
-             atIndex:index onString:stringNum];
-}
-
 - (void)removeObjectFromChordsAtIndex:(NSUInteger)index
 {
     if (index < [self countOfChords]) {
@@ -201,6 +172,33 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
 
 #pragma mark -
 #pragma mark Other accessors
+
+# pragma mark Convenience mutators
+
+- (void)addChordFromArray:(NSArray *)chordArray
+{
+    VChord *newChord = [VChord chordWithArray:chordArray];
+    [self insertObject:newChord inChordsAtIndex:[self countOfChords]];
+}
+
+- (void)addChordFromString:(NSString *)chordString
+{
+    VChord *newChord;
+    if ((newChord = [VChord chordWithStrings:numStrings
+                                    fromText:chordString])) {
+        [self insertObject:newChord inChordsAtIndex:[self countOfChords]];
+    }
+    else {
+        // invalid chord
+    }
+}
+
+- (void)deleteNoteAtIndex:(NSUInteger)index
+                 onString:(NSUInteger)stringNum
+{
+    [self insertNote:[VNote blankNote]
+             atIndex:index onString:stringNum];
+}
 
 - (VChord *)lastChord
 {
@@ -294,7 +292,6 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
     VChord *newChord = [VChord chordWithArray:chordArray];
     [self insertObject:newChord
        inChordsAtIndex:index];
-    [newChord addObserver:self forKeyPath:@"notes" options:0 context:NULL];
 }
 
 #pragma mark -
