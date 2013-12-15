@@ -2,8 +2,8 @@
 //  VTabController.m
 //  tablution
 //
-//  Created by The Valrus on 9/30/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
+//  Created by Ian McCowan on 9/30/08.
+//  Copyright 2008 valrusware. All rights reserved.
 //
 
 #import "VTabController.h"

@@ -2,7 +2,7 @@
 //  VTabDocument.h
 //  tablution
 //
-//  Created by The Valrus on 9/30/08.
+//  Created by Ian McCowan on 9/30/08.
 //  Copyright valrusware 2008. All rights reserved.
 //
 
