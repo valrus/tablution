@@ -24,24 +24,20 @@
 
 #pragma mark - Setup/teardown -
 #pragma mark Setup
-
 - (id)initWithStrings:(NSUInteger)num;
 - (id)init;
 + (VTablature *)tablatureFromText:(NSString *)tabText;
 + (VTablature *)tablatureWithChords:(NSArray *)chords;
 
 #pragma mark Teardown
-
 - (void) dealloc;
 
 #pragma mark - KVC compliance -
 #pragma mark KVC-compliant accessors
-
 - (id)objectInChordsAtIndex:(NSUInteger)index;
 - (NSArray *)chordsAtIndexes:(NSIndexSet *)indexes;
 
 #pragma mark KVC-compliant mutators
-
 - (void)insertObject:(VChord *)chord
      inChordsAtIndex:(NSUInteger)index;
 - (void)insertChords:(NSArray *)chordArray
@@ -53,7 +49,6 @@
 
 #pragma mark - Other accessors and mutators -
 #pragma mark Accessors
-
 - (VNote *)noteAtIndex:(NSUInteger)index
               onString:(NSUInteger)stringNum;
 - (NSInteger)fretAtIndex:(NSUInteger)index
@@ -63,7 +58,6 @@
 - (bool)hasBarAtIndex:(NSUInteger)index;
 
 #pragma mark Mutators
-
 - (void)addChordFromArray:(NSArray *)chordArray;
 - (void)addChordFromString:(NSString *)chordString;
 - (void)deleteNoteAtIndex:(NSUInteger)index
@@ -74,7 +68,6 @@
 - (void)toggleBarAtIndex:(NSUInteger)index;
 
 #pragma mark Note-level mutators
-
 - (void)insertNoteAtIndex:(NSUInteger)index
                  onString:(NSUInteger)stringNum
                    onFret:(NSUInteger)fretNum;
@@ -83,7 +76,6 @@
           onString:(NSUInteger)stringNum;
 
 #pragma mark - Converting to text -
-
 + (NSString *)getNoteTextForString:(NSString *)fretText;
 + (NSString *)getNoteTextForValue:(NSInteger)fretNum;
 - (NSString *)toSerialString;
@@ -91,7 +83,6 @@
 
 #pragma mark - Protocols -
 #pragma mark NSFastEnumeration protocol
-
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                   objects:(id __unsafe_unretained [])stackbuf
                                     count:(NSUInteger)len;

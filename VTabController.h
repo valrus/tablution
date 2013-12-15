@@ -31,17 +31,12 @@
 @property (strong) NSDictionary *keyBindings;
 
 #pragma mark - Setup -
-
 - (void)setupKeyBindings;
 - (void)awakeFromNib;
-
-// Information
-
 - (BOOL)isInSoloMode;
 
 #pragma mark - Editing selectors -
 #pragma mark Chord-level changes
-
 - (void)insertAndSelectChords:(NSArray *)chordArray
                     atIndexes:(NSIndexSet *)indexes;
 - (void)removeChordAtIndex:(NSUInteger)index;
@@ -51,7 +46,6 @@
 - (void)toggleMeasureBar;
 
 #pragma mark Note-level changes
-
 - (void)addOpenString:(NSNumber *)whichString
         reverseString:(BOOL)doReverse;
 - (void)addNoteOnString:(NSNumber *)whichString
@@ -60,7 +54,6 @@
 - (void)deleteFocusNote;
 
 #pragma mark Mode changes
-
 - (void)incrementBaseFret;
 - (void)decrementBaseFret;
 - (void)toggleSoloMode;

@@ -41,8 +41,31 @@
 @synthesize focusNoteString;
 @synthesize mouseDownEvent;
 
-#pragma mark -
-#pragma mark Drawing Functions
+#pragma mark - Setup and init -
+
+- (void)awakeFromNib
+{
+    [self setSelectionManager:[TLSelectionManager new]];
+    [selectionManager setDelegate:self];
+    [tabController setNextResponder:[self nextResponder]];
+    [self setNextResponder:tabController];
+    if ([tablature countOfChords] >= 1) {
+        [selectionManager selectIndexes:[NSIndexSet indexSetWithIndex:0]
+                   byExtendingSelection:NO];
+        [self setFocusChordIndex:0];
+        [self setFocusNoteString:0];
+    }
+    [self setNeedsDisplay:YES];
+    return;
+}
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
+#pragma mark - Drawing methods -
+#pragma mark Utility methods
 
 - (CGFloat)drawOneLineOfStringsAtHeight:(CGFloat)stringHeight
                            withSpaceFor:(NSUInteger)lineLength
@@ -110,12 +133,16 @@
                         usingColor:(NSColor *)selectionColor
 {
     NSRect selectRect;
-    NSIndexSet *thisRangeSelection = [[selectionManager selectedIndexes]
-                                      indexesInRange:chordRange
-                                             options:0
-                                         passingTest:^(NSUInteger idx, BOOL *stop) { return YES; }];
-    NSRange thisRowRange = NSMakeRange([thisRangeSelection firstIndex] - chordRange.location,
-                                       [thisRangeSelection lastIndex] - [thisRangeSelection firstIndex] + 1);
+    NSIndexSet *thisRangeSelection = [
+        [selectionManager selectedIndexes] indexesInRange:chordRange
+                                                  options:0
+                                              passingTest:^(NSUInteger idx, BOOL *stop)
+                                                          { return YES; }
+    ];
+    NSRange thisRowRange = NSMakeRange(
+        [thisRangeSelection firstIndex] - chordRange.location,
+        [thisRangeSelection lastIndex] - [thisRangeSelection firstIndex] + 1
+    );
 
     selectRect.origin = NSMakePoint(topLeft.x + thisRowRange.location * CHORD_SPACE,
                                     topLeft.y);
@@ -174,6 +201,13 @@
     }
 }
 
+- (BOOL)isFlipped
+{
+    return YES;
+}
+
+#pragma mark Top-level drawing methods
+
 - (void)drawTabWithGraphicsContext:(NSGraphicsContext *)theContext
 {
     CGFloat stringHeight = TOP_MARGIN;
@@ -214,71 +248,7 @@
     [startGraphicsContext restoreGraphicsState];
 }
 
-- (BOOL)isFlipped
-{
-    return YES;
-}
-
-- (BOOL)acceptsFirstResponder
-{
-    return YES;
-}
-
-- (void)awakeFromNib
-{
-    [self setSelectionManager:[TLSelectionManager new]];
-    [selectionManager setDelegate:self];
-    [tabController setNextResponder:[self nextResponder]];
-    [self setNextResponder:tabController];
-    if ([tablature countOfChords] >= 1) {
-        [selectionManager selectIndexes:[NSIndexSet indexSetWithIndex:0]
-                   byExtendingSelection:NO];
-        [self setFocusChordIndex:0];
-        [self setFocusNoteString:0];
-    }
-    [self setNeedsDisplay:YES];
-    return;
-}
-
-#pragma mark -
-#pragma mark Selection handling
-
-- (BOOL)hasSelection
-{
-    return ([[selectionManager selectedIndexes] count] > 0);
-}
-
-- (NSIndexSet *)selectedIndexes
-{
-    return [selectionManager selectedIndexes];
-}
-
-- (NSArray *)selectedChords
-{
-    return [tablature chordsAtIndexes:[self selectedIndexes]];
-}
-
-- (void)selectIndexes:(NSIndexSet *)indexes
-{
-    [selectionManager selectIndexes:indexes
-               byExtendingSelection:NO];
-}
-
-- (void)clearSelection
-{
-    [selectionManager selectIndexes:[NSIndexSet indexSet]
-               byExtendingSelection:NO];
-}
-
-- (VChord *)focusChord
-{
-    return [tablature objectInChordsAtIndex:focusChordIndex];
-}
-
-- (VNote *)focusNote
-{
-    return [[self focusChord] objectInNotesAtIndex:focusNoteString];
-}
+#pragma mark Information
 
 - (NSUInteger)chordsPerLine
 {
@@ -297,7 +267,7 @@
         (chordIndex != NO_HIT)) {
         return [tablature objectInChordsAtIndex:chordIndex];
     } else {
-        return nil;    
+        return nil;
     }
 }
 
@@ -339,8 +309,39 @@
     return whichString;
 }
 
-#pragma mark -
-#pragma mark TLSelectionList delegate method
+#pragma mark - Selection handling -
+#pragma mark Accessors
+
+- (BOOL)hasSelection
+{
+    return ([[selectionManager selectedIndexes] count] > 0);
+}
+
+- (NSIndexSet *)selectedIndexes
+{
+    return [selectionManager selectedIndexes];
+}
+
+- (NSArray *)selectedChords
+{
+    return [tablature chordsAtIndexes:[self selectedIndexes]];
+}
+
+#pragma mark Mutators
+
+- (void)selectIndexes:(NSIndexSet *)indexes
+{
+    [selectionManager selectIndexes:indexes
+               byExtendingSelection:NO];
+}
+
+- (void)clearSelection
+{
+    [selectionManager selectIndexes:[NSIndexSet indexSet]
+               byExtendingSelection:NO];
+}
+
+#pragma mark TLSelectionList delegate methods
 
 - (NSUInteger)selectionManager:(TLSelectionManager *)manager
                indexUnderPoint:(NSPoint)windowPoint
@@ -349,14 +350,6 @@
     return [self chordIndexAtPoint:[self convertPoint:windowPoint
                                              fromView:nil]];
 }
-
-//- (BOOL)selectionManagerShouldInitiateDragLater:(TLSelectionManager*)manager
-//									  dragEvent:(NSEvent*)dragEvent
-//								  originalEvent:(NSEvent*)mouseDownEvent
-//									   userInfo:(void*)userInfo
-//{
-//    return YES;
-//}
 
 - (NSIndexSet *)selectionManager:(TLSelectionManager *)manager
                     indexesInBox:(NSRect)windowRect
@@ -390,8 +383,61 @@
 	return YES;
 }
 
-#pragma mark -
-#pragma mark Input Handling
+- (void)selectionManagerDidChangeSelection:(TLSelectionManager*)manager
+{
+    [self setNeedsDisplay:YES];
+}
+
+#pragma mark - Focus handling -
+#pragma mark Accessors
+
+- (VChord *)focusChord
+{
+    return [tablature objectInChordsAtIndex:focusChordIndex];
+}
+
+- (VNote *)focusNote
+{
+    return [[self focusChord] objectInNotesAtIndex:focusNoteString];
+}
+
+#pragma mark Mutators
+
+- (void)focusNextChord
+{
+    focusChordIndex++;
+    [self clearSelection];
+}
+
+- (void)focusPrevChord
+{
+    focusChordIndex--;
+    [self clearSelection];
+}
+
+- (void)focusUpString
+{
+    focusNoteString--;
+}
+
+- (void)focusDownString
+{
+    focusNoteString++;
+}
+
+- (void)reFocusAtPoint:(NSPoint)thePoint
+{
+    focusChordIndex = [self chordIndexAtPoint:thePoint];
+    if (focusChordIndex >= [tablature countOfChords]) {
+        focusChordIndex = [tablature countOfChords] - 1;
+    }
+    
+    focusNoteString = [self stringAtPoint:thePoint];
+    [self setNeedsDisplay:YES];
+}
+
+#pragma mark - Input Handling -
+#pragma mark Keys
 
 - (void)handleBoundKey:(NSString *)keyString
 {
@@ -441,16 +487,7 @@
     [self setNeedsDisplay:YES];
 }
 
-- (void)reFocusAtPoint:(NSPoint)thePoint
-{
-    focusChordIndex = [self chordIndexAtPoint:thePoint];
-    if (focusChordIndex >= [tablature countOfChords]) {
-        focusChordIndex = [tablature countOfChords] - 1;
-    }
-    
-    focusNoteString = [self stringAtPoint:thePoint];
-    [self setNeedsDisplay:YES];
-}
+#pragma mark Mouse
 
 - (void)mouseDown:(NSEvent*)theEvent
 {
@@ -477,33 +514,6 @@
     }
     [self reFocusAtPoint:[self convertPoint:[theEvent locationInWindow]
                                    fromView:nil]];
-}
-
-- (void)selectionManagerDidChangeSelection:(TLSelectionManager*)manager
-{
-    [self setNeedsDisplay:YES];
-}
-
-- (void)focusNextChord
-{
-    focusChordIndex++;
-    [self clearSelection];
-}
-
-- (void)focusPrevChord
-{
-    focusChordIndex--;
-    [self clearSelection];
-}
-
-- (void)focusUpString
-{
-    focusNoteString--;
-}
-
-- (void)focusDownString
-{
-    focusNoteString++;
 }
 
 @end

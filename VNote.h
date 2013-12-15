@@ -20,19 +20,21 @@
 @property (readwrite) NSInteger fret;
 @property (strong) NSDictionary *attrs;
 
+#pragma mark - Setup -
+#pragma mark Constructors
 + (VNote *)noteAtFret:(NSInteger)theFret;
 + (VNote *)blankNote;
 
+#pragma mark Initializers
 - (VNote *)initAtFret:(NSInteger)theFret;
 
+#pragma mark - Information -
+#pragma mark Accessors
 - (NSString *)stringValue;
 - (NSString *)stringValueOrDash;
 
+#pragma mark Other information
 - (BOOL)isEqualToNote:(VNote *)otherNote;
-
 - (BOOL)hasFret;
-
-// - (VChord *)plusNoteOnString:(NSUInteger)stringNum
-//                       atFret:(NSInteger)fretNum;
 
 @end

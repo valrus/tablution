@@ -17,7 +17,8 @@
 @property (readwrite, strong) NSMutableArray *notes;
 @property (readwrite, strong) NSDictionary *attrs;
 
-// construct
+#pragma mark - Setup -
+#pragma mark Constructors
 + (VChord *)chordWithChord:(VChord *)oldChord;
 + (VChord *)chordWithArray:(NSArray *)fretArray;
 + (VChord *)chordWithStrings:(NSUInteger)numStrings
@@ -29,7 +30,7 @@
 + (VChord *)chordWithStrings:(NSUInteger)numStrings
                     fromText:(NSString *)chordString;
 
-// init
+#pragma mark Initializers
 - (VChord *)initWithArray:(NSArray *)fretArray;
 - (VChord *)initWithStrings:(NSUInteger)numStrings
                    withNote:(VNote *)note
@@ -38,14 +39,15 @@
                    withFret:(NSInteger)fret
                    onString:(NSUInteger)string;
 
-// access
+#pragma mark - Accessors and mutators -
+#pragma mark Accessors
 - (VNote *)objectInNotesAtIndex:(NSInteger)stringNum;
 - (NSInteger)fretOnString:(NSUInteger)stringNum;
 - (bool)hasNoteOnString:(NSUInteger)stringNum;
 - (NSString *)asText;
 - (NSIndexSet *)indexesOfChangedNotesFrom:(VChord *)otherChord;
 
-// alter
+#pragma mark Mutators
 - (void)replaceObjectInNotesAtIndex:(NSUInteger)stringNum
                          withObject:(VNote *)note;
 - (void)addFret:(NSInteger)fret
@@ -54,7 +56,7 @@
       inNotesAtIndex:(NSUInteger)stringNum;
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)stringNum;
 
-// NSFastEnumeration protocol
+#pragma mark - NSFastEnumeration protocol -
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                   objects:(id __unsafe_unretained [])stackbuf
                                     count:(NSUInteger)len;

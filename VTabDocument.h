@@ -25,6 +25,7 @@
 @property (strong) NSNumber *baseFret;
 @property (strong) NSNumber *soloMode;
 
+#pragma mark - Pasteboard methods -
 - (IBAction)copy:(id)sender;
 - (IBAction)paste:(id)sender;
 - (IBAction)cut:(id)sender;

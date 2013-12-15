@@ -13,7 +13,7 @@
 @synthesize notes;
 @synthesize attrs;
 
-#pragma mark -
+#pragma mark - Setup -
 #pragma mark Constructors
 
 + (VChord *)chordWithChord:(VChord *)oldChord;
@@ -63,7 +63,6 @@
     }
 }
 
-#pragma mark -
 #pragma mark Initializers
 
 - (VChord *)init
@@ -122,7 +121,7 @@
                         onString:string];
 }
 
-#pragma mark -
+#pragma mark - Accessors and mutators -
 #pragma mark Accessors
 
 - (VNote *)objectInNotesAtIndex:(NSInteger)stringNum
@@ -155,11 +154,11 @@
     assert(stringCount == [[otherChord notes] count]);
     return [[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, stringCount)]
             indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
-                return ![[self objectInNotesAtIndex:idx] isEqualToNote:[otherChord objectInNotesAtIndex:idx]];
+                return ![[self objectInNotesAtIndex:idx]
+                         isEqualToNote:[otherChord objectInNotesAtIndex:idx]];
             }];
 }
 
-#pragma mark -
 #pragma mark Mutators
 
 - (void)replaceObjectInNotesAtIndex:(NSUInteger)stringNum
@@ -187,8 +186,7 @@
     [self addFret:NO_FRET onString:stringNum];
 }
 
-#pragma mark -
-#pragma mark Fast iteration
+#pragma mark - NSFastEnumeration protocol -
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                   objects:(id __unsafe_unretained [])stackbuf

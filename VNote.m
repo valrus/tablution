@@ -13,6 +13,9 @@
 @synthesize fret;
 @synthesize attrs;
 
+#pragma mark - Setup -
+#pragma mark Constructors
+
 + (VNote *)noteAtFret:(NSInteger)theFret;
 {
     return [[self alloc] initAtFret:theFret];
@@ -22,6 +25,8 @@
 {
     return [[self alloc] initAtFret:NO_FRET];
 }
+
+#pragma mark Initializers
 
 - (VNote *)initAtFret:(NSInteger)theFret;
 {
@@ -34,6 +39,9 @@
         return nil;
     }
 }
+
+#pragma mark - Information -
+#pragma mark Accessors
 
 - (NSString *)stringValue
 {
@@ -49,6 +57,8 @@
         return [self stringValue];
     }
 }
+
+#pragma mark Other information
 
 - (BOOL)isEqualToNote:(VNote *)otherNote
 {

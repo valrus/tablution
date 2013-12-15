@@ -19,7 +19,7 @@
 @synthesize tablature;
 @synthesize soloMode;
 
-// setup
+#pragma mark - setup -
 
 - (id)init
 {
@@ -43,12 +43,11 @@
     return @"TabDocument";
 }
 
-//-(NSDocument *)object prepareSavePanel:(NSSavePanel *)savePanel
-//{
-//
-//}
+- (void)windowControllerDidLoadNib:(NSWindowController *) aController
+{
+}
 
-// saving and loading
+#pragma mark - saving and loading -
 
 - (NSData *)dataOfType:(NSString *)typeName
                  error:(NSError **)outError
@@ -86,9 +85,7 @@
     return YES;
 }
 
-- (void)windowControllerDidLoadNib:(NSWindowController *) aController
-{
-}
+#pragma mark - Pasteboard methods -
 
 - (IBAction)copy:(id)sender
 {
