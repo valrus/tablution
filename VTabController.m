@@ -27,7 +27,9 @@
 @synthesize tabDoc;
 @synthesize tablature;
 @synthesize keyBindings;
-    
+
+#pragma mark - Setup -
+
 - (void)setupKeyBindings
 {
     NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"keyBindings"
@@ -55,22 +57,8 @@
                    context:NULL];
 }
 
-#pragma mark -
-#pragma mark Communication
-
-- (BOOL)isInSoloMode
-{
-    return [[tabDoc soloMode] boolValue];
-}
-
 #pragma mark - Editing selectors -
 #pragma mark Chord-level changes
-
-- (void)insertChord:(VChord *)chord
-            atIndex:(NSUInteger)index
-{
-    [tablature insertObject:chord inChordsAtIndex:index];
-}
 
 - (void)insertAndSelectChords:(NSArray *)chordArray
                     atIndexes:(NSIndexSet *)indexes
@@ -206,14 +194,6 @@
 
 #pragma mark Focus changes
 
-- (void)advance
-{
-    if (![self focusNextChord]) {
-        [tablature extend];
-        [self focusNextChord];
-    }
-}
-
 - (bool)focusNextChord
 {
     if ([tabView focusChordIndex] < [tablature countOfChords] - 1) {
@@ -250,8 +230,15 @@
     return NO;
 }
 
-#pragma mark -
-#pragma mark inputManager overrides
+#pragma mark Information
+
+- (BOOL)isInSoloMode
+{
+    return [[tabDoc soloMode] boolValue];
+}
+
+#pragma mark - AppKit overrides -
+#pragma mark inputManager
 
 - (IBAction)moveRight:(id)sender
 {
@@ -295,8 +282,7 @@
     }
 }
 
-#pragma mark -
-#pragma mark KVO observing
+#pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object

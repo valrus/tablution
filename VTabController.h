@@ -30,41 +30,39 @@
 @property (weak) VTablature *tablature;
 @property (strong) NSDictionary *keyBindings;
 
-// Setup
+#pragma mark - Setup -
 
 - (void)setupKeyBindings;
-
 - (void)awakeFromNib;
 
 // Information
 
 - (BOOL)isInSoloMode;
 
-// Editing functions
+#pragma mark - Editing selectors -
+#pragma mark Chord-level changes
 
-- (void)addOpenString:(NSNumber *)whichString
-        reverseString:(BOOL)doReverse;
-
-- (void)addNoteOnString:(NSNumber *)whichString
-                 onFret:(NSNumber *)whichFret
-          reverseString:(BOOL)doReverse;
-
-- (void)insertChord:(VChord *)chord
-            atIndex:(NSUInteger)index;
 - (void)insertAndSelectChords:(NSArray *)chordArray
                     atIndexes:(NSIndexSet *)indexes;
 - (void)removeChordAtIndex:(NSUInteger)index;
 - (void)deleteSelectedChords;
 - (void)replaceSelectedChordsWithChords:(NSArray *)chordArray;
 
+- (void)toggleMeasureBar;
+
+#pragma mark Note-level changes
+
+- (void)addOpenString:(NSNumber *)whichString
+        reverseString:(BOOL)doReverse;
+- (void)addNoteOnString:(NSNumber *)whichString
+                 onFret:(NSNumber *)whichFret
+          reverseString:(BOOL)doReverse;
+- (void)deleteFocusNote;
+
+#pragma mark Mode changes
+
 - (void)incrementBaseFret;
 - (void)decrementBaseFret;
 - (void)toggleSoloMode;
-
-- (void)deleteFocusNote;
-- (bool)focusNextChord;
-- (bool)focusPrevChord;
-
-- (void)toggleMeasureBar;
 
 @end
