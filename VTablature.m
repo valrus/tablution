@@ -21,8 +21,8 @@
 NSString * const VTABLATURE_DATA_UTI = @"com.valrusware.tablature";
 NSUInteger const HUMAN_READABLE_WIDTH = 80;
 
-#pragma mark -
-#pragma mark Init and setup
+#pragma mark - Setup/teardown -
+#pragma mark Setup
 
 - (id)initWithStrings:(NSUInteger)num
 {
@@ -65,11 +65,15 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
         }
         NSArray *fretStringsArray = [chordText componentsSeparatedByString:@" "];
         if ([fretStringsArray count] >= [newTab numStrings]) {
-            [newTab addFeaturesFromTextArray:[fretStringsArray subarrayWithRange:NSMakeRange([newTab numStrings],
-                                                                                             [fretStringsArray count] - [newTab numStrings])]
+            NSRange featureRange = NSMakeRange([newTab numStrings],
+                                               [fretStringsArray count] - [newTab numStrings]);
+            [newTab addFeaturesFromTextArray:[fretStringsArray subarrayWithRange:featureRange]
                                      atIndex:[newTab countOfChords]];
         }
-        [newTab addChordFromArray:[[fretStringsArray subarrayWithRange:NSMakeRange(0, [newTab numStrings])] valueForKey:@"intValue"]];
+        NSRange stringsRange = NSMakeRange(0, [newTab numStrings]);
+        [newTab addChordFromArray:[
+            [fretStringsArray subarrayWithRange:stringsRange] valueForKey:@"intValue"]
+        ];
     }
     return newTab;
 }
@@ -90,7 +94,6 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
     NSLog(@"VTablature sees a change in a chord's %@!", keyPath);
 }
 
-#pragma mark -
 #pragma mark Teardown
 
 - (void) dealloc
@@ -100,8 +103,8 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
                 forKeyPath:@"notes"];
 }
 
-#pragma mark -
-#pragma mark KVC-compliant accessors
+#pragma mark - KVC compliance -
+#pragma mark Accessors
 
 - (id)objectInChordsAtIndex:(NSUInteger)index
 {
@@ -122,6 +125,8 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
 {
     return [chords count]; 
 }
+
+#pragma mark Mutators
 
 - (void)insertObject:(VChord *)chord
      inChordsAtIndex:(NSUInteger)index
@@ -170,34 +175,12 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
              atIndexes:[NSIndexSet indexSetWithIndexesInRange:insertRange]];
 }
 
-#pragma mark -
-#pragma mark Other accessors
+#pragma mark - Other accessors and mutators -
+#pragma mark Accessors
 
-# pragma mark Convenience mutators
-
-- (void)addChordFromArray:(NSArray *)chordArray
+- (bool)hasBarAtIndex:(NSUInteger)index
 {
-    VChord *newChord = [VChord chordWithArray:chordArray];
-    [self insertObject:newChord inChordsAtIndex:[self countOfChords]];
-}
-
-- (void)addChordFromString:(NSString *)chordString
-{
-    VChord *newChord;
-    if ((newChord = [VChord chordWithStrings:numStrings
-                                    fromText:chordString])) {
-        [self insertObject:newChord inChordsAtIndex:[self countOfChords]];
-    }
-    else {
-        // invalid chord
-    }
-}
-
-- (void)deleteNoteAtIndex:(NSUInteger)index
-                 onString:(NSUInteger)stringNum
-{
-    [self insertNote:[VNote blankNote]
-             atIndex:index onString:stringNum];
+    return ([measureBars containsIndex:index]);
 }
 
 - (VChord *)lastChord
@@ -227,12 +210,45 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
     }
 }
 
-- (bool)hasBarAtIndex:(NSUInteger)index
+#pragma mark Mutators
+
+- (void)addChordFromArray:(NSArray *)chordArray
 {
-    return ([measureBars containsIndex:index]);
+    VChord *newChord = [VChord chordWithArray:chordArray];
+    [self insertObject:newChord inChordsAtIndex:[self countOfChords]];
 }
 
-#pragma mark Tab-level mutators
+- (void)addChordFromString:(NSString *)chordString
+{
+    VChord *newChord;
+    if ((newChord = [VChord chordWithStrings:numStrings
+                                    fromText:chordString])) {
+        [self insertObject:newChord inChordsAtIndex:[self countOfChords]];
+    }
+    else {
+        // invalid chord
+    }
+}
+
+- (void)deleteNoteAtIndex:(NSUInteger)index
+                 onString:(NSUInteger)stringNum
+{
+    [self insertNote:[VNote blankNote]
+             atIndex:index onString:stringNum];
+}
+
+- (void)insertChordFromText:(NSString *)chordText
+                    atIndex:(NSUInteger)index
+{
+    VChord *newChord;
+    if ((newChord = [VChord chordWithStrings:numStrings
+                                    fromText:chordText])) {
+        [self insertObject:newChord inChordsAtIndex:[self countOfChords]];
+    }
+    else {
+        // invalid chord
+    }
+}
 
 - (void)extend
 {
@@ -284,14 +300,6 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
              forKeyPath:@"notes"
                 options:0
                 context:NULL];
-}
-
-- (void)insertChordFromArray:(NSArray *)chordArray
-                     atIndex:(NSUInteger)index
-{
-    VChord *newChord = [VChord chordWithArray:chordArray];
-    [self insertObject:newChord
-       inChordsAtIndex:index];
 }
 
 #pragma mark -
@@ -361,12 +369,7 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
     return tabString;
 }
 
-- (NSArray *)asArrayOfStrings
-{
-    return [chords valueForKey:@"asText"];
-}
-
-#pragma mark -
+#pragma mark - Protocols -
 #pragma mark NSFastEnumeration protocol
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
@@ -377,7 +380,6 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
     return [chords countByEnumeratingWithState:state objects:stackbuf count:len];
 }
 
-#pragma mark -
 #pragma mark NSPasteboardWriting protocol
 
 - (NSArray *)writableTypesForPasteboard:(NSPasteboard *)pasteboard
@@ -399,7 +401,6 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
     return nil;
 }
 
-#pragma mark -
 #pragma mark NSPasteboardReading protocol
 
 + (NSArray *)readableTypesForPasteboard:(NSPasteboard *)pasteboard
@@ -425,7 +426,6 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
     return nil;
 }
 
-#pragma mark -
 #pragma mark NSCoding protocol
 
 #define kChords     @"chords"
