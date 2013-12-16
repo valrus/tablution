@@ -37,8 +37,10 @@
 
 #pragma mark - Editing selectors -
 #pragma mark Chord-level changes
-- (void)insertAndSelectChords:(NSArray *)chordArray
-                    atIndexes:(NSIndexSet *)indexes;
+- (void)insertBlankChord;
+- (void)insertChords:(NSArray *)chordArray
+           atIndexes:(NSIndexSet *)indexes
+       andSelectThem:(BOOL)doSelect;
 - (void)removeChordAtIndex:(NSUInteger)index;
 - (void)deleteSelectedChords;
 - (void)replaceSelectedChordsWithChords:(NSArray *)chordArray;

@@ -60,15 +60,36 @@
 #pragma mark - Editing selectors -
 #pragma mark Chord-level changes
 
-- (void)insertAndSelectChords:(NSArray *)chordArray
-                    atIndexes:(NSIndexSet *)indexes
+- (void)insertBlankChord
+{
+    NSMutableArray *emptyFrets = [NSMutableArray arrayWithCapacity:[tablature numStrings]];
+    for (NSUInteger i = 0; i < [tablature numStrings]; ++i) {
+        [emptyFrets addObject:[NSNumber numberWithInt:NO_FRET]];
+    }
+    NSArray *oneBlankChord = [NSArray arrayWithObject:[VChord chordWithArray:emptyFrets]];
+    if ([tabView hasSelection]) {
+        [self replaceSelectedChordsWithChords:oneBlankChord];
+    }
+    else {
+        NSUInteger focusIndex = [tabView focusChordIndex] + ([self isInSoloMode] ? 1 : 0);
+        NSIndexSet *focusIndexSet = [NSIndexSet indexSetWithIndex:focusIndex];
+        [self insertChords:oneBlankChord atIndexes:focusIndexSet andSelectThem:NO];
+    }
+}
+
+- (void)insertChords:(NSArray *)chordArray
+           atIndexes:(NSIndexSet *)indexes
+       andSelectThem:(BOOL)doSelect
 {
     [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
      removeChordsAtIndexes:indexes];
-    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Insert Chords", @"insert chords undo")];
+    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Insert Chords",
+                                                          @"insert chords undo")];
     [tablature insertChords:chordArray
                   atIndexes:indexes];
-    [tabView selectIndexes:indexes];
+    if (doSelect) {
+        [tabView selectIndexes:indexes];
+    }
 }
 
 - (void)removeChordAtIndex:(NSUInteger)index
@@ -80,30 +101,37 @@
 {
     NSIndexSet *selectedIndexes = [tabView selectedIndexes];
     [[[tabDoc undoManager] prepareWithInvocationTarget:self]
-     insertAndSelectChords:[tablature chordsAtIndexes:selectedIndexes]
-     atIndexes:selectedIndexes];
-    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Delete Selection", @"delete selection undo")];
+     insertChords:[tablature chordsAtIndexes:selectedIndexes]
+     atIndexes:selectedIndexes
+     andSelectThem:YES];
+    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Delete Selection",
+                                                          @"delete selection undo")];
     [tablature removeChordsAtIndexes:selectedIndexes];
     [tabView clearSelection];
 }
 
 - (void)replaceSelectedChordsWithChords:(NSArray *)chordArray
 {
-    NSRange selectionRange = NSMakeRange([[tabView selectedIndexes] firstIndex],
+    NSRange insertionRange = NSMakeRange([[tabView selectedIndexes] firstIndex],
                                          [chordArray count]);
     [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
-     replaceChordsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:selectionRange]
+     replaceChordsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:insertionRange]
                  withChords:[tabView selectedChords]];
-    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Replace Selected Chords", @"replace selection undo")];
-    [tablature replaceChordsAtIndexes:[tabView selectedIndexes]
-                           withChords:chordArray];
+    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Replace Selected Chords",
+                                                          @"replace selection undo")];
+    [tablature removeChordsAtIndexes:[tabView selectedIndexes]];
+    
+    NSIndexSet *insertionIndexes = [NSIndexSet indexSetWithIndexesInRange:insertionRange];
+    [tablature insertChords:chordArray atIndexes:insertionIndexes];
+    [tabView selectIndexes:insertionIndexes];
 }
 
 - (void)toggleMeasureBar
 {
     [[[tabDoc undoManager] prepareWithInvocationTarget:tablature]
      toggleBarAtIndex:[tabView focusChordIndex]];
-    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Undo Toggle Measure Bar", @"toggle bar undo")];
+    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Undo Toggle Measure Bar",
+                                                          @"toggle bar undo")];
     [tablature toggleBarAtIndex:[tabView focusChordIndex]];
 }
 
@@ -116,7 +144,8 @@
      insertNote:previousNote
      atIndex:[tabView focusChordIndex]
      onString:whichString];
-    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Change Note", @"change note undo")];
+    [[tabDoc undoManager] setActionName:NSLocalizedString(@"Change Note",
+                                                          @"change note undo")];
 }
 
 - (void)addOpenString:(NSNumber *)whichString
@@ -140,7 +169,8 @@
                                                onString:[whichString intValue]];
             [[[tabDoc undoManager] prepareWithInvocationTarget:self]
              removeChordAtIndex:[tabView focusChordIndex] + 1];
-            [[tabDoc undoManager] setActionName:NSLocalizedString(@"Add Solo Note", @"add solo note undo")];
+            [[tabDoc undoManager] setActionName:NSLocalizedString(@"Add Solo Note",
+                                                                  @"add solo note undo")];
             [tablature insertObject:newChord
                     inChordsAtIndex:[tabView focusChordIndex] + 1];
         }
@@ -309,21 +339,25 @@
             
         case NSKeyValueChangeInsertion: {
             NSIndexSet *indexes = [change valueForKey:@"indexes"];
-            NSUInteger indexForFocusAdjustment = [tabView focusChordIndex] + ([self isInSoloMode] ? 2 : 0);
-            NSUInteger indexesBeforeFocus = [indexes countOfIndexesInRange:NSMakeRange(0, indexForFocusAdjustment)];
+            NSUInteger indexForFocusAdjustment = [tabView focusChordIndex]
+                                                 + ([self isInSoloMode] ? 2 : 0);
+            NSRange rangeBeforeFocus = NSMakeRange(0, indexForFocusAdjustment);
+            NSUInteger indexesBeforeFocus = [indexes countOfIndexesInRange:rangeBeforeFocus];
             [tabView setFocusChordIndex:[tabView focusChordIndex] + indexesBeforeFocus];
             break;
         }
             
         case NSKeyValueChangeRemoval: {
             NSIndexSet *indexes = [change valueForKey:@"indexes"];
-            NSUInteger indexForFocusAdjustment = [tabView focusChordIndex] + ([self isInSoloMode] ? 1 : 0);
+            NSUInteger indexForFocusAdjustment = [tabView focusChordIndex]
+                                                 + ([self isInSoloMode] ? 1 : 0);
             // If focus is on the very last chord, we need to pull it back one farther
             // so it doesn't drop off the end.
             if ([tabView focusChordIndex] >= [[self tablature] countOfChords]) {
                 indexForFocusAdjustment += 1;
             }
-            NSUInteger indexesBeforeFocus = [indexes countOfIndexesInRange:NSMakeRange(0, indexForFocusAdjustment)];
+            NSRange rangeBeforeFocus = NSMakeRange(0, indexForFocusAdjustment);
+            NSUInteger indexesBeforeFocus = [indexes countOfIndexesInRange:rangeBeforeFocus];
             [tabView setFocusChordIndex:[tabView focusChordIndex] - indexesBeforeFocus];
             break;
         }
