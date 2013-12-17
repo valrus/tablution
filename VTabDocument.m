@@ -111,7 +111,8 @@
             [controller replaceSelectedChordsWithChords:[tabToPaste chords]];
         }
         else {
-            NSRange indexRange = NSMakeRange([tabView focusChordIndex], [tabToPaste countOfChords]);
+            NSRange indexRange = NSMakeRange([tabView currFocusChordIndex],
+                                             [tabToPaste countOfChords]);
             [controller insertChords:[tabToPaste chords]
                            atIndexes:[NSIndexSet indexSetWithIndexesInRange:indexRange]
                        andSelectThem:YES];

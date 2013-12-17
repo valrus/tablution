@@ -12,15 +12,15 @@
     IBOutlet VTabController *tabController;
     TLSelectionManager *selectionManager;
     NSUInteger lastFocusChordIndex;
-    NSUInteger focusChordIndex;
+    NSUInteger currFocusChordIndex;
     NSUInteger focusNoteString;
     NSEvent *mouseDownEvent;
 }
 
 @property (weak) VTablature *tablature;
 @property (strong) TLSelectionManager *selectionManager;
-@property (assign, readwrite) NSUInteger lastFocusChordIndex;
-@property (assign, readwrite) NSUInteger focusChordIndex;
+@property (readonly) NSUInteger lastFocusChordIndex;
+@property (assign, readwrite) NSUInteger currFocusChordIndex;
 @property (assign, readwrite) NSUInteger focusNoteString;
 @property (strong) NSEvent *mouseDownEvent;
 
@@ -44,6 +44,7 @@
 
 #pragma mark - Focus handling -
 #pragma mark Accessors
+- (NSUInteger)focusChordIndexForMode;
 - (VChord *)focusChord;
 - (VNote *)focusNote;
 

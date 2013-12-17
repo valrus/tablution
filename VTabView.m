@@ -37,7 +37,7 @@
 @synthesize tablature;
 @synthesize selectionManager;
 @synthesize lastFocusChordIndex;
-@synthesize focusChordIndex;
+@synthesize currFocusChordIndex;
 @synthesize focusNoteString;
 @synthesize mouseDownEvent;
 
@@ -52,7 +52,7 @@
     if ([tablature countOfChords] >= 1) {
         [selectionManager selectIndexes:[NSIndexSet indexSetWithIndex:0]
                    byExtendingSelection:NO];
-        [self setFocusChordIndex:0];
+        currFocusChordIndex = 0;
         [self setFocusNoteString:0];
     }
     [self setNeedsDisplay:YES];
@@ -96,7 +96,7 @@
     CGFloat rectRadius;
     if ([tabController isInSoloMode]) {
         size = NSMakeSize(1.0, [self lineHeight]);
-        origin = NSMakePoint(origin.x + CHORD_SPACE - 1.0, origin.y);
+        origin = NSMakePoint(origin.x - 1.0, origin.y);
         rectRadius = 1.0;
     }
     else {
@@ -193,11 +193,15 @@
             [self drawMeasureBarAfterChordAtPoint:currentCoords];
         }
         currentCoords.y = tabHeight;
-        if (chord == [self focusChord]) {
+        if (chordNum == [self currFocusChordIndex]) {
             [self drawFocusRectForChordAtPoint:currentCoords
                                        inColor:selectionColor];
         }
         currentCoords.x += CHORD_SPACE;
+    }
+    if ([self currFocusChordIndex] == [tablature countOfChords]) {
+        [self drawFocusRectForChordAtPoint:currentCoords
+                                   inColor:selectionColor];
     }
 }
 
@@ -391,27 +395,42 @@
 #pragma mark - Focus handling -
 #pragma mark Accessors
 
+- (NSUInteger)focusChordIndexForMode
+{
+    if ([tabController isInSoloMode] && currFocusChordIndex > 0) {
+        return currFocusChordIndex - 1;
+    }
+    else {
+        return currFocusChordIndex;
+    }
+}
+
 - (VChord *)focusChord
 {
-    return [tablature objectInChordsAtIndex:focusChordIndex];
+    return [tablature objectInChordsAtIndex:currFocusChordIndex];
 }
 
 - (VNote *)focusNote
 {
-    return [[self focusChord] objectInNotesAtIndex:focusNoteString];
+    if ([tabController isInSoloMode]) {
+        return [VNote noteAtFret:NO_FRET];
+    }
+    else {
+        return [[self focusChord] objectInNotesAtIndex:focusNoteString];
+    }
 }
 
 #pragma mark Mutators
 
 - (void)focusNextChord
 {
-    focusChordIndex++;
+    currFocusChordIndex++;
     [self clearSelection];
 }
 
 - (void)focusPrevChord
 {
-    focusChordIndex--;
+    currFocusChordIndex--;
     [self clearSelection];
 }
 
@@ -427,9 +446,9 @@
 
 - (void)reFocusAtPoint:(NSPoint)thePoint
 {
-    focusChordIndex = [self chordIndexAtPoint:thePoint];
-    if (focusChordIndex >= [tablature countOfChords]) {
-        focusChordIndex = [tablature countOfChords] - 1;
+    currFocusChordIndex = [self chordIndexAtPoint:thePoint];
+    if (currFocusChordIndex >= [tablature countOfChords]) {
+        currFocusChordIndex = [tablature countOfChords] - 1;
     }
     
     focusNoteString = [self stringAtPoint:thePoint];
@@ -491,7 +510,7 @@
 
 - (void)mouseDown:(NSEvent*)theEvent
 {
-    [self setLastFocusChordIndex:[self focusChordIndex]];
+    lastFocusChordIndex = currFocusChordIndex;
     [self setMouseDownEvent:theEvent];
     [selectionManager mouseDown:theEvent userInfo:NULL];
     [self reFocusAtPoint:[self convertPoint:[theEvent locationInWindow]
@@ -509,7 +528,7 @@
 {
     [selectionManager mouseUp:theEvent];
     if ([[selectionManager selectedIndexes] count] == 1 &&
-        [[selectionManager selectedIndexes] firstIndex] != [self lastFocusChordIndex]) {
+        [[selectionManager selectedIndexes] firstIndex] != lastFocusChordIndex) {
         [self clearSelection];
     }
     [self reFocusAtPoint:[self convertPoint:[theEvent locationInWindow]
