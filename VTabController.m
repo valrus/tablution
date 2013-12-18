@@ -162,11 +162,12 @@
 {
     NSUInteger stringNum = doReverse ? [tablature numStrings] - [whichString intValue] - 1
                                      : [whichString intValue];
+    NSInteger fretNum = [whichFret intValue] + [[tabDoc baseFret] intValue];
     if ([whichString intValue] < [tablature numStrings]) {
-        if ([[tabDoc soloMode] boolValue]) {
+        if ([self isInSoloMode]) {
             VChord *newChord = [VChord chordWithStrings:[tablature numStrings]
-                                               withFret:[whichFret intValue]
-                                               onString:[whichString intValue]];
+                                               withFret:fretNum
+                                               onString:stringNum];
             [[[tabDoc undoManager] prepareWithInvocationTarget:self]
              removeChordAtIndex:[tabView focusChordIndexForMode] + 1];
             [[tabDoc undoManager] setActionName:NSLocalizedString(@"Add Solo Note",
@@ -179,7 +180,7 @@
                                       onString:stringNum];
             [tablature insertNoteAtIndex:[tabView focusChordIndexForMode]
                                 onString:stringNum
-                                  onFret:[whichFret intValue] + [[tabDoc baseFret] intValue]];
+                                  onFret:fretNum];
             [tabView setFocusNoteString:stringNum];
         }
     }
