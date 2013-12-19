@@ -6,11 +6,11 @@
 //  Copyright valrusware 2008. All rights reserved.
 //
 
+#import "VEditModeTransformer.h"
 #import "VTabDocument.h"
 #import "VTablature.h"
 #import "VTabController.h"
 #import "VTabView.h"
-#import "VEditModeTransformer.h"
 #import "HandyTools.h"
 
 @implementation VTabDocument

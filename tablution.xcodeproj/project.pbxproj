@@ -16,6 +16,7 @@
 		D41C8EC315856EE400CD11FB /* VTablatureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D41C8EC215856EE400CD11FB /* VTablatureTests.m */; };
 		D41C8F0C15857CAF00CD11FB /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4EB0D9B1438DBB40034F48C /* SenTestingKit.framework */; };
 		D426E9CB14C35A4A0031F745 /* TLSelectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D426E9CA14C35A4A0031F745 /* TLSelectionManager.m */; };
+		D42EA9D318627F6B007F65F7 /* VEditModeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = D42EA9D218627F6B007F65F7 /* VEditModeTransformer.m */; };
 		D43327560F0D83650081EBAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D43327550F0D83650081EBAF /* InfoPlist.strings */; };
 		D45EBA80149463AE0067EE82 /* Fraction.m in Sources */ = {isa = PBXBuildFile; fileRef = D45EBA7F149463AD0067EE82 /* Fraction.m */; };
 		D45EBA82149467F30067EE82 /* keyBindings.plist in Resources */ = {isa = PBXBuildFile; fileRef = D45EBA81149467F30067EE82 /* keyBindings.plist */; };
@@ -28,7 +29,6 @@
 		D4EB0DAE14395DA20034F48C /* TablutionTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAD14395DA20034F48C /* TablutionTests.h */; };
 		D4EB0DB014395DA20034F48C /* TablutionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EB0DAF14395DA20034F48C /* TablutionTests.m */; };
 		D4F072391597AA7100CFC587 /* NSIndexSet+SetOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F072381597AA7100CFC587 /* NSIndexSet+SetOperations.m */; };
-		D4F9DF501589A6BA006CAB36 /* VEditModeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F9DF4F1589A6BA006CAB36 /* VEditModeTransformer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +60,8 @@
 		D426E9C914C35A4A0031F745 /* TLSelectionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLSelectionManager.h; sourceTree = "<group>"; };
 		D426E9CA14C35A4A0031F745 /* TLSelectionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLSelectionManager.m; sourceTree = "<group>"; };
 		D42EA9D018627D96007F65F7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		D42EA9D118627F6B007F65F7 /* VEditModeTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEditModeTransformer.h; sourceTree = "<group>"; };
+		D42EA9D218627F6B007F65F7 /* VEditModeTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEditModeTransformer.m; sourceTree = "<group>"; };
 		D43327550F0D83650081EBAF /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D45EBA7E149463AD0067EE82 /* Fraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fraction.h; sourceTree = "<group>"; };
 		D45EBA7F149463AD0067EE82 /* Fraction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Fraction.m; sourceTree = "<group>"; };
@@ -84,8 +86,6 @@
 		D4F072371597AA7100CFC587 /* NSIndexSet+SetOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+SetOperations.h"; sourceTree = "<group>"; };
 		D4F072381597AA7100CFC587 /* NSIndexSet+SetOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+SetOperations.m"; sourceTree = "<group>"; };
 		D4F0723A1597C5D600CFC587 /* HandyTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HandyTools.h; sourceTree = "<group>"; };
-		D4F9DF4E1589A6BA006CAB36 /* VEditModeTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEditModeTransformer.h; sourceTree = "<group>"; };
-		D4F9DF4F1589A6BA006CAB36 /* VEditModeTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEditModeTransformer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,7 +152,8 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				D4F9DF4D1589A64C006CAB36 /* editModeTransformer */,
+				D42EA9D118627F6B007F65F7 /* VEditModeTransformer.h */,
+				D42EA9D218627F6B007F65F7 /* VEditModeTransformer.m */,
 				D426E9C914C35A4A0031F745 /* TLSelectionManager.h */,
 				D426E9CA14C35A4A0031F745 /* TLSelectionManager.m */,
 				D4F0723A1597C5D600CFC587 /* HandyTools.h */,
@@ -228,15 +229,6 @@
 				D4EB0DB114395DA20034F48C /* TablutionTests-Prefix.pch */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		D4F9DF4D1589A64C006CAB36 /* editModeTransformer */ = {
-			isa = PBXGroup;
-			children = (
-				D4F9DF4E1589A6BA006CAB36 /* VEditModeTransformer.h */,
-				D4F9DF4F1589A6BA006CAB36 /* VEditModeTransformer.m */,
-			);
-			name = editModeTransformer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -358,7 +350,7 @@
 				D4D54D8B13C940F400399D9B /* VNote.m in Sources */,
 				D45EBA80149463AE0067EE82 /* Fraction.m in Sources */,
 				D426E9CB14C35A4A0031F745 /* TLSelectionManager.m in Sources */,
-				D4F9DF501589A6BA006CAB36 /* VEditModeTransformer.m in Sources */,
+				D42EA9D318627F6B007F65F7 /* VEditModeTransformer.m in Sources */,
 				D4F072391597AA7100CFC587 /* NSIndexSet+SetOperations.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
