@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VChord.h"
-#import "VNote.h"
+#import "tablution-Swift.h"
 
 @interface VTablature : NSObject <NSPasteboardWriting, NSPasteboardReading>
 {

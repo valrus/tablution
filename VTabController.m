@@ -10,7 +10,7 @@
 #import "VTabDocument.h"
 #import "VTablature.h"
 #import "VTabView.h"
-#import "VNote.h"
+#import "tablution-Swift.h"
 #import "HandyTools.h"
 
 #define MAX_FRET 22
@@ -64,7 +64,7 @@
 {
     NSMutableArray *emptyFrets = [NSMutableArray arrayWithCapacity:[tablature numStrings]];
     for (NSUInteger i = 0; i < [tablature numStrings]; ++i) {
-        [emptyFrets addObject:[NSNumber numberWithInt:NO_FRET]];
+        [emptyFrets addObject:[NSNumber numberWithInt:[VNote NO_FRET]]];
     }
     NSArray *oneBlankChord = [NSArray arrayWithObject:[VChord chordWithArray:emptyFrets]];
     if ([tabView hasSelection]) {

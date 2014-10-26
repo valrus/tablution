@@ -1,7 +1,7 @@
 #import "VTabView.h"
 #import "VTabController.h"
 #import "VTablature.h"
-#import "VNote.h"
+#import "tablution-Swift.h"
 #import "TLSelectionManager.h"
 #import "HandyTools.h"
 
@@ -413,7 +413,7 @@
 - (VNote *)focusNote
 {
     if ([tabController isInSoloMode]) {
-        return [VNote noteAtFret:NO_FRET];
+        return [VNote noteAtFret:[VNote NO_FRET]];
     }
     else {
         return [[self focusChord] objectInNotesAtIndex:focusNoteString];

@@ -8,7 +8,7 @@
 
 #import "VTablature.h"
 #import "VChord.h"
-#import "VNote.h"
+#import "tablution-Swift.h"
 
 #define MAX_STRINGS 7
 

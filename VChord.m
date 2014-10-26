@@ -6,7 +6,7 @@
 //
 
 #import "VChord.h"
-#import "VNote.h"
+#import "tablution-Swift.h"
 
 @implementation VChord
 
@@ -126,8 +126,8 @@
 
 - (VNote *)objectInNotesAtIndex:(NSInteger)stringNum
 {
-    assert(stringNum == NO_FRET || (stringNum >= 0 && stringNum <= [[self notes] count]));
-    if (stringNum == NO_FRET) {
+    assert(stringNum == [VNote NO_FRET] || (stringNum >= 0 && stringNum <= [[self notes] count]));
+    if (stringNum == [VNote NO_FRET]) {
         return nil;
     }
     return [notes objectAtIndex:stringNum];
@@ -140,7 +140,7 @@
 
 - (bool)hasNoteOnString:(NSUInteger)stringNum
 {
-    return ([self fretOnString:stringNum] != NO_FRET);
+    return ([self fretOnString:stringNum] != [VNote NO_FRET]);
 }
 
 - (NSString *)asText
@@ -154,8 +154,7 @@
     assert(stringCount == [[otherChord notes] count]);
     return [[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, stringCount)]
             indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
-                return ![[self objectInNotesAtIndex:idx]
-                         isEqualToNote:[otherChord objectInNotesAtIndex:idx]];
+                return !([self objectInNotesAtIndex:idx] == [otherChord objectInNotesAtIndex:idx]);
             }];
 }
 
@@ -183,7 +182,7 @@
 
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)stringNum
 {
-    [self addFret:NO_FRET onString:stringNum];
+    [self addFret:[VNote NO_FRET] onString:stringNum];
 }
 
 #pragma mark - NSFastEnumeration protocol -
