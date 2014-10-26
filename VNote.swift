@@ -9,7 +9,7 @@
 import Foundation
 
 @objc
-public class VNote {
+public class VNote: NSObject {
 
     var fret:Int
     var attrs:Dictionary<String, String>
@@ -44,8 +44,13 @@ public class VNote {
         }
     }
 
-    func isEqual(otherNote:VNote) -> Bool {
-        return (self.fret == otherNote.fret)
+    public override func isEqual(other:AnyObject?) -> Bool {
+        if let otherNote = other as? VNote {
+            return otherNote.fret == self.fret
+        }
+        else {
+            return false
+        }
     }
 
     func hasFret() -> Bool {
