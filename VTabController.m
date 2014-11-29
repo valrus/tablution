@@ -66,12 +66,12 @@
     for (NSUInteger i = 0; i < [tablature numStrings]; ++i) {
         [emptyFrets addObject:[NSNumber numberWithInt:[VNote NO_FRET]]];
     }
-    NSArray *oneBlankChord = [NSArray arrayWithObject:[VChord chordWithArray:emptyFrets]];
+    NSArray *oneBlankChord = [NSArray arrayWithObject:[VChord chordWithIntArray:emptyFrets]];
     if ([tabView hasSelection]) {
         [self replaceSelectedChordsWithChords:oneBlankChord];
     }
     else {
-        NSUInteger focusIndex = [tabView focusChordIndexForMode] + ([self isInSoloMode] ? 1 : 0);
+        NSUInteger focusIndex = [tabView focusChordIndexForMode] + 1;
         NSIndexSet *focusIndexSet = [NSIndexSet indexSetWithIndex:focusIndex];
         [self insertChords:oneBlankChord atIndexes:focusIndexSet andSelectThem:NO];
     }
@@ -165,9 +165,9 @@
     NSInteger fretNum = [whichFret intValue] + [[tabDoc baseFret] intValue];
     if ([whichString intValue] < [tablature numStrings]) {
         if ([self isInSoloMode]) {
-            VChord *newChord = [VChord chordWithStrings:[tablature numStrings]
-                                               withFret:fretNum
-                                               onString:stringNum];
+            VChord *newChord = [VChord chordWithOneFret:fretNum
+                                               onString:stringNum
+                                             numStrings:[tablature numStrings]];
             [[[tabDoc undoManager] prepareWithInvocationTarget:self]
              removeChordAtIndex:[tabView focusChordIndexForMode] + 1];
             [[tabDoc undoManager] setActionName:NSLocalizedString(@"Add Solo Note",
@@ -176,7 +176,7 @@
                     inChordsAtIndex:[tabView focusChordIndexForMode] + 1];
         }
         else {
-            [self prepareUndoForChangeFromNote:[[tabView focusChord] objectInNotesAtIndex:stringNum]
+            [self prepareUndoForChangeFromNote:[tabView focusChord][stringNum]
                                       onString:stringNum];
             [tablature insertNoteAtIndex:[tabView focusChordIndexForMode]
                                 onString:stringNum
@@ -340,7 +340,7 @@
         case NSKeyValueChangeInsertion: {
             NSIndexSet *indexes = [change valueForKey:@"indexes"];
             NSUInteger indexForFocusAdjustment = [tabView focusChordIndexForMode]
-                                                 + ([self isInSoloMode] ? 3 : 0);
+                                                 + ([self isInSoloMode] ? 3 : 2);
             NSRange rangeBeforeFocus = NSMakeRange(0, indexForFocusAdjustment);
             NSUInteger indexesBeforeFocus = [indexes countOfIndexesInRange:rangeBeforeFocus];
             [tabView setCurrFocusChordIndex:[tabView currFocusChordIndex] + indexesBeforeFocus];

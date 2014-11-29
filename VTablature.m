@@ -7,7 +7,6 @@
 //
 
 #import "VTablature.h"
-#import "VChord.h"
 #import "tablution-Swift.h"
 
 #define MAX_STRINGS 7
@@ -71,7 +70,7 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
                                      atIndex:[newTab countOfChords]];
         }
         NSRange stringsRange = NSMakeRange(0, [newTab numStrings]);
-        [newTab addChordFromArray:[
+        [newTab addChordFromIntArray:[
             [fretStringsArray subarrayWithRange:stringsRange] valueForKey:@"intValue"]
         ];
     }
@@ -193,7 +192,7 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
 {
     VChord *soughtChord;
     if ((soughtChord = [chords objectAtIndex:index])) {
-        return [soughtChord objectInNotesAtIndex:stringNum];
+        return soughtChord[stringNum];
     } else {
         return nil;
     }
@@ -212,9 +211,9 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
 
 #pragma mark Mutators
 
-- (void)addChordFromArray:(NSArray *)chordArray
+- (void)addChordFromIntArray:(NSArray *)chordArray
 {
-    VChord *newChord = [VChord chordWithArray:chordArray];
+    VChord *newChord = [VChord chordWithIntArray:chordArray];
     [self insertObject:newChord inChordsAtIndex:[self countOfChords]];
 }
 
@@ -289,8 +288,7 @@ NSUInteger const HUMAN_READABLE_WIDTH = 80;
     [self willChange:NSKeyValueChangeReplacement
      valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
               forKey:@"chords"];
-    [[chords objectAtIndex:index] replaceObjectInNotesAtIndex:stringNum
-                                                   withObject:note];
+    [chords objectAtIndex:index][stringNum] = note;
     [self didChange:NSKeyValueChangeReplacement
     valuesAtIndexes:[NSIndexSet indexSetWithIndex:index]
              forKey:@"chords"];

@@ -23,7 +23,7 @@
 		D47C3D740E931A1B00C33AA5 /* VTablature.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C3D730E931A1B00C33AA5 /* VTablature.m */; };
 		D47C3D7D0E932AAF00C33AA5 /* VTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C3D7C0E932AAF00C33AA5 /* VTabController.m */; };
 		D48A317E13C2784C00A0594D /* VTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = D48A317D13C2784C00A0594D /* VTabView.m */; };
-		D4D54D8813C939AA00399D9B /* VChord.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D54D8713C939AA00399D9B /* VChord.m */; };
+		D4BE12C819FCB72700ED336C /* VChord.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BE12C719FCB72700ED336C /* VChord.swift */; };
 		D4EB0DAC14395DA20034F48C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAA14395DA20034F48C /* InfoPlist.strings */; };
 		D4EB0DAE14395DA20034F48C /* TablutionTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAD14395DA20034F48C /* TablutionTests.h */; };
 		D4EB0DB014395DA20034F48C /* TablutionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EB0DAF14395DA20034F48C /* TablutionTests.m */; };
@@ -71,8 +71,7 @@
 		D48A317C13C2784C00A0594D /* VTabView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTabView.h; sourceTree = "<group>"; };
 		D48A317D13C2784C00A0594D /* VTabView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTabView.m; sourceTree = "<group>"; };
 		D4B1625D185D4D1200A371B6 /* VTablature.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VTablature.h; sourceTree = "<group>"; };
-		D4D54D8613C939AA00399D9B /* VChord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VChord.h; sourceTree = "<group>"; };
-		D4D54D8713C939AA00399D9B /* VChord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VChord.m; sourceTree = "<group>"; };
+		D4BE12C719FCB72700ED336C /* VChord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VChord.swift; sourceTree = "<group>"; };
 		D4EB0D9B1438DBB40034F48C /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		D4EB0DA214395DA20034F48C /* TablutionTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TablutionTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4EB0DA914395DA20034F48C /* TablutionTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TablutionTests-Info.plist"; sourceTree = "<group>"; };
@@ -164,9 +163,8 @@
 				2A37F4ACFDCFA73011CA2CEA /* VTabDocument.m */,
 				D4B1625D185D4D1200A371B6 /* VTablature.h */,
 				D47C3D730E931A1B00C33AA5 /* VTablature.m */,
-				D4D54D8613C939AA00399D9B /* VChord.h */,
-				D4D54D8713C939AA00399D9B /* VChord.m */,
 				D41715F019FC7F790043561E /* VNote.swift */,
+				D4BE12C719FCB72700ED336C /* VChord.swift */,
 				D41715ED19FC65D30043561E /* tablution-Bridging-Header.h */,
 			);
 			name = Classes;
@@ -272,6 +270,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastTestingUpgradeCheck = 0610;
 				LastUpgradeCheck = 0500;
 			};
 			buildConfigurationList = C05733CB08A9546B00998B17 /* Build configuration list for PBXProject "tablution" */;
@@ -341,10 +340,10 @@
 				D47C3D740E931A1B00C33AA5 /* VTablature.m in Sources */,
 				D47C3D7D0E932AAF00C33AA5 /* VTabController.m in Sources */,
 				D48A317E13C2784C00A0594D /* VTabView.m in Sources */,
-				D4D54D8813C939AA00399D9B /* VChord.m in Sources */,
 				D426E9CB14C35A4A0031F745 /* TLSelectionManager.m in Sources */,
 				D41715F119FC7F790043561E /* VNote.swift in Sources */,
 				D42EA9D318627F6B007F65F7 /* VEditModeTransformer.m in Sources */,
+				D4BE12C819FCB72700ED336C /* VChord.swift in Sources */,
 				D4F072391597AA7100CFC587 /* NSIndexSet+SetOperations.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

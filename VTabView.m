@@ -50,7 +50,7 @@
     [tabController setNextResponder:[self nextResponder]];
     [self setNextResponder:tabController];
     if ([tablature countOfChords] >= 1) {
-        [selectionManager selectIndexes:[NSIndexSet indexSetWithIndex:0]
+        [selectionManager selectIndexes:[NSIndexSet indexSet]
                    byExtendingSelection:NO];
         currFocusChordIndex = 0;
         [self setFocusNoteString:0];
@@ -116,7 +116,8 @@
       normalStyle:(NSDictionary *)tabAttrs
      focusedStyle:(NSDictionary *)focusNoteAttrs
 {
-    for (VNote *note in chord) {
+    for (int i = 0; i < chord.numStrings; ++i) {
+        VNote *note = (VNote *)(chord[i]);
         bool focused = (note == [self focusNote]);
         NSDictionary *attrsToUse = focused ? focusNoteAttrs : tabAttrs;
         NSString *text = [note hasFret] ? [note stringValue] : @"•";
@@ -296,7 +297,7 @@
 {
     VChord *theChord;
     if ((theChord = [self chordAtPoint:thePoint])) {
-        return [theChord objectInNotesAtIndex:[self stringAtPoint:thePoint]];
+        return theChord[[self stringAtPoint:thePoint]];
     }
     else {
         return nil;
@@ -416,7 +417,7 @@
         return [VNote noteAtFret:[VNote NO_FRET]];
     }
     else {
-        return [[self focusChord] objectInNotesAtIndex:focusNoteString];
+        return [self focusChord][focusNoteString];
     }
 }
 

@@ -8,10 +8,8 @@
 
 import Foundation
 
-@objc
 public class VNote: NSObject {
-
-    var fret:Int
+    dynamic var fret:Int
     var attrs:Dictionary<String, String>
     
     class func NO_FRET() -> Int {

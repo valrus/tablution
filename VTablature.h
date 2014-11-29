@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VChord.h"
 #import "tablution-Swift.h"
 
 @interface VTablature : NSObject <NSPasteboardWriting, NSPasteboardReading>
@@ -58,7 +57,7 @@
 - (bool)hasBarAtIndex:(NSUInteger)index;
 
 #pragma mark Mutators
-- (void)addChordFromArray:(NSArray *)chordArray;
+- (void)addChordFromIntArray:(NSArray *)chordArray;
 - (void)addChordFromString:(NSString *)chordString;
 - (void)deleteNoteAtIndex:(NSUInteger)index
                  onString:(NSUInteger)stringNum;
