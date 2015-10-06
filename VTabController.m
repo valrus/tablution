@@ -8,7 +8,6 @@
 
 #import "VTabController.h"
 #import "VTabDocument.h"
-#import "VTablature.h"
 #import "VTabView.h"
 #import "tablution-Swift.h"
 #import "HandyTools.h"
@@ -178,9 +177,9 @@
         else {
             [self prepareUndoForChangeFromNote:[tabView focusChord][stringNum]
                                       onString:stringNum];
-            [tablature insertNoteAtIndex:[tabView focusChordIndexForMode]
-                                onString:stringNum
-                                  onFret:fretNum];
+            [tablature insertNote:[VNote noteAtFret:fretNum]
+                          atIndex:[tabView focusChordIndexForMode]
+                         onString:stringNum];
             [tabView setFocusNoteString:stringNum];
         }
     }

@@ -18,7 +18,7 @@ public class VChord: NSObject, SequenceType {
     }
 
     class func chordWithIntArray(fretNumArray: Array<Int>) -> VChord {
-        var noteArray: Array<VNote> = fretNumArray.map({ VNote(fret: $0) })
+        let noteArray: Array<VNote> = fretNumArray.map({ VNote(fret: $0) })
         return VChord(notes: noteArray)
     }
 
@@ -26,16 +26,16 @@ public class VChord: NSObject, SequenceType {
     class func chordWithOneFret(fret: Int,
                                 onString string: Int,
                                 numStrings: Int) -> VChord {
-        return VChord(notes: Array(map(1...numStrings) { VNote(fret: $0 == string ? fret : VNote.NO_FRET()) }))
+        return VChord(notes: Array((1...numStrings).map { VNote(fret: $0 == string ? fret : VNote.NO_FRET()) }))
     }
     
     class func chordWithStrings(numStrings: Int, fromText text: String) -> VChord? {
         NSLog("Loading chord from string: %@", text)
-        var fretStringsArray: Array<String> = split(text, { $0 == " " })
+        var fretStringsArray: Array<String> = text.characters.split(isSeparator: { $0 == " " }).map { String($0) }
         if fretStringsArray.count >= numStrings {
-            var fretNumsArray:Array<Int> = Array(fretStringsArray[0..<numStrings]).map({
+            let fretNumsArray:Array<Int> = Array(fretStringsArray[0..<numStrings]).map({
                 (fretStr: String) -> Int in
-                if let fret = fretStr.toInt() {
+                if let fret = Int(fretStr) {
                     return fret
                 } else {
                     return VNote.NO_FRET()
@@ -61,7 +61,7 @@ public class VChord: NSObject, SequenceType {
     }
     
     func asText() -> String {
-        return " ".join(self.notes.map({ $0.stringValue() }))
+        return self.notes.map({ $0.stringValue() }).joinWithSeparator(" ")
     }
     
     func numStrings() -> Int {
@@ -81,10 +81,10 @@ public class VChord: NSObject, SequenceType {
         }
     }
     
-    public func generate() -> GeneratorOf<VNote> {
+    public func generate() -> AnyGenerator<VNote> {
         var nextIndex = 0
         
-        return GeneratorOf<VNote> {
+        return anyGenerator {
             if (nextIndex >= self.numStrings()) {
                 return nil
             }

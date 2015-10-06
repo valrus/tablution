@@ -1,6 +1,5 @@
 #import "VTabView.h"
 #import "VTabController.h"
-#import "VTablature.h"
 #import "tablution-Swift.h"
 #import "TLSelectionManager.h"
 #import "HandyTools.h"
@@ -50,7 +49,7 @@
     [tabController setNextResponder:[self nextResponder]];
     [self setNextResponder:tabController];
     if ([tablature countOfChords] >= 1) {
-        [selectionManager selectIndexes:[NSIndexSet indexSet]
+        [selectionManager selectIndexes:[NSIndexSet indexSetWithIndex:0]
                    byExtendingSelection:NO];
         currFocusChordIndex = 0;
         [self setFocusNoteString:0];
@@ -381,7 +380,7 @@
     }
     
     return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(MIN(startIndex, endIndex),
-                                                              abs(endIndex - startIndex) + 1)];
+                                                              labs(endIndex - startIndex) + 1)];
 }
 
 - (BOOL)shouldResetExistingSelection {

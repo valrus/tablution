@@ -8,7 +8,7 @@
 
 #import "VEditModeTransformer.h"
 #import "VTabDocument.h"
-#import "VTablature.h"
+#import "tablution-Swift.h"
 #import "VTabController.h"
 #import "VTabView.h"
 #import "HandyTools.h"
@@ -28,7 +28,7 @@
         NSValueTransformer *transformer = [[VEditModeTransformer alloc] init];
         [NSValueTransformer setValueTransformer:transformer forName:@"VEditModeTransformer"];
         if (tablature == nil) {
-            tablature = [[VTablature alloc] initWithStrings:6];
+            tablature = [[VTablature alloc] initWithNumStrings:6];
             baseFret = [NSNumber numberWithInt:0];
             soloMode = [NSNumber numberWithBool:NO];
             [tablature addChordFromString:@"-1 -1 -1 -1 -1 -1"];
