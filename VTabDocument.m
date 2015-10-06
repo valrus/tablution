@@ -33,7 +33,6 @@
             soloMode = [NSNumber numberWithBool:NO];
             [tablature addChordFromString:@"-1 -1 -1 -1 -1 -1"];
         }
-        [controller setTablature:tablature];
     }
     return self;
 }

@@ -48,14 +48,9 @@
     [selectionManager setDelegate:self];
     [tabController setNextResponder:[self nextResponder]];
     [self setNextResponder:tabController];
-    if ([tablature countOfChords] >= 1) {
-        [selectionManager selectIndexes:[NSIndexSet indexSetWithIndex:0]
-                   byExtendingSelection:NO];
-        currFocusChordIndex = 0;
-        [self setFocusNoteString:0];
-    }
+    currFocusChordIndex = 0;
+    [self setFocusNoteString:0];
     [self setNeedsDisplay:YES];
-    return;
 }
 
 - (BOOL)acceptsFirstResponder
@@ -179,10 +174,12 @@
     [focusNoteAttrs setValue:[NSNumber numberWithFloat:-6.0]
                       forKey:NSStrokeWidthAttributeName];
     NSColor *selectionColor = [NSColor blueColor];
-    [selectionColor set];
-    [self drawSelectionForChordRange:NSMakeRange(firstChord, numChords)
-                       withTopLeftAt:currentCoords
-                          usingColor:selectionColor];
+    if ([self hasSelection]) {
+        [selectionColor set];
+        [self drawSelectionForChordRange:NSMakeRange(firstChord, numChords)
+                           withTopLeftAt:currentCoords
+                              usingColor:selectionColor];
+    }
     for (chordNum = firstChord; chordNum < firstChord + numChords; ++chordNum) {
         VChord *chord = [tablature objectInChordsAtIndex:chordNum];
         [self drawChord:chord
@@ -328,7 +325,12 @@
 
 - (NSArray *)selectedChords
 {
-    return [tablature chordsAtIndexes:[self selectedIndexes]];
+    if ([[self selectedIndexes] count] > 0) {
+        return [tablature chordsAtIndexes:[self selectedIndexes]];
+    }
+    else {
+        return [NSArray array];
+    }
 }
 
 #pragma mark Mutators
