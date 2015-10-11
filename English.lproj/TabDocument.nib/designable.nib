@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1050" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="VTabDocument">
@@ -75,10 +75,10 @@
                 <outlet property="initialFirstResponder" destination="100067" id="100077"/>
             </connections>
         </window>
-        <customObject id="100072" customClass="VTabController">
+        <customObject id="100072" customClass="VTabController" customModule="tablution" customModuleProvider="target">
             <connections>
                 <outlet property="chordModeField" destination="100096" id="100122"/>
-                <outlet property="currentFretField" destination="100079" id="100081"/>
+                <outlet property="currentFretField" destination="100080" id="rn4-Ek-Syr"/>
                 <outlet property="tabDoc" destination="-2" id="100093"/>
                 <outlet property="tabView" destination="100067" id="100095"/>
             </connections>

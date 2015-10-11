@@ -1,5 +1,4 @@
 #import "VTabView.h"
-#import "VTabController.h"
 #import "tablution-Swift.h"
 #import "TLSelectionManager.h"
 #import "HandyTools.h"
@@ -348,6 +347,8 @@
 }
 
 #pragma mark TLSelectionList delegate methods
+
+// Note: Things that return NSUInteger should return Int if possible?
 
 - (NSUInteger)selectionManager:(TLSelectionManager *)manager
                indexUnderPoint:(NSPoint)windowPoint

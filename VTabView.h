@@ -17,7 +17,7 @@
     NSEvent *mouseDownEvent;
 }
 
-@property (weak) VTablature *tablature;
+@property (weak, readwrite) VTablature *tablature;
 @property (strong) TLSelectionManager *selectionManager;
 @property (readonly) NSUInteger lastFocusChordIndex;
 @property (assign, readwrite) NSUInteger currFocusChordIndex;

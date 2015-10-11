@@ -119,16 +119,19 @@ let MAX_FRET = 22
         }
     }
     
-    func addOpenString(whichString: Int, reverseString doReverse: Bool) {
-        self.addNoteOnString(whichString, onFret: 0, reverseString: doReverse)
+    func addOpenString(whichString: NSNumber, reverseString doReverse: Bool) {
+        let stringAsInt = whichString.integerValue
+        self.addNoteOnString(stringAsInt, onFret: 0, reverseString: doReverse)
     }
     
-    func addNoteOnString(whichString: Int, onFret whichFret: Int, reverseString doReverse: Bool) {
-        var stringNum: Int = doReverse ? tablature!.numStrings - whichString - 1 : whichString
-        var fretNum: Int = whichFret + Int(tabDoc!.baseFret.intValue)
-        if whichString < tablature!.numStrings {
+    func addNoteOnString(whichString: NSNumber, onFret whichFret: NSNumber, reverseString doReverse: Bool) {
+        let stringAsInt = whichString.integerValue
+        let fretAsInt = whichFret.integerValue
+        let stringNum: Int = doReverse ? tablature!.numStrings - stringAsInt - 1 : stringAsInt
+        let fretNum: Int = fretAsInt + Int(tabDoc!.baseFret.intValue)
+        if stringAsInt < tablature!.numStrings {
             if self.isInSoloMode() {
-                var newChord: VChord = VChord.chordWithOneFret(fretNum, onString: stringNum, numStrings: tablature!.numStrings)
+                let newChord: VChord = VChord.chordWithOneFret(fretNum, onString: stringNum, numStrings: tablature!.numStrings)
                 if let undoManager = tabDoc!.undoManager as NSUndoManager? {
                     undoManager.prepareWithInvocationTarget(self).removeChordAtIndex(Int(tabView!.focusChordIndexForMode()) + 1)
                     undoManager.setActionName(NSLocalizedString("Add Solo Note", comment: "add solo note undo"))
@@ -141,5 +144,171 @@ let MAX_FRET = 22
                 tabView!.focusNoteString = UInt(stringNum)
             }
         }
+    }
+    
+    func deleteFocusNote() {
+        let currentNote: VNote = tabView!.focusNote()
+        if currentNote.hasFret() {
+            self.prepareUndoForChangeFromNote(currentNote, onString: Int(tabView!.focusNoteString))
+            tablature!.deleteNoteAtIndex(Int(tabView!.focusChordIndexForMode()), onString: Int(tabView!.focusNoteString))
+        }
+    }
+    
+    // MARK: Mode changes
+    
+    func incrementBaseFret() {
+        let currentFret: Int = Int(tabDoc!.baseFret.intValue)
+        if currentFret < MAX_FRET {
+            tabDoc!.baseFret = NSNumber(int: currentFret + 1)
+        }
+    }
+    
+    func decrementBaseFret() {
+        let currentFret: Int = Int(tabDoc!.baseFret.intValue)
+        if currentFret > 0 {
+            let newFret: Int32 = Int32(currentFret - 1)
+            tabDoc!.baseFret = NSNumber(int: newFret)
+        }
+    }
+
+    func toggleSoloMode() {
+        let currentMode: Bool = tabDoc!.soloMode.boolValue
+        tabDoc!.soloMode = NSNumber(bool: !currentMode)
+        tabView!.clearSelection()
+        tabView!.focusNoteString = currentMode ? 0 : 1
+    }
+    
+    // MARK: Focus changes
+    
+    func focusNextChord() -> Bool {
+        if Int(tabView!.focusChordIndexForMode()) < tablature!.countOfChords() - 1 {
+            tabView!.focusNextChord()
+            return true
+        }
+        return false
+    }
+    
+    func focusPrevChord() -> Bool {
+        if tabView!.currFocusChordIndex > 0 {
+            tabView!.focusPrevChord()
+            return true
+        }
+        return false
+    }
+    
+    func focusUpString() -> Bool {
+        if tabView!.focusNoteString > 0 {
+            tabView!.focusUpString()
+            return true
+        }
+        return false
+    }
+    
+    func focusDownString() -> Bool {
+        if Int(tabView!.focusNoteString) < tablature!.numStrings - 1 {
+            tabView!.focusDownString()
+            return true
+        }
+        return false
+    }
+    
+    // MARK: Information
+    
+    func isInSoloMode() -> Bool {
+        return tabDoc!.soloMode.boolValue
+    }
+
+    // MARK: - AppKit overrides -
+    
+    // MARK: inputManager
+    
+    @IBAction override public func moveRight(sender: AnyObject?) {
+        self.focusNextChord()
+    }
+    
+    @IBAction override public func moveLeft(sender: AnyObject?) {
+        self.focusPrevChord()
+    }
+    
+    @IBAction override public func moveUp(sender: AnyObject?) {
+        self.focusUpString()
+    }
+    
+    @IBAction override public func moveDown(sender: AnyObject?) {
+        self.focusDownString()
+    }
+    
+    @IBAction override public func deleteForward(sender: AnyObject?) {
+        self.deleteFocusNote()
+    }
+    
+    @IBAction override public func deleteBackward(sender: AnyObject?) {
+        if tabView!.hasSelection() {
+            self.deleteSelectedChords()
+        }
+        else {
+            if tabView!.currFocusChordIndex > 0 {
+                if let undoManager = tabDoc!.undoManager as NSUndoManager? {
+                    if let undoTarget = undoManager.prepareWithInvocationTarget(tablature!) as? VTablature {
+                        undoTarget.insertObject(tablature!.objectInChordsAtIndex(Int(tabView!.focusChordIndexForMode())) as! VChord, inChordsAtIndex: Int(tabView!.focusChordIndexForMode()))
+                    }
+                    undoManager.setActionName(NSLocalizedString("Delete Chord", comment: "delete chord undo"))
+                    tablature!.removeObjectFromChordsAtIndex(Int(tabView!.focusChordIndexForMode()))
+                }
+            }
+        }
+    }
+    
+    // MARK: KVO
+    
+    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        NSLog("VTabController sees a change in %@!", keyPath!)
+        guard let changeDict = change else {
+            return
+        }
+        guard let changeKindNumber = changeDict["kind"] as? NSKeyValueChange else {
+            return
+        }
+        switch changeKindNumber {
+        case .Replacement:
+            guard let oldChordArray = changeDict[NSKeyValueChangeOldKey] else {
+                return
+            }
+            guard let newChordArray = changeDict[NSKeyValueChangeNewKey] else {
+                return
+            }
+            if oldChordArray.count == 1 && newChordArray.count == 1 {
+                let oldChord: VChord = oldChordArray[0] as! VChord
+                let newChord: VChord = newChordArray[0] as! VChord
+                let changedNotesIndexes: NSIndexSet = newChord.indexesOfChangedNotesFrom(oldChord)!
+                if changedNotesIndexes.count == 1 {
+                    tabView!.focusNoteString = UInt(changedNotesIndexes.firstIndex)
+                }
+            }
+            
+        case .Insertion:
+            guard let indexes = changeDict["indexes"] as? NSIndexSet else {
+                return
+            }
+            let indexForFocusAdjustment: Int = Int(tabView!.focusChordIndexForMode()) + (self.isInSoloMode() ? 3 : 2)
+            let rangeBeforeFocus: NSRange = NSMakeRange(0, indexForFocusAdjustment)
+            let indexesBeforeFocus: Int = indexes.countOfIndexesInRange(rangeBeforeFocus)
+            tabView!.currFocusChordIndex = UInt(tabView!.currFocusChordIndex) + UInt(indexesBeforeFocus)
+            
+        case .Removal:
+            guard let indexes = changeDict["indexes"] as? NSIndexSet else {
+                return
+            }
+            var indexForFocusAdjustment: Int = Int(tabView!.focusChordIndexForMode()) + (self.isInSoloMode() ? 1 : 0)
+            if Int(tabView!.focusChordIndexForMode()) >= self.tablature!.countOfChords() {
+                indexForFocusAdjustment += 1
+            }
+            let rangeBeforeFocus: NSRange = NSMakeRange(0, indexForFocusAdjustment)
+            let indexesBeforeFocus: Int = indexes.countOfIndexesInRange(rangeBeforeFocus)
+            tabView!.currFocusChordIndex = UInt(tabView!.currFocusChordIndex) - UInt(indexesBeforeFocus)
+            
+        default: break
+        }
+        tabView!.needsDisplay = true
     }
 }
