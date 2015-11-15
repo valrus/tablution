@@ -11,6 +11,7 @@ import Foundation
 let STRING_SPACE: CGFloat = 14.0
 let LINE_SPACE: CGFloat = 24.0
 let LEFT_MARGIN: CGFloat = 16.0
+let TAB_HEADER_WIDTH: CGFloat = 16.0
 let RIGHT_MARGIN: CGFloat = 16.0
 let TOP_MARGIN: CGFloat = 16.0
 let LINE_WIDTH: CGFloat = 2.0
@@ -62,7 +63,7 @@ let CHORD_SPACE: CGFloat = 24.0
         NSColor.lightGrayColor().setStroke()
         for stringNum = 0; stringNum < tablature!.numStrings && stringHeight < self.bounds.size.height; stringNum++ {
             startPoint = NSMakePoint(LEFT_MARGIN, newStringHeight)
-            endPoint = NSMakePoint(LEFT_MARGIN + (CGFloat(lineLength) * CHORD_SPACE), newStringHeight)
+            endPoint = NSMakePoint(LEFT_MARGIN + TAB_HEADER_WIDTH + (CGFloat(lineLength) * CHORD_SPACE), newStringHeight)
             NSBezierPath.strokeLineFromPoint(startPoint, toPoint: endPoint)
             newStringHeight += STRING_SPACE
         }
@@ -87,7 +88,7 @@ let CHORD_SPACE: CGFloat = 24.0
         strokeColor.colorWithAlphaComponent(0.5).setStroke()
         focusPath.stroke()
     }
-
+    
     func drawChord(chord: VChord, withCornerAt topLeft: NSPoint, normalStyle tabAttrs: [String : AnyObject], focusedStyle focusNoteAttrs: [String : AnyObject]) {
         var topLeftForDrawing = topLeft
         for note in chord.notes {
@@ -115,16 +116,25 @@ let CHORD_SPACE: CGFloat = 24.0
         selectionPath.fill()
     }
     
-    func drawMeasureBarAfterChordAtPoint(topLeft: NSPoint) {
+    func drawMeasureBarRightOfPoint(topLeft: NSPoint, rightBy xDistance: CGFloat = CHORD_SPACE) {
         NSBezierPath.setDefaultLineWidth(LINE_WIDTH)
         NSColor.blackColor().setStroke()
-        let startPoint: NSPoint = NSMakePoint(topLeft.x + CHORD_SPACE, topLeft.y)
-        let endPoint: NSPoint = NSMakePoint(topLeft.x + CHORD_SPACE, topLeft.y + self.lineHeight())
+        let startPoint: NSPoint = NSMakePoint(topLeft.x + xDistance, topLeft.y)
+        let endPoint: NSPoint = NSMakePoint(topLeft.x + xDistance, topLeft.y + self.lineHeight())
         NSBezierPath.strokeLineFromPoint(startPoint, toPoint: endPoint)
     }
     
+    func drawTabHeaderLine(withCornerAt topLeft: NSPoint) {
+        var topLeftForDrawing = topLeft
+        for label in tablature!.stringLabels.reverse() {
+            label.drawAtPoint(NSMakePoint(topLeftForDrawing.x, topLeftForDrawing.y), withAttributes: [NSStrokeWidthAttributeName:NSNumber(float: -3.0)])
+            topLeftForDrawing.y += STRING_SPACE
+        }
+        self.drawMeasureBarRightOfPoint(topLeft, rightBy: TAB_HEADER_WIDTH)
+    }
+    
     func drawOneLineOfTabAtHeight(tabHeight: CGFloat, fromChordNumber firstChord: Int, numberOfChords numChords: Int) {
-        var currentCoords: NSPoint = NSMakePoint(LEFT_MARGIN, tabHeight)
+        var currentCoords: NSPoint = NSMakePoint(LEFT_MARGIN + TAB_HEADER_WIDTH, tabHeight)
         var chordNum: Int = firstChord
         let tabAttrs: [String : AnyObject] = [:]
         var focusNoteAttrs: [String : AnyObject] = tabAttrs
@@ -139,7 +149,7 @@ let CHORD_SPACE: CGFloat = 24.0
             let chord: VChord = tablature!.objectInChordsAtIndex(chordNum) as! VChord
             self.drawChord(chord, withCornerAt: currentCoords, normalStyle: tabAttrs, focusedStyle: focusNoteAttrs)
             if tablature!.hasBarAtIndex(chordNum) {
-                self.drawMeasureBarAfterChordAtPoint(currentCoords)
+                self.drawMeasureBarRightOfPoint(currentCoords)
             }
             currentCoords.y = tabHeight
             if chordNum == self.currFocusChordIndex {
@@ -167,6 +177,7 @@ let CHORD_SPACE: CGFloat = 24.0
             }
             tabHeight = stringHeight - NSFont.userFontOfSize(12.0)!.xHeight
             stringHeight = self.drawOneLineOfStringsAtHeight(stringHeight, withSpaceFor: lineLength) + LINE_SPACE
+            self.drawTabHeaderLine(withCornerAt: NSMakePoint(LEFT_MARGIN, tabHeight))
             self.drawOneLineOfTabAtHeight(tabHeight, fromChordNumber: chordsAccommodated, numberOfChords: lineLength)
             chordsAccommodated += lineLength
         } while chordsAccommodated < tablature!.countOfChords() && stringHeight + self.lineHeight() <= self.bounds.size.height

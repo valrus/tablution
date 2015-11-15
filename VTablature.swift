@@ -17,6 +17,7 @@ let VTABLATURE_DATA_UTI = "com.valrusware.tablature"
     private var measureBars: NSMutableIndexSet
     
     var numStrings: Int
+    var stringLabels: [String]
     
     // https://developer.apple.com/library/ios/documentation/Swift/Conceptual/BuildingCocoaApps/AdoptingCocoaDesignPatterns.html
     private var myContext = 0
@@ -25,6 +26,7 @@ let VTABLATURE_DATA_UTI = "com.valrusware.tablature"
     
     init(numStrings: Int = 6, withChords chords: [VChord], withBarsAtIndexes barIndexes: NSMutableIndexSet) {
         self.numStrings = numStrings
+        self.stringLabels = ["E", "A", "D", "G", "B", "e"]
         self.chords = chords
         self.measureBars = barIndexes
     }
@@ -100,45 +102,7 @@ let VTABLATURE_DATA_UTI = "com.valrusware.tablature"
         }
     }
     
-    // MARK: KVC/KVO methods
-    
-    override public class func automaticallyNotifiesObserversForKey(key: String) -> Bool {
-        if key == "soloMode" {
-            return true
-        }
-        return false
-    }
-    
-    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if context == &myContext {
-            NSLog("VTablature sees a change in a chord's %@!", keyPath!)
-        } else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-        }
-    }
-    
-    public func insertChord(chord: VChord, atIndex index: Int) {
-        self.willChange(NSKeyValueChange.Insertion, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
-        self.chords.insert(chord, atIndex: index)
-        self.didChange(NSKeyValueChange.Insertion, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
-        chord.addObserver(self, forKeyPath: "notes", options: NSKeyValueObservingOptions(), context: &myContext)
-    }
-    
-    public func insertChords(chords: [VChord], atIndexes indexes: NSIndexSet, andNotify notify: Bool = true) {
-        var chordIndex : Int = 0
-        if notify {
-            self.willChange(NSKeyValueChange.Insertion, valuesAtIndexes: indexes, forKey: "chords")
-        }
-        indexes.enumerateIndexesWithOptions(NSEnumerationOptions(), usingBlock: {
-            (index: Int, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
-            self.chords.insert(chords[chordIndex], atIndex: index)
-            chords[chordIndex].addObserver(self, forKeyPath: "notes", options: NSKeyValueObservingOptions(), context: &self.myContext)
-            chordIndex += 1
-        })
-        if notify {
-            self.didChange(NSKeyValueChange.Insertion, valuesAtIndexes: indexes, forKey: "chords")
-        }
-    }
+    // MARK: - Accessors -
     
     public func objectInChordsAtIndex(index: Int) -> AnyObject {
         return self.chords[index]
@@ -146,34 +110,6 @@ let VTABLATURE_DATA_UTI = "com.valrusware.tablature"
 
     public func chordsAtIndexes(indexes: NSIndexSet) -> Array<VChord> {
         return (self.chords as NSArray).objectsAtIndexes(indexes) as! Array<VChord>
-    }
-
-    public func removeChordAtIndex(index: Int) {
-        self.willChange(NSKeyValueChange.Removal, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
-        self.chords[index].removeObserver(self, forKeyPath: "notes")
-        self.chords.removeAtIndex(index)
-        self.didChange(NSKeyValueChange.Removal, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
-    }
-    
-    public func removeChordsAtIndexes(indexes: NSIndexSet, andNotify notify: Bool = true) {
-        if notify {
-            self.willChange(NSKeyValueChange.Removal, valuesAtIndexes: indexes, forKey: "chords")
-        }
-        indexes.sort(>).forEach({
-            self.chords[$0].removeObserver(self, forKeyPath: "notes")
-            self.chords.removeAtIndex($0)
-        })
-        if notify {
-            self.didChange(NSKeyValueChange.Removal, valuesAtIndexes: indexes, forKey: "chords")
-        }
-    }
-    
-    public func replaceChordsAtIndexes(indexes: NSIndexSet, withChords chords: [VChord]) {
-        self.willChange(NSKeyValueChange.Replacement, valuesAtIndexes: indexes, forKey: "chords")
-        self.removeChordsAtIndexes(indexes, andNotify: false)
-        let indexRange: NSRange = NSMakeRange(indexes.firstIndex, indexes.count)
-        self.insertChords(chords, atIndexes:(NSIndexSet(indexesInRange: indexRange)), andNotify: false)
-        self.didChange(NSKeyValueChange.Replacement, valuesAtIndexes: indexes, forKey: "chords")
     }
     
     public func countOfChords() -> Int {
@@ -198,49 +134,7 @@ let VTABLATURE_DATA_UTI = "com.valrusware.tablature"
         return nil
     }
     
-    func addChordFromIntArray(intArray: Array<Int>) {
-        self.insertChord(VChord.chordWithIntArray(intArray), atIndex: self.chords.count)
-    }
-    
-    func addChordFromString(str: String) {
-        self.insertChord(VChord.chordWithStrings(self.numStrings, fromText: str)!, atIndex: self.chords.count)
-    }
-    
-    func insertNote(note: VNote, atIndex index: Int, onString stringNum: Int) {
-        self.chords[index].removeObserver(self, forKeyPath: "notes")
-        self.willChange(NSKeyValueChange.Replacement, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
-        self.chords[index][stringNum] = note
-        self.didChange(NSKeyValueChange.Replacement, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
-        self.chords[index].addObserver(self, forKeyPath: "notes", options: NSKeyValueObservingOptions(), context: &myContext)
-    }
-    
-    func insertFret(fret: Int, atIndex index: Int, onString stringNum: Int) {
-        self.insertNote(VNote(fret: fret), atIndex: index, onString: stringNum)
-    }
-    
-    func deleteNoteAtIndex(index: Int, onString stringNum: Int) {
-        self.insertNote(VNote.blankNote(), atIndex: index, onString: stringNum)
-    }
-
-    func insertChordFromText(chordText: String, atIndex index: Int) {
-        if let newChord: VChord = VChord.chordWithStrings(self.numStrings, fromText: chordText) {
-            self.insertChord(newChord, atIndex: index)
-        }
-    }
-    
-    func extend() {
-        self.addChordFromIntArray([Int](count: self.numStrings, repeatedValue: VNote.NO_FRET()))
-    }
-    
-    func toggleBarAtIndex(index: Int) {
-        self.willChangeValueForKey("measureBars")
-        if self.measureBars.containsIndex(index) {
-            measureBars.removeIndex(index)
-        } else {
-            measureBars.addIndex(index)
-        }
-        self.didChangeValueForKey("measureBars")
-    }
+    // String conversions
     
     class func getNoteTextForString(fretText: String) -> String {
         // A note with a string marked should look like "-2-" or "-13"
@@ -290,9 +184,127 @@ let VTABLATURE_DATA_UTI = "com.valrusware.tablature"
         return tabString
     }
     
+    // Iteration
+    
     public func generate() -> NSFastGenerator {
         return NSFastGenerator(self.chords)
     }
+    
+    
+    // MARK: - Mutators -
+    
+    // MARK: KVC/KVO and "base" mutators
+    
+    override public class func automaticallyNotifiesObserversForKey(key: String) -> Bool {
+        return false
+    }
+    
+    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if context == &myContext {
+            NSLog("VTablature sees a change in a chord's %@!", keyPath!)
+        } else {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+        }
+    }
+    
+    public func insertChord(chord: VChord, atIndex index: Int) {
+        self.willChange(NSKeyValueChange.Insertion, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
+        self.chords.insert(chord, atIndex: index)
+        self.didChange(NSKeyValueChange.Insertion, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
+        chord.addObserver(self, forKeyPath: "notes", options: NSKeyValueObservingOptions(), context: &myContext)
+    }
+    
+    public func insertChords(chords: [VChord], atIndexes indexes: NSIndexSet, andNotify notify: Bool = true) {
+        var chordIndex : Int = 0
+        if notify {
+            self.willChange(NSKeyValueChange.Insertion, valuesAtIndexes: indexes, forKey: "chords")
+        }
+        indexes.enumerateIndexesWithOptions(NSEnumerationOptions(), usingBlock: {
+            (index: Int, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
+            self.chords.insert(chords[chordIndex], atIndex: index)
+            chords[chordIndex].addObserver(self, forKeyPath: "notes", options: NSKeyValueObservingOptions(), context: &self.myContext)
+            chordIndex += 1
+        })
+        if notify {
+            self.didChange(NSKeyValueChange.Insertion, valuesAtIndexes: indexes, forKey: "chords")
+        }
+    }
+    
+    public func removeChordAtIndex(index: Int) {
+        self.willChange(NSKeyValueChange.Removal, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
+        self.chords[index].removeObserver(self, forKeyPath: "notes")
+        self.chords.removeAtIndex(index)
+        self.didChange(NSKeyValueChange.Removal, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
+    }
+    
+    public func removeChordsAtIndexes(indexes: NSIndexSet, andNotify notify: Bool = true) {
+        if notify {
+            self.willChange(NSKeyValueChange.Removal, valuesAtIndexes: indexes, forKey: "chords")
+        }
+        indexes.sort(>).forEach({
+            self.chords[$0].removeObserver(self, forKeyPath: "notes")
+            self.chords.removeAtIndex($0)
+        })
+        if notify {
+            self.didChange(NSKeyValueChange.Removal, valuesAtIndexes: indexes, forKey: "chords")
+        }
+    }
+    
+    public func replaceChordsAtIndexes(indexes: NSIndexSet, withChords chords: [VChord]) {
+        self.willChange(NSKeyValueChange.Replacement, valuesAtIndexes: indexes, forKey: "chords")
+        self.removeChordsAtIndexes(indexes, andNotify: false)
+        let indexRange: NSRange = NSMakeRange(indexes.firstIndex, indexes.count)
+        self.insertChords(chords, atIndexes:(NSIndexSet(indexesInRange: indexRange)), andNotify: false)
+        self.didChange(NSKeyValueChange.Replacement, valuesAtIndexes: indexes, forKey: "chords")
+    }
+    
+    func insertNote(note: VNote, atIndex index: Int, onString stringNum: Int) {
+        self.chords[index].removeObserver(self, forKeyPath: "notes")
+        self.willChange(NSKeyValueChange.Replacement, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
+        self.chords[index][stringNum] = note
+        self.didChange(NSKeyValueChange.Replacement, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
+        self.chords[index].addObserver(self, forKeyPath: "notes", options: NSKeyValueObservingOptions(), context: &myContext)
+    }
+    
+    // MARK: Auxiliary mutators
+    
+    func addChordFromIntArray(intArray: Array<Int>) {
+        self.insertChord(VChord.chordWithIntArray(intArray), atIndex: self.chords.count)
+    }
+    
+    func addChordFromString(str: String) {
+        self.insertChord(VChord.chordWithStrings(self.numStrings, fromText: str)!, atIndex: self.chords.count)
+    }
+    
+    func insertFret(fret: Int, atIndex index: Int, onString stringNum: Int) {
+        self.insertNote(VNote(fret: fret), atIndex: index, onString: stringNum)
+    }
+    
+    func deleteNoteAtIndex(index: Int, onString stringNum: Int) {
+        self.insertNote(VNote.blankNote(), atIndex: index, onString: stringNum)
+    }
+
+    func insertChordFromText(chordText: String, atIndex index: Int) {
+        if let newChord: VChord = VChord.chordWithStrings(self.numStrings, fromText: chordText) {
+            self.insertChord(newChord, atIndex: index)
+        }
+    }
+    
+    func extend() {
+        self.addChordFromIntArray([Int](count: self.numStrings, repeatedValue: VNote.NO_FRET()))
+    }
+    
+    func toggleBarAtIndex(index: Int) {
+        self.willChangeValueForKey("measureBars")
+        if self.measureBars.containsIndex(index) {
+            measureBars.removeIndex(index)
+        } else {
+            measureBars.addIndex(index)
+        }
+        self.didChangeValueForKey("measureBars")
+    }
+    
+    // MARK: - Pasteboard -
     
     public func writableTypesForPasteboard(pasteboard: NSPasteboard) -> [String] {
         return [VTABLATURE_DATA_UTI]

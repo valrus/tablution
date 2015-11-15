@@ -78,7 +78,6 @@
 		D4EB0DB114395DA20034F48C /* TablutionTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TablutionTests-Prefix.pch"; sourceTree = "<group>"; };
 		D4F072371597AA7100CFC587 /* NSIndexSet+SetOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+SetOperations.h"; sourceTree = "<group>"; };
 		D4F072381597AA7100CFC587 /* NSIndexSet+SetOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+SetOperations.m"; sourceTree = "<group>"; };
-		D4F0723A1597C5D600CFC587 /* HandyTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HandyTools.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,7 +146,6 @@
 			children = (
 				D426E9C914C35A4A0031F745 /* TLSelectionManager.h */,
 				D426E9CA14C35A4A0031F745 /* TLSelectionManager.m */,
-				D4F0723A1597C5D600CFC587 /* HandyTools.h */,
 				D46EFB0E1BE6F7E1008BFDA9 /* HandyTools.swift */,
 				D4F072371597AA7100CFC587 /* NSIndexSet+SetOperations.h */,
 				D4F072381597AA7100CFC587 /* NSIndexSet+SetOperations.m */,

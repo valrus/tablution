@@ -28,9 +28,9 @@ let MAX_FRET = 22
     // MARK: - Setup -
     
     override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         let transformer: NSValueTransformer = VEditModeTransformer()
         NSValueTransformer.setValueTransformer(transformer, forName: "editModeTransformer")
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
 
     required public init?(coder: NSCoder) {
