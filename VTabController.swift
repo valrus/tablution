@@ -10,7 +10,7 @@ import Foundation
 
 let MAX_FRET = 22
 
-@objc public class VTabController: NSViewController, NSApplicationDelegate {
+@objc public class VTabController: NSViewController {
 
     @IBOutlet weak var tabView: VTabView?
     @IBOutlet weak var currentFretField: NSTextField?
@@ -57,6 +57,12 @@ let MAX_FRET = 22
         self.setupKeyBindings()
         tablature!.addObserver(self, forKeyPath:"chords", options: [NSKeyValueObservingOptions.New, NSKeyValueObservingOptions.Old], context:&myContext)
         tablature!.addObserver(self, forKeyPath:"bars", options: NSKeyValueObservingOptions(rawValue: 0), context:&myContext)
+    }
+    
+    public override func viewDidLoad() {
+        if let appDelegate: VTablutionDelegate = NSApplication.sharedApplication().delegate as? VTablutionDelegate {
+            appDelegate.viewController = self
+        }
     }
 
     // MARK: - Editing selectors -

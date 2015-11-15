@@ -59,8 +59,8 @@ public class VChord: NSObject, SequenceType {
         return self[index]!.fret
     }
     
-    func asText() -> String {
-        return self.notes.map({ $0.stringValue() }).joinWithSeparator(" ")
+    func asText(sep: String = " ") -> String {
+        return self.notes.map({ $0.stringValue() }).joinWithSeparator(sep)
     }
     
     func numStrings() -> Int {

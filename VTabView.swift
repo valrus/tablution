@@ -8,7 +8,6 @@
 
 import Foundation
 
-let STRING_SPACE: CGFloat = 14.0
 let LINE_SPACE: CGFloat = 24.0
 let LEFT_MARGIN: CGFloat = 16.0
 let TAB_HEADER_WIDTH: CGFloat = 16.0
@@ -16,6 +15,8 @@ let RIGHT_MARGIN: CGFloat = 16.0
 let TOP_MARGIN: CGFloat = 16.0
 let LINE_WIDTH: CGFloat = 2.0
 let CHORD_SPACE: CGFloat = 24.0
+let TAB_FONT: NSFont = NSFont.systemFontOfSize(12.0)
+let STRING_SPACE: CGFloat = TAB_FONT.pointSize
 
 @objc public class VTabView: NSView {
     @IBOutlet weak var tabController: VTabController?
@@ -47,7 +48,7 @@ let CHORD_SPACE: CGFloat = 24.0
     }
     
     override public func awakeFromNib() {
-        tabController!.nextResponder = self.nextResponder
+        tabController!.nextResponder = self.window
         self.nextResponder = tabController
         currFocusChordIndex = 0
         focusNoteString = 0
@@ -62,7 +63,7 @@ let CHORD_SPACE: CGFloat = 24.0
         NSBezierPath.setDefaultLineWidth(LINE_WIDTH)
         NSColor.lightGrayColor().setStroke()
         for stringNum = 0; stringNum < tablature!.numStrings && stringHeight < self.bounds.size.height; stringNum++ {
-            startPoint = NSMakePoint(LEFT_MARGIN, newStringHeight)
+            startPoint = NSMakePoint(LEFT_MARGIN + TAB_HEADER_WIDTH, newStringHeight)
             endPoint = NSMakePoint(LEFT_MARGIN + TAB_HEADER_WIDTH + (CGFloat(lineLength) * CHORD_SPACE), newStringHeight)
             NSBezierPath.strokeLineFromPoint(startPoint, toPoint: endPoint)
             newStringHeight += STRING_SPACE
@@ -75,7 +76,7 @@ let CHORD_SPACE: CGFloat = 24.0
         var rectRadius: CGFloat
         var newOrigin: NSPoint = origin
         if tabController!.isInSoloMode() {
-            size = NSMakeSize(1.0, self.lineHeight())
+            size = NSMakeSize(2.0, self.lineHeight())
             newOrigin = NSMakePoint(origin.x - 1.0, origin.y)
             rectRadius = 1.0
         }
@@ -90,6 +91,8 @@ let CHORD_SPACE: CGFloat = 24.0
     }
     
     func drawChord(chord: VChord, withCornerAt topLeft: NSPoint, normalStyle tabAttrs: [String : AnyObject], focusedStyle focusNoteAttrs: [String : AnyObject]) {
+        // This could maybe be done by drawing the chord as a single string with linebreaks, rather than note by note.
+        // But it would require some shenanigans with NSMutableAttributedString to get the focused note to work.
         var topLeftForDrawing = topLeft
         for note in chord.notes {
             let focused: Bool = (note === self.focusNote())
@@ -175,7 +178,7 @@ let CHORD_SPACE: CGFloat = 24.0
             else {
                 lineLength = chordsPerLine
             }
-            tabHeight = stringHeight - NSFont.userFontOfSize(12.0)!.xHeight
+            tabHeight = stringHeight - TAB_FONT.xHeight
             stringHeight = self.drawOneLineOfStringsAtHeight(stringHeight, withSpaceFor: lineLength) + LINE_SPACE
             self.drawTabHeaderLine(withCornerAt: NSMakePoint(LEFT_MARGIN, tabHeight))
             self.drawOneLineOfTabAtHeight(tabHeight, fromChordNumber: chordsAccommodated, numberOfChords: lineLength)
@@ -184,11 +187,26 @@ let CHORD_SPACE: CGFloat = 24.0
     }
     
     public override func drawRect(dirtyRect: NSRect) {
-        let startGraphicsContext: NSGraphicsContext = NSGraphicsContext.currentContext()!
+        let defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+        let tabFontDefault = defaults.valueForKey("tabFont")
+        guard tabFontDefault != nil else {
+            NSLog("Default tab font not set yet. Aborting drawing.")
+            return
+        }
+        guard let fontData = tabFontDefault as? NSData else {
+            fatalError("tabFont user default must be an NSData-encoded NSFont")
+        }
+        guard let tabFont = NSKeyedUnarchiver.unarchiveObjectWithData(fontData) as? NSFont else {
+            fatalError("tabFont user default must be an NSData-encoded NSFont")
+        }
+        guard let startGraphicsContext: NSGraphicsContext = NSGraphicsContext.currentContext() else {
+            return
+        }
         startGraphicsContext.saveGraphicsState()
         NSColor.whiteColor().setFill()
+        tabFont.set()
         NSRectFill(dirtyRect)
-        self.drawTabWithGraphicsContext(startGraphicsContext)
+        self.drawTabWithGraphicsContext(NSGraphicsContext.currentContext() ?? startGraphicsContext)
         startGraphicsContext.restoreGraphicsState()
     }
     
