@@ -81,12 +81,14 @@
                 <outlet property="chordModeField" destination="100096" id="100122"/>
                 <outlet property="currentFretField" destination="100080" id="rn4-Ek-Syr"/>
                 <outlet property="tabDoc" destination="-2" id="100093"/>
-                <outlet property="tabView" destination="100067" id="eKo-sk-vSt"/>
+                <outlet property="tabView" destination="100067" id="Ieb-Kc-hue"/>
+                <outlet property="view" destination="100067" id="UJq-Bm-dRu"/>
             </connections>
         </customObject>
-        <customObject id="-3" userLabel="Application" customClass="NSObject">
+        <customObject id="yce-zN-2VA" customClass="VTablutionDelegate" customModule="tablution" customModuleProvider="target"/>
+        <customObject id="-3" userLabel="Application">
             <connections>
-                <outlet property="delegate" destination="-2" id="100061"/>
+                <outlet property="delegate" destination="yce-zN-2VA" id="4bj-5H-DV7"/>
             </connections>
         </customObject>
         <userDefaultsController representsSharedInstance="YES" id="100098"/>
