@@ -25,12 +25,12 @@
 			<array>
 				<string>com.valrusware.tablature</string>
 			</array>
-            <key>NSExportableTypes</key>
-            <array>
-                <string>public.plain-text</string>
+			<key>NSExportableTypes</key>
+			<array>
+				<string>public.plain-text</string>
 			</array>
-            <key>NSDocumentClass</key>
-			<string>VTabDocument</string>
+			<key>NSDocumentClass</key>
+			<string>tablution.VTabDocument</string>
 		</dict>
 	</array>
 	<key>UTExportedTypeDeclarations</key>

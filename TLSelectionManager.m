@@ -160,20 +160,20 @@ typedef NSUInteger TLSMDragMode;
 	
 	NSIndexSet* indexesBetween = nil;
 	if (anchorAndPreviousSame || [self continuousSelectionModel] == TLSelectionManagerModelFixedPoint) {
-		indexesBetween = [delegate selectionManager:self
-								indexesBetweenIndexes:[self anchorIndexes]
-										 andIndexes:hitIndexes
-										 userInfo:userInfo];
+        indexesBetween = [delegate indexesBetweenIndexes:[self anchorIndexes]
+                                    withSelectionManager:self
+                                              andIndexes:hitIndexes
+                                                userInfo:userInfo];
 	}
 	else {	// assume ([self continuousSelectionModel] == TLSelectionManagerModelAddition)
-		NSIndexSet* anchorResult = [delegate selectionManager:self
-									   indexesBetweenIndexes:[self anchorIndexes]
-												andIndexes:hitIndexes
-												userInfo:userInfo];
-		NSIndexSet* previousResult = [delegate selectionManager:self
-										 indexesBetweenIndexes:[self previousHitIndexes]
-												  andIndexes:hitIndexes
-												  userInfo:userInfo];
+        NSIndexSet* anchorResult = [delegate indexesBetweenIndexes:[self anchorIndexes]
+                                              withSelectionManager:self
+                                                        andIndexes:hitIndexes
+                                                          userInfo:userInfo];
+        NSIndexSet* previousResult = [delegate indexesBetweenIndexes:[self previousHitIndexes]
+                                                withSelectionManager:self
+                                                          andIndexes:hitIndexes
+                                                            userInfo:userInfo];
 		if ([previousResult count] > [anchorResult count]) {
 			[self setAnchorIndexes:[self previousHitIndexes]];
 			indexesBetween = previousResult;
@@ -202,10 +202,10 @@ typedef NSUInteger TLSMDragMode;
 	NSIndexSet* hitIndexes = nil;
 	NSPoint windowPoint = [mouseEvent locationInWindow];
 	if (attemptMultiple && [delegate respondsToSelector:@selector(selectionManager:allIndexesUnderPoint:userInfo:)]) {
-		hitIndexes = [delegate selectionManager:self indexesUnderPoint:windowPoint userInfo:userInfo];
+        hitIndexes = [delegate indexesUnderPoint:windowPoint withSelectionManager:self userInfo:userInfo];
 	}
 	else if ([delegate respondsToSelector:@selector(selectionManager:indexUnderPoint:userInfo:)]) {
-		NSInteger hitIndex = [delegate selectionManager:self indexUnderPoint:windowPoint userInfo:userInfo];
+		NSInteger hitIndex = [delegate indexUnderPoint:windowPoint withSelectionManager:self userInfo:userInfo];
 		if (hitIndex != NO_HIT) {
             hitIndexes = [NSIndexSet indexSetWithIndex:hitIndex];
         }
@@ -321,7 +321,7 @@ typedef NSUInteger TLSMDragMode;
 	
 	NSIndexSet* indexesInBox = nil;
 	if ([[self delegate] respondsToSelector:@selector(selectionManager:indexesInBox:userInfo:)]) {
-		indexesInBox = [[self delegate] selectionManager:self indexesInBox:selectionBox userInfo:userInfo];
+		indexesInBox = [[self delegate] indexesInBox:selectionBox withSelectionManager:self userInfo:userInfo];
 	}
 	else {
 		indexesInBox = [NSIndexSet indexSet];

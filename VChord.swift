@@ -9,7 +9,7 @@
 import Foundation
 
 public class VChord: NSObject, SequenceType {
-    dynamic private var notes: Array<VNote>
+    dynamic var notes: Array<VNote>
     var attrs: Dictionary<String, String>
 
     init(notes: Array<VNote>) {
@@ -26,7 +26,7 @@ public class VChord: NSObject, SequenceType {
     class func chordWithOneFret(fret: Int,
                                 onString string: Int,
                                 numStrings: Int) -> VChord {
-        return VChord(notes: Array((1...numStrings).map { VNote(fret: $0 == string ? fret : VNote.NO_FRET()) }))
+        return VChord(notes: Array((0..<numStrings).map { VNote(fret: $0 == string ? fret : VNote.NO_FRET()) }))
     }
     
     class func chordWithStrings(numStrings: Int, fromText text: String) -> VChord? {
@@ -48,7 +48,6 @@ public class VChord: NSObject, SequenceType {
     
     subscript(index: Int) -> VNote? {
         get {
-            NSLog("%@", self.notes[index])
             return self.notes[index] as VNote
         }
         set(newValue) {

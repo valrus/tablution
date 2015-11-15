@@ -72,25 +72,25 @@ typedef NSUInteger TLSelectionManagerModel;
 										 userInfo:(void*)userInfo;
 
 // may return nil
-- (NSUInteger)selectionManager:(TLSelectionManager*)manager
-              indexUnderPoint:(NSPoint)windowPoint
-                     userInfo:(void*)userInfo;
+- (NSUInteger) indexUnderPoint:(NSPoint)windowPoint
+          withSelectionManager:(TLSelectionManager*)manager
+                      userInfo:(void*)userInfo;
 
 // may return nil or an empty set
-- (NSIndexSet*)selectionManager:(TLSelectionManager*)manager
-              indexesUnderPoint:(NSPoint)windowPoint
-                       userInfo:(void*)userInfo;
+- (NSIndexSet*) indexesUnderPoint:(NSPoint)windowPoint
+             withSelectionManager:(TLSelectionManager*)manager
+                         userInfo:(void*)userInfo;
 
 
-- (NSIndexSet*)selectionManager:(TLSelectionManager*)manager
-          indexesBetweenIndexes:(NSIndexSet*)indexes1
-                     andIndexes:(NSIndexSet*)indexes2
-                       userInfo:(void*)userInfo;
+- (NSIndexSet*) indexesBetweenIndexes:(NSIndexSet*)indexes1
+                 withSelectionManager:(TLSelectionManager*)manager
+                           andIndexes:(NSIndexSet*)indexes2
+                             userInfo:(void*)userInfo;
 
 
-- (NSIndexSet*)selectionManager:(TLSelectionManager*)manager
-                   indexesInBox:(NSRect)windowRect
-                       userInfo:(void*)userInfo;
+- (NSIndexSet*) indexesInBox:(NSRect)windowRect
+        withSelectionManager:(TLSelectionManager*)manager
+                    userInfo:(void*)userInfo;
 
 
 - (BOOL)selectionManagerShouldInitiateDragLater:(TLSelectionManager*)manager
