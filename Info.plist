@@ -12,7 +12,7 @@
 				<string>tabl</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string></string>
+			<string>tablutionDoc.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>TablutionDocument</string>
 			<key>CFBundleTypeOSTypes</key>

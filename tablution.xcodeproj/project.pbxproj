@@ -27,6 +27,7 @@
 		D479EF171BCAE3CD00BA2790 /* VEditModeTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D479EF161BCAE3CD00BA2790 /* VEditModeTransformer.swift */; };
 		D49BD67D1BE6B16300234B4E /* VTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49BD67C1BE6B16300234B4E /* VTabView.swift */; };
 		D4BE12C819FCB72700ED336C /* VChord.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BE12C719FCB72700ED336C /* VChord.swift */; };
+		D4E609131C07956700246E25 /* tablutionDoc.icns in Resources */ = {isa = PBXBuildFile; fileRef = D4E609121C07956700246E25 /* tablutionDoc.icns */; };
 		D4EB0DAC14395DA20034F48C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAA14395DA20034F48C /* InfoPlist.strings */; };
 		D4EB0DAE14395DA20034F48C /* TablutionTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAD14395DA20034F48C /* TablutionTests.h */; };
 		D4EB0DB014395DA20034F48C /* TablutionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EB0DAF14395DA20034F48C /* TablutionTests.m */; };
@@ -73,6 +74,7 @@
 		D479EF161BCAE3CD00BA2790 /* VEditModeTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VEditModeTransformer.swift; sourceTree = "<group>"; };
 		D49BD67C1BE6B16300234B4E /* VTabView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTabView.swift; sourceTree = "<group>"; };
 		D4BE12C719FCB72700ED336C /* VChord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VChord.swift; sourceTree = "<group>"; };
+		D4E609121C07956700246E25 /* tablutionDoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = tablutionDoc.icns; sourceTree = "<group>"; };
 		D4EB0D9B1438DBB40034F48C /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		D4EB0DA214395DA20034F48C /* TablutionTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TablutionTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4EB0DA914395DA20034F48C /* TablutionTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TablutionTests-Info.plist"; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D4E609121C07956700246E25 /* tablutionDoc.icns */,
 				D42EA9D018627D96007F65F7 /* README.md */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
@@ -294,6 +297,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4E609131C07956700246E25 /* tablutionDoc.icns in Resources */,
 				8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */,
 				8D15AC2D0486D014006FF6A4 /* MainMenu.nib in Resources */,
 				8D15AC2E0486D014006FF6A4 /* TabDocument.nib in Resources */,
