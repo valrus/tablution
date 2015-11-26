@@ -406,8 +406,15 @@ let CHORD_SPACE: CGFloat = 24.0
     }
     
     public override func mouseUp(theEvent: NSEvent) {
-        selectionManager!.mouseUp(theEvent)
-        if selectionManager!.selectedIndexes.count == 1 && selectionManager!.selectedIndexes.firstIndex != lastFocusChordIndex {
+        guard let selectionManager = self.selectionManager else {
+            return
+        }
+        selectionManager.mouseUp(theEvent)
+        let selection = selectionManager.selectedIndexes
+        guard selection != nil else {
+            return
+        }
+        if selection.count == 1 && selection.firstIndex != lastFocusChordIndex {
             self.clearSelection()
         }
         self.reFocusAtPoint(self.convertPoint(theEvent.locationInWindow, fromView: nil))

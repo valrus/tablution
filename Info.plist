@@ -28,6 +28,7 @@
 			<key>NSExportableTypes</key>
 			<array>
 				<string>public.plain-text</string>
+				<string>com.valrusware.tablature</string>
 			</array>
 			<key>NSDocumentClass</key>
 			<string>tablution.VTabDocument</string>

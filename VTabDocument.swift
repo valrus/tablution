@@ -89,7 +89,7 @@ import Foundation
             }
         }
     }
-
+    
     @IBAction func cut(sender: AnyObject) {
         self.copy(sender)
         controller!.deleteSelectedChords()
