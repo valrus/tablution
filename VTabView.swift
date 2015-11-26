@@ -15,8 +15,6 @@ let RIGHT_MARGIN: CGFloat = 16.0
 let TOP_MARGIN: CGFloat = 16.0
 let LINE_WIDTH: CGFloat = 2.0
 let CHORD_SPACE: CGFloat = 24.0
-let TAB_FONT: NSFont = NSFont.systemFontOfSize(12.0)
-let STRING_SPACE: CGFloat = TAB_FONT.pointSize
 
 @objc public class VTabView: NSView {
     @IBOutlet weak var tabController: VTabController?
@@ -26,6 +24,8 @@ let STRING_SPACE: CGFloat = TAB_FONT.pointSize
     var focusNoteString: Int = 0
     var mouseDownEvent: NSEvent?
     var tablature: VTablature?
+    var tabFont: NSFont = NSFont.systemFontOfSize(12.0)
+    
     public override var acceptsFirstResponder: Bool {
         get { return true }
     }
@@ -53,6 +53,23 @@ let STRING_SPACE: CGFloat = TAB_FONT.pointSize
         currFocusChordIndex = 0
         focusNoteString = 0
         needsDisplay = true
+        
+        // set tab font from defaults
+        let defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+        let tabFontDefault = defaults.valueForKey("tabFont")
+        guard tabFontDefault != nil else {
+            NSLog("Default tab font not set yet. Aborting drawing.")
+            return
+        }
+        guard let fontData = tabFontDefault as? NSData else {
+            fatalError("tabFont user default must be an NSData-encoded NSFont")
+        }
+        if let tabFontFromDefaults = NSKeyedUnarchiver.unarchiveObjectWithData(fontData) as? NSFont {
+            self.tabFont = tabFontFromDefaults
+        }
+        else {
+            fatalError("tabFont user default must be an NSData-encoded NSFont")
+        }
     }
     
     private func drawOneLineOfStringsAtHeight(stringHeight: CGFloat, withSpaceFor lineLength: Int) -> CGFloat {
@@ -66,7 +83,7 @@ let STRING_SPACE: CGFloat = TAB_FONT.pointSize
             startPoint = NSMakePoint(LEFT_MARGIN + TAB_HEADER_WIDTH, newStringHeight)
             endPoint = NSMakePoint(LEFT_MARGIN + TAB_HEADER_WIDTH + (CGFloat(lineLength) * CHORD_SPACE), newStringHeight)
             NSBezierPath.strokeLineFromPoint(startPoint, toPoint: endPoint)
-            newStringHeight += STRING_SPACE
+            newStringHeight += tabFont.pointSize
         }
         return stringHeight
     }
@@ -101,7 +118,7 @@ let STRING_SPACE: CGFloat = TAB_FONT.pointSize
             if note.hasFret() || focused {
                 text.drawAtPoint(NSMakePoint(topLeftForDrawing.x + CHORD_SPACE / 3, topLeftForDrawing.y), withAttributes: attrsToUse)
             }
-            topLeftForDrawing.y += STRING_SPACE
+            topLeftForDrawing.y += tabFont.pointSize
         }
     }
     
@@ -130,8 +147,11 @@ let STRING_SPACE: CGFloat = TAB_FONT.pointSize
     func drawTabHeaderLine(withCornerAt topLeft: NSPoint) {
         var topLeftForDrawing = topLeft
         for label in tablature!.stringLabels.reverse() {
-            label.drawAtPoint(NSMakePoint(topLeftForDrawing.x, topLeftForDrawing.y), withAttributes: [NSStrokeWidthAttributeName:NSNumber(float: -3.0)])
-            topLeftForDrawing.y += STRING_SPACE
+            label.drawAtPoint(NSMakePoint(topLeftForDrawing.x, topLeftForDrawing.y), withAttributes: [
+                NSFontAttributeName:self.tabFont,
+                NSStrokeWidthAttributeName:NSNumber(float: -3.0)
+            ])
+            topLeftForDrawing.y += tabFont.pointSize
         }
         self.drawMeasureBarRightOfPoint(topLeft, rightBy: TAB_HEADER_WIDTH)
     }
@@ -139,7 +159,7 @@ let STRING_SPACE: CGFloat = TAB_FONT.pointSize
     func drawOneLineOfTabAtHeight(tabHeight: CGFloat, fromChordNumber firstChord: Int, numberOfChords numChords: Int) {
         var currentCoords: NSPoint = NSMakePoint(LEFT_MARGIN + TAB_HEADER_WIDTH, tabHeight)
         var chordNum: Int = firstChord
-        let tabAttrs: [String : AnyObject] = [:]
+        let tabAttrs: [String : AnyObject] = [NSFontAttributeName:self.tabFont]
         var focusNoteAttrs: [String : AnyObject] = tabAttrs
         focusNoteAttrs[NSForegroundColorAttributeName] = NSColor.redColor()
         focusNoteAttrs[NSStrokeWidthAttributeName] = NSNumber(float: -6.0)
@@ -165,7 +185,7 @@ let STRING_SPACE: CGFloat = TAB_FONT.pointSize
         }
     }
     
-    func drawTabWithGraphicsContext(theContext: NSGraphicsContext) {
+    func drawTab() {
         var stringHeight: CGFloat = TOP_MARGIN
         var tabHeight: CGFloat = TOP_MARGIN
         var chordsAccommodated: Int = 0
@@ -178,7 +198,7 @@ let STRING_SPACE: CGFloat = TAB_FONT.pointSize
             else {
                 lineLength = chordsPerLine
             }
-            tabHeight = stringHeight - TAB_FONT.xHeight
+            tabHeight = stringHeight - tabFont.xHeight
             stringHeight = self.drawOneLineOfStringsAtHeight(stringHeight, withSpaceFor: lineLength) + LINE_SPACE
             self.drawTabHeaderLine(withCornerAt: NSMakePoint(LEFT_MARGIN, tabHeight))
             self.drawOneLineOfTabAtHeight(tabHeight, fromChordNumber: chordsAccommodated, numberOfChords: lineLength)
@@ -186,28 +206,23 @@ let STRING_SPACE: CGFloat = TAB_FONT.pointSize
         } while chordsAccommodated < tablature!.countOfChords() && stringHeight + self.lineHeight() <= self.bounds.size.height
     }
     
+    public override func changeFont(senderOrNil: AnyObject?) {
+        let oldFont: NSFont = tabFont
+        guard let sender = senderOrNil as? NSFontManager else {
+            return
+        }
+        if let newFont = sender.convertFont(oldFont) as NSFont? {
+            self.tabFont = newFont
+        }
+        self.needsDisplay = true
+    }
+    
     public override func drawRect(dirtyRect: NSRect) {
-        let defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
-        let tabFontDefault = defaults.valueForKey("tabFont")
-        guard tabFontDefault != nil else {
-            NSLog("Default tab font not set yet. Aborting drawing.")
-            return
-        }
-        guard let fontData = tabFontDefault as? NSData else {
-            fatalError("tabFont user default must be an NSData-encoded NSFont")
-        }
-        guard let tabFont = NSKeyedUnarchiver.unarchiveObjectWithData(fontData) as? NSFont else {
-            fatalError("tabFont user default must be an NSData-encoded NSFont")
-        }
-        guard let startGraphicsContext: NSGraphicsContext = NSGraphicsContext.currentContext() else {
-            return
-        }
-        startGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.saveGraphicsState()
         NSColor.whiteColor().setFill()
-        tabFont.set()
         NSRectFill(dirtyRect)
-        self.drawTabWithGraphicsContext(NSGraphicsContext.currentContext() ?? startGraphicsContext)
-        startGraphicsContext.restoreGraphicsState()
+        self.drawTab()
+        NSGraphicsContext.restoreGraphicsState()
     }
     
     func chordsPerLine() -> CGFloat {
@@ -215,7 +230,7 @@ let STRING_SPACE: CGFloat = TAB_FONT.pointSize
     }
     
     func lineHeight() -> CGFloat {
-        return (CGFloat(tablature!.numStrings) - 0.5) * (STRING_SPACE + LINE_WIDTH)
+        return (CGFloat(tablature!.numStrings) - 0.5) * (tabFont.pointSize + LINE_WIDTH)
     }
     
     func chordAtPoint(thePoint: NSPoint) -> VChord? {
@@ -254,23 +269,25 @@ let STRING_SPACE: CGFloat = TAB_FONT.pointSize
     func stringAtPoint(thePoint: NSPoint) -> Int {
         var y: CGFloat = thePoint.y - TOP_MARGIN
         y -= (y / (self.lineHeight() + LINE_SPACE)) * (self.lineHeight() + LINE_SPACE)
-        let whichString: Int = min(Int(y / STRING_SPACE), tablature!.numStrings - 1)
+        let whichString: Int = min(Int(y / tabFont.pointSize), tablature!.numStrings - 1)
         NSLog("Clicked string: %lu, y = %f", whichString, y)
         return whichString
     }
     
     func hasSelection() -> Bool {
-        if let selection: TLSelectionManager = selectionManager as TLSelectionManager? {
-            return selection.selectedIndexes.count > 0
-        }
-        return false
+        return self.selectedIndexes().count > 0
     }
     
     func selectedIndexes() -> NSIndexSet {
-        if let selection: TLSelectionManager = selectionManager as TLSelectionManager? {
-            return selection.selectedIndexes
+        guard let selectionManager: TLSelectionManager = selectionManager as TLSelectionManager? else {
+            return NSIndexSet()
         }
-        return NSIndexSet()
+        if selectionManager.selectedIndexes != nil {
+            return selectionManager.selectedIndexes
+        }
+        else {
+            return NSIndexSet()
+        }
     }
     
     func selectedChords() -> [AnyObject] {

@@ -21,6 +21,7 @@
 		D439D4F41BC4D95A0075C65D /* VTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D439D4F31BC4D95A0075C65D /* VTabController.swift */; };
 		D45EBA82149467F30067EE82 /* keyBindings.plist in Resources */ = {isa = PBXBuildFile; fileRef = D45EBA81149467F30067EE82 /* keyBindings.plist */; };
 		D464FF2B1BF9066800DA04C4 /* VTablutionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D464FF2A1BF9066800DA04C4 /* VTablutionDelegate.swift */; };
+		D464FF2D1BF9375300DA04C4 /* TablutionPrefs.xib in Resources */ = {isa = PBXBuildFile; fileRef = D464FF2C1BF9375300DA04C4 /* TablutionPrefs.xib */; };
 		D46EFB0F1BE6F7E2008BFDA9 /* HandyTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46EFB0E1BE6F7E1008BFDA9 /* HandyTools.swift */; };
 		D479EF151BCADF7800BA2790 /* VTabDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = D479EF141BCADF7800BA2790 /* VTabDocument.swift */; };
 		D479EF171BCAE3CD00BA2790 /* VEditModeTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D479EF161BCAE3CD00BA2790 /* VEditModeTransformer.swift */; };
@@ -66,6 +67,7 @@
 		D439D4F31BC4D95A0075C65D /* VTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTabController.swift; sourceTree = "<group>"; };
 		D45EBA81149467F30067EE82 /* keyBindings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = keyBindings.plist; sourceTree = "<group>"; };
 		D464FF2A1BF9066800DA04C4 /* VTablutionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTablutionDelegate.swift; sourceTree = "<group>"; };
+		D464FF2C1BF9375300DA04C4 /* TablutionPrefs.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TablutionPrefs.xib; sourceTree = "<group>"; };
 		D46EFB0E1BE6F7E1008BFDA9 /* HandyTools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandyTools.swift; sourceTree = "<group>"; };
 		D479EF141BCADF7800BA2790 /* VTabDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTabDocument.swift; sourceTree = "<group>"; };
 		D479EF161BCAE3CD00BA2790 /* VEditModeTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VEditModeTransformer.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				2A37F4B4FDCFA73011CA2CEA /* TabDocument.nib */,
+				D464FF2C1BF9375300DA04C4 /* TablutionPrefs.xib */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				D45EBA81149467F30067EE82 /* keyBindings.plist */,
 				D43327550F0D83650081EBAF /* InfoPlist.strings */,
@@ -294,6 +297,7 @@
 				8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */,
 				8D15AC2D0486D014006FF6A4 /* MainMenu.nib in Resources */,
 				8D15AC2E0486D014006FF6A4 /* TabDocument.nib in Resources */,
+				D464FF2D1BF9375300DA04C4 /* TablutionPrefs.xib in Resources */,
 				D43327560F0D83650081EBAF /* InfoPlist.strings in Resources */,
 				D45EBA82149467F30067EE82 /* keyBindings.plist in Resources */,
 			);

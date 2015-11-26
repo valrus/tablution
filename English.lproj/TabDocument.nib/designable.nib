@@ -85,12 +85,7 @@
                 <outlet property="view" destination="100067" id="UJq-Bm-dRu"/>
             </connections>
         </customObject>
-        <customObject id="yce-zN-2VA" customClass="VTablutionDelegate" customModule="tablution" customModuleProvider="target"/>
-        <customObject id="-3" userLabel="Application">
-            <connections>
-                <outlet property="delegate" destination="yce-zN-2VA" id="4bj-5H-DV7"/>
-            </connections>
-        </customObject>
+        <customObject id="-3" userLabel="Application"/>
         <userDefaultsController representsSharedInstance="YES" id="100098"/>
     </objects>
 </document>

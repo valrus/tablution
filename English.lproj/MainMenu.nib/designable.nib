@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="14F1021" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1050" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
+        <customObject id="-2" userLabel="File's Owner" customClass="VTablutionDelegate" customModule="tablution" customModuleProvider="target"/>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application">
+            <connections>
+                <outlet property="delegate" destination="whA-mr-1gZ" id="gdl-We-vbc"/>
+            </connections>
+        </customObject>
         <menu title="AMainMenu" systemMenu="main" id="29" userLabel="MainMenu">
             <items>
                 <menuItem title="NewApplication" id="56">
@@ -267,7 +271,11 @@
                 <menuItem title="Format" id="299">
                     <menu key="submenu" title="Format" id="300">
                         <items>
-                            <menuItem title="Show Fonts" keyEquivalent="t" id="344"/>
+                            <menuItem title="Show Fonts" keyEquivalent="t" id="344">
+                                <connections>
+                                    <action selector="showFontMenu:" target="whA-mr-1gZ" id="c9P-rf-7rD"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Show Colors" keyEquivalent="C" id="345">
                                 <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                 <connections>
@@ -331,5 +339,7 @@
                 </menuItem>
             </items>
         </menu>
+        <toolbarItem implicitItemIdentifier="NSToolbarShowFontsItem" id="Yhm-H9-Cfi"/>
+        <customObject id="whA-mr-1gZ" customClass="VTablutionDelegate" customModule="tablution" customModuleProvider="target"/>
     </objects>
 </document>
