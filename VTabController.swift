@@ -15,6 +15,7 @@ let MAX_FRET = 22
     @IBOutlet weak var tabView: VTabView?
     @IBOutlet weak var currentFretField: NSTextField?
     @IBOutlet weak var chordModeField: NSTextField?
+    // FIXME: Almost all uses of this are to get its undo manager. Perhaps just store a ref to that directly?
     @IBOutlet var tabDoc: VTabDocument?
     
     dynamic var baseFret: Int = 0
@@ -143,14 +144,16 @@ let MAX_FRET = 22
     
     // MARK: Note-level changes
     
-    func prepareUndoForChangeFromNote(previousNote: VNote, onString whichString: Int) {
-        if let undoManager = tabDoc!.undoManager as NSUndoManager? {
-            let undoTarget = undoManager.prepareWithInvocationTarget(self)
-            // FIXME: This seems wrong, as it depends on the focus note, which could change before the undo
-            // Also: can we just re-add previousNote directly rather than by its fret?
-            undoTarget.addNoteAtFocus(onString: whichString, onFret: previousNote.fret, reverseString: false)
-            undoManager.setActionName(NSLocalizedString("Change Note", comment: "change note undo"))
+    func prepareUndoForChangeFromNote(atLocation loc: TabLocation) {
+        guard let undoManager = tabDoc!.undoManager as NSUndoManager? else {
+            return
         }
+        guard let note = tablature!.noteAtLocation(loc) else {
+            return
+        }
+        let undoTarget = undoManager.prepareWithInvocationTarget(self)
+        undoTarget.addNoteAtIndex(note, atIndex: loc.index, onString: loc.string)
+        undoManager.setActionName(NSLocalizedString("Change Note", comment: "change note undo"))
     }
     
     func addOpenString(whichString: NSNumber, reverseString doReverse: Bool) {
@@ -158,23 +161,31 @@ let MAX_FRET = 22
         self.addNoteAtFocus(onString: stringAsInt, onFret: 0, reverseString: doReverse)
     }
     
+    // Ugh. This is just here because we can't use addNote from an undoManager
+    // since it involves a struct which is inaccessible from Obj-C.
+    func addNoteAtIndex(note: VNote, atIndex index: Int, onString whichString: Int) {
+        self.addNote(note, atLocation: TabLocation(index: index, string: whichString))
+    }
+    
+    func addNote(note: VNote, atLocation loc: TabLocation) {
+        self.prepareUndoForChangeFromNote(atLocation: loc)
+        tablature!.insertNote(note, atLocation: loc)
+    }
+    
     func addNoteAtFocus(onString whichString: NSNumber, onFret whichFret: NSNumber, reverseString doReverse: Bool) {
         // FIXME: I don't like this doReverse stuff; rather just set the right numbers in keyBindings.plist
-        let stringAsInt = whichString.integerValue
-        let fretAsInt = whichFret.integerValue
-        let stringNum: Int = doReverse ? tablature!.numStrings - stringAsInt - 1 : stringAsInt
-        let fretNum: Int = fretAsInt + baseFret
+        let stringNum: Int = doReverse ? tablature!.numStrings - whichString.integerValue - 1 : whichString.integerValue
+        let fretNum: Int = whichFret.integerValue + baseFret
         guard let focusIndex = tabView?.currFocusChordIndex else {
             return
         }
-        if stringAsInt < tablature!.numStrings {
+        if whichString.integerValue < tablature!.numStrings {
             if self.isInSoloMode() {
                 let newChord: VChord = VChord.chordWithOneFret(fretNum, onString: stringNum, numStrings: tablature!.numStrings)
                 self.insertChords([newChord], atIndexes: NSIndexSet(index: focusIndex), andSelectThem: false)
             }
             else {
-                self.prepareUndoForChangeFromNote(tabView!.focusChord()[stringNum]!, onString: stringNum)
-                tablature!.insertNote(VNote.noteAtFret(fretNum), atIndex: focusIndex, onString: stringNum)
+                self.addNote(VNote.noteAtFret(fretNum), atLocation: TabLocation(index: focusIndex, string: stringNum))
                 tabView!.focusNoteString = stringNum
             }
         }
@@ -183,7 +194,7 @@ let MAX_FRET = 22
     func deleteFocusNote() {
         let currentNote: VNote = tabView!.focusNote()
         if currentNote.hasFret() {
-            self.prepareUndoForChangeFromNote(currentNote, onString: Int(tabView!.focusNoteString))
+            self.prepareUndoForChangeFromNote(atLocation: TabLocation(index: tabView!.currFocusChordIndex, string: tabView!.focusNoteString))
             tablature!.deleteNoteAtIndex(Int(tabView!.currFocusChordIndex), onString: Int(tabView!.focusNoteString))
         }
     }

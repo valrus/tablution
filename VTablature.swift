@@ -263,12 +263,12 @@ public struct TabLocation {
         self.didChange(NSKeyValueChange.Replacement, valuesAtIndexes: indexes, forKey: "chords")
     }
     
-    func insertNote(note: VNote, atIndex index: Int, onString stringNum: Int) {
-        self.chords[index].removeObserver(self, forKeyPath: "notes")
-        self.willChange(NSKeyValueChange.Replacement, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
-        self.chords[index][stringNum] = note
-        self.didChange(NSKeyValueChange.Replacement, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
-        self.chords[index].addObserver(self, forKeyPath: "notes", options: NSKeyValueObservingOptions(), context: &myContext)
+    func insertNote(note: VNote, atLocation loc: TabLocation) {
+        self.chords[loc.index].removeObserver(self, forKeyPath: "notes")
+        self.willChange(NSKeyValueChange.Replacement, valuesAtIndexes: NSIndexSet(index: loc.index), forKey: "chords")
+        self.chords[loc.index][loc.string] = note
+        self.didChange(NSKeyValueChange.Replacement, valuesAtIndexes: NSIndexSet(index: loc.index), forKey: "chords")
+        self.chords[loc.index].addObserver(self, forKeyPath: "notes", options: NSKeyValueObservingOptions(), context: &myContext)
     }
     
     // MARK: Auxiliary mutators
@@ -282,11 +282,11 @@ public struct TabLocation {
     }
     
     func insertFret(fret: Int, atIndex index: Int, onString stringNum: Int) {
-        self.insertNote(VNote(fret: fret), atIndex: index, onString: stringNum)
+        self.insertNote(VNote(fret: fret), atLocation: TabLocation(index: index, string: stringNum))
     }
     
     func deleteNoteAtIndex(index: Int, onString stringNum: Int) {
-        self.insertNote(VNote.blankNote(), atIndex: index, onString: stringNum)
+        self.insertNote(VNote.blankNote(), atLocation: TabLocation(index: index, string: stringNum))
     }
 
     func insertChordFromText(chordText: String, atIndex index: Int) {
