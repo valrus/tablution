@@ -2,21 +2,40 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>l</key>
+	<key>]</key>
 	<array>
-		<string>focusUpString</string>
+		<string>changeFocusNoteMark:</string>
+		<string>p</string>
 	</array>
-	<key>k</key>
+	<key>[</key>
 	<array>
-		<string>focusDownString</string>
+		<string>changeFocusNoteMark:</string>
+		<string>h</string>
 	</array>
 	<key>;</key>
 	<array>
-		<string>focusNextChord</string>
+		<string>changeFocusNoteMark:</string>
+		<string>b</string>
 	</array>
-	<key>j</key>
+	<key>&apos;</key>
 	<array>
-		<string>focusPrevChord</string>
+		<string>changeFocusNoteMark:</string>
+		<string>r</string>
+	</array>
+	<key>/</key>
+	<array>
+		<string>changeFocusNoteMark:</string>
+		<string>/</string>
+	</array>
+	<key>\</key>
+	<array>
+		<string>changeFocusNoteMark:</string>
+		<string>\</string>
+	</array>
+	<key>~</key>
+	<array>
+		<string>changeFocusNoteMark:</string>
+		<string>~</string>
 	</array>
 	<key>1</key>
 	<array>
@@ -162,11 +181,11 @@
 		<integer>5</integer>
 		<integer>3</integer>
 	</array>
-	<key>[</key>
+	<key>&lt;</key>
 	<array>
 		<string>decrementBaseFret</string>
 	</array>
-	<key>]</key>
+	<key>&gt;</key>
 	<array>
 		<string>incrementBaseFret</string>
 	</array>

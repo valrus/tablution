@@ -28,6 +28,7 @@
 		D49BD67D1BE6B16300234B4E /* VTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49BD67C1BE6B16300234B4E /* VTabView.swift */; };
 		D4BE12C819FCB72700ED336C /* VChord.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BE12C719FCB72700ED336C /* VChord.swift */; };
 		D4E609131C07956700246E25 /* tablutionDoc.icns in Resources */ = {isa = PBXBuildFile; fileRef = D4E609121C07956700246E25 /* tablutionDoc.icns */; };
+		D4E609151C07D2F100246E25 /* VNoteMarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E609141C07D2F100246E25 /* VNoteMarks.swift */; };
 		D4EB0DAC14395DA20034F48C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAA14395DA20034F48C /* InfoPlist.strings */; };
 		D4EB0DAE14395DA20034F48C /* TablutionTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D4EB0DAD14395DA20034F48C /* TablutionTests.h */; };
 		D4EB0DB014395DA20034F48C /* TablutionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EB0DAF14395DA20034F48C /* TablutionTests.m */; };
@@ -75,6 +76,7 @@
 		D49BD67C1BE6B16300234B4E /* VTabView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTabView.swift; sourceTree = "<group>"; };
 		D4BE12C719FCB72700ED336C /* VChord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VChord.swift; sourceTree = "<group>"; };
 		D4E609121C07956700246E25 /* tablutionDoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = tablutionDoc.icns; sourceTree = "<group>"; };
+		D4E609141C07D2F100246E25 /* VNoteMarks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VNoteMarks.swift; sourceTree = "<group>"; };
 		D4EB0D9B1438DBB40034F48C /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		D4EB0DA214395DA20034F48C /* TablutionTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TablutionTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4EB0DA914395DA20034F48C /* TablutionTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TablutionTests-Info.plist"; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				D43025261A2AAB0F009F1ED0 /* VTablature.swift */,
 				D41715F019FC7F790043561E /* VNote.swift */,
 				D4BE12C719FCB72700ED336C /* VChord.swift */,
+				D4E609141C07D2F100246E25 /* VNoteMarks.swift */,
 				D41715ED19FC65D30043561E /* tablution-Bridging-Header.h */,
 			);
 			name = Classes;
@@ -346,6 +349,7 @@
 				D46EFB0F1BE6F7E2008BFDA9 /* HandyTools.swift in Sources */,
 				D43025271A2AAB0F009F1ED0 /* VTablature.swift in Sources */,
 				D464FF2B1BF9066800DA04C4 /* VTablutionDelegate.swift in Sources */,
+				D4E609151C07D2F100246E25 /* VNoteMarks.swift in Sources */,
 				D426E9CB14C35A4A0031F745 /* TLSelectionManager.m in Sources */,
 				D41715F119FC7F790043561E /* VNote.swift in Sources */,
 				D4BE12C819FCB72700ED336C /* VChord.swift in Sources */,

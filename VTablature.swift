@@ -12,6 +12,11 @@ import Foundation
 let HUMAN_READABLE_WIDTH = 80
 let VTABLATURE_DATA_UTI = "com.valrusware.tablature"
 
+public struct TabLocation {
+    var index = 0
+    var string = 0
+}
+
 @objc public class VTablature: NSObject, SequenceType, NSPasteboardWriting, NSPasteboardReading {
     dynamic var chords: Array<VChord>
     private var measureBars: NSMutableIndexSet
@@ -120,15 +125,15 @@ let VTABLATURE_DATA_UTI = "com.valrusware.tablature"
         return measureBars.containsIndex(index)
     }
     
-    public func noteAtIndex(index: Int, onString stringNum: Int) -> VNote? {
-        if index < self.chords.count && stringNum < self.numStrings {
-            return self.chords[index][stringNum]
+    public func noteAtLocation(loc: TabLocation) -> VNote? {
+        if loc.index < self.chords.count && loc.string < self.numStrings {
+            return self.chords[loc.index][loc.string]
         }
         return nil
     }
     
     public func fretAtIndex(index: Int, onString stringNum: Int) -> Int? {
-        if let note = self.noteAtIndex(index, onString: stringNum) {
+        if let note = self.noteAtLocation(TabLocation(index: index, string: stringNum)) {
             return note.fret
         }
         return nil

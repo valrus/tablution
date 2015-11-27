@@ -142,6 +142,8 @@ let MAX_FRET = 22
     func prepareUndoForChangeFromNote(previousNote: VNote, onString whichString: Int) {
         if let undoManager = tabDoc!.undoManager as NSUndoManager? {
             let undoTarget = undoManager.prepareWithInvocationTarget(self)
+            // FIXME: This seems wrong, as it depends on the focus note, which could change before the undo
+            // Also: can we just re-add previousNote directly rather than by its fret?
             undoTarget.addNoteOnString(whichString, onFret: previousNote.fret, reverseString: false)
             undoManager.setActionName(NSLocalizedString("Change Note", comment: "change note undo"))
         }
@@ -153,6 +155,7 @@ let MAX_FRET = 22
     }
     
     func addNoteOnString(whichString: NSNumber, onFret whichFret: NSNumber, reverseString doReverse: Bool) {
+        // FIXME: I don't like this doReverse stuff; rather just set the right numbers in keyBindings.plist
         let stringAsInt = whichString.integerValue
         let fretAsInt = whichFret.integerValue
         let stringNum: Int = doReverse ? tablature!.numStrings - stringAsInt - 1 : stringAsInt
@@ -179,6 +182,34 @@ let MAX_FRET = 22
         if currentNote.hasFret() {
             self.prepareUndoForChangeFromNote(currentNote, onString: Int(tabView!.focusNoteString))
             tablature!.deleteNoteAtIndex(Int(tabView!.currFocusChordIndex), onString: Int(tabView!.focusNoteString))
+        }
+    }
+    
+    func prepareUndoForNoteMarkChange(beforeNote: VNote, markType: MarkType) {
+        guard let undoManager = tabDoc!.undoManager as NSUndoManager? else {
+            return
+        }
+        guard let undoTarget = undoManager.prepareWithInvocationTarget(self) as? VTabController else {
+            return
+        }
+        undoTarget.changeMarkForNote(beforeNote, toChar: markType == .Pre ? beforeNote.preMark.rawValue : beforeNote.postMark.rawValue)
+        undoManager.setActionName(NSLocalizedString("Change Note", comment: "change note undo"))
+    }
+    
+    func changeMarkForNote(note: VNote, toChar markChar: Character) {
+        guard let markType = determineMarkType(markChar) as MarkType? else {
+            // FIXME: error?
+            return
+        }
+        if note.hasFret() {
+            self.prepareUndoForNoteMarkChange(note, markType: markType)
+            note.setMark(markChar)
+        }
+    }
+    
+    func changeFocusNoteMark(markCharString: String) {
+        if markCharString.characters.count == 1 {
+            changeMarkForNote(tabView!.focusNote(), toChar: Character(markCharString))
         }
     }
     
