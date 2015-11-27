@@ -82,7 +82,7 @@ let MAX_FRET = 22
     
     func insertChords(chordArray: [VChord], atIndexes indexes: NSIndexSet, andSelectThem doSelect: Bool) {
         if let undoManager = tabDoc!.undoManager as NSUndoManager? {
-            undoManager.registerUndoWithTarget(tablature!, selector: Selector("removeChordsAtIndexes"), object: indexes)
+            undoManager.registerUndoWithTarget(self, selector: Selector("deleteChordsAtIndexes:"), object: indexes)
             undoManager.setActionName(NSLocalizedString("Insert Chords", comment: "insert chords undo"))
         }
         tablature!.insertChords(chordArray, atIndexes: indexes)
@@ -95,15 +95,19 @@ let MAX_FRET = 22
     func removeChordAtIndex(index: Int) {
         tablature!.removeChordAtIndex(index)
     }
+    
+    func deleteChordsAtIndexes(indexes: NSIndexSet) {
+        if let undoManager = tabDoc!.undoManager as NSUndoManager? {
+            undoManager.prepareWithInvocationTarget(self).insertChords(tablature!.chordsAtIndexes(indexes), atIndexes: indexes, andSelectThem: true)
+            undoManager.setActionName(NSLocalizedString("Delete Selection", comment: "delete selection undo"))
+        }
+        tablature!.removeChordsAtIndexes(indexes)
+        tabView!.clearSelection()
+    }
 
     func deleteSelectedChords() {
         let selectedIndexes: NSIndexSet = tabView!.selectedIndexes()
-        if let undoManager = tabDoc!.undoManager as NSUndoManager? {
-            undoManager.prepareWithInvocationTarget(self).insertChords(tablature!.chordsAtIndexes(selectedIndexes), atIndexes: selectedIndexes, andSelectThem: true)
-            undoManager.setActionName(NSLocalizedString("Delete Selection", comment: "delete selection undo"))
-        }
-        tablature!.removeChordsAtIndexes(selectedIndexes)
-        tabView!.clearSelection()
+        deleteChordsAtIndexes(selectedIndexes)
     }
     
     func replaceChordsAtIndexes(indexes: NSIndexSet, withChords chords: [VChord]) {
@@ -144,34 +148,33 @@ let MAX_FRET = 22
             let undoTarget = undoManager.prepareWithInvocationTarget(self)
             // FIXME: This seems wrong, as it depends on the focus note, which could change before the undo
             // Also: can we just re-add previousNote directly rather than by its fret?
-            undoTarget.addNoteOnString(whichString, onFret: previousNote.fret, reverseString: false)
+            undoTarget.addNoteAtFocus(onString: whichString, onFret: previousNote.fret, reverseString: false)
             undoManager.setActionName(NSLocalizedString("Change Note", comment: "change note undo"))
         }
     }
     
     func addOpenString(whichString: NSNumber, reverseString doReverse: Bool) {
         let stringAsInt = whichString.integerValue
-        self.addNoteOnString(stringAsInt, onFret: 0, reverseString: doReverse)
+        self.addNoteAtFocus(onString: stringAsInt, onFret: 0, reverseString: doReverse)
     }
     
-    func addNoteOnString(whichString: NSNumber, onFret whichFret: NSNumber, reverseString doReverse: Bool) {
+    func addNoteAtFocus(onString whichString: NSNumber, onFret whichFret: NSNumber, reverseString doReverse: Bool) {
         // FIXME: I don't like this doReverse stuff; rather just set the right numbers in keyBindings.plist
         let stringAsInt = whichString.integerValue
         let fretAsInt = whichFret.integerValue
         let stringNum: Int = doReverse ? tablature!.numStrings - stringAsInt - 1 : stringAsInt
         let fretNum: Int = fretAsInt + baseFret
+        guard let focusIndex = tabView?.currFocusChordIndex else {
+            return
+        }
         if stringAsInt < tablature!.numStrings {
             if self.isInSoloMode() {
                 let newChord: VChord = VChord.chordWithOneFret(fretNum, onString: stringNum, numStrings: tablature!.numStrings)
-                if let undoManager = tabDoc!.undoManager as NSUndoManager? {
-                    undoManager.prepareWithInvocationTarget(self).removeChordAtIndex(Int(tabView!.currFocusChordIndex) + 1)
-                    undoManager.setActionName(NSLocalizedString("Add Solo Note", comment: "add solo note undo"))
-                }
-                tablature!.insertChord(newChord, atIndex: Int(tabView!.currFocusChordIndex))
+                self.insertChords([newChord], atIndexes: NSIndexSet(index: focusIndex), andSelectThem: false)
             }
             else {
                 self.prepareUndoForChangeFromNote(tabView!.focusChord()[stringNum]!, onString: stringNum)
-                tablature!.insertNote(VNote.noteAtFret(fretNum), atIndex: Int(tabView!.currFocusChordIndex), onString: stringNum)
+                tablature!.insertNote(VNote.noteAtFret(fretNum), atIndex: focusIndex, onString: stringNum)
                 tabView!.focusNoteString = stringNum
             }
         }

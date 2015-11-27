@@ -373,7 +373,7 @@ let CHORD_SPACE: CGFloat = 24.0
             }
         case 3:
             if selectorString == "addNoteOnString:onFret:" {
-                tabController!.addNoteOnString(actionParts.objectAtIndex(1) as! NSNumber, onFret: actionParts.objectAtIndex(2) as! NSNumber, reverseString: true)
+                tabController!.addNoteAtFocus(onString: actionParts.objectAtIndex(1) as! NSNumber, onFret: actionParts.objectAtIndex(2) as! NSNumber, reverseString: true)
             }
             else {
                 tabController!.performSelector(editSelector, withObject: actionParts.objectAtIndex(1), withObject: actionParts.objectAtIndex(2))
