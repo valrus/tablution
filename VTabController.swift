@@ -15,13 +15,11 @@ let MAX_FRET = 22
     @IBOutlet weak var tabView: VTabView?
     @IBOutlet weak var currentFretField: NSTextField?
     @IBOutlet weak var chordModeField: NSTextField?
-    // FIXME: Almost all uses of this are to get its undo manager. Perhaps just store a ref to that directly?
-    @IBOutlet var tabDoc: VTabDocument?
     
     dynamic var baseFret: Int = 0
     dynamic var soloMode: Bool = false
 
-    var tablature: VTablature?
+    weak var tablature: VTablature?
     var keyBindings: NSDictionary?
 
     private var myContext = 0
@@ -53,17 +51,20 @@ let MAX_FRET = 22
     public override func awakeFromNib() {
         baseFret = 0
         soloMode = false
-        tabView!.tablature = tabDoc!.tablature
-        self.tablature = tabDoc!.tablature
         self.setupKeyBindings()
-        tablature!.addObserver(self, forKeyPath:"chords", options: [NSKeyValueObservingOptions.New, NSKeyValueObservingOptions.Old], context:&myContext)
-        tablature!.addObserver(self, forKeyPath:"bars", options: NSKeyValueObservingOptions(rawValue: 0), context:&myContext)
     }
     
     public override func viewDidLoad() {
         if let appDelegate: VTablutionDelegate = NSApplication.sharedApplication().delegate as? VTablutionDelegate {
             appDelegate.viewController = self
         }
+    }
+    
+    public func setupTablature(tablature: VTablature) {
+        self.tablature = tablature
+        tabView!.tablature = tablature
+        tablature.addObserver(self, forKeyPath:"chords", options: [NSKeyValueObservingOptions.New, NSKeyValueObservingOptions.Old], context:&myContext)
+        tablature.addObserver(self, forKeyPath:"bars", options: NSKeyValueObservingOptions(rawValue: 0), context:&myContext)
     }
 
     // MARK: - Editing selectors -
@@ -82,7 +83,7 @@ let MAX_FRET = 22
     }
     
     func insertChords(chordArray: [VChord], atIndexes indexes: NSIndexSet, andSelectThem doSelect: Bool) {
-        if let undoManager = tabDoc!.undoManager as NSUndoManager? {
+        if let undoManager = self.undoManager as NSUndoManager? {
             undoManager.registerUndoWithTarget(self, selector: Selector("deleteChordsAtIndexes:"), object: indexes)
             undoManager.setActionName(NSLocalizedString("Insert Chords", comment: "insert chords undo"))
         }
@@ -98,7 +99,7 @@ let MAX_FRET = 22
     }
     
     func deleteChordsAtIndexes(indexes: NSIndexSet) {
-        if let undoManager = tabDoc!.undoManager as NSUndoManager? {
+        if let undoManager = self.undoManager as NSUndoManager? {
             undoManager.prepareWithInvocationTarget(self).insertChords(tablature!.chordsAtIndexes(indexes), atIndexes: indexes, andSelectThem: true)
             undoManager.setActionName(NSLocalizedString("Delete Selection", comment: "delete selection undo"))
         }
@@ -118,7 +119,7 @@ let MAX_FRET = 22
     func replaceSelectedChordsWithChords(chordArray: [VChord]) {
         let insertionRange: NSRange = NSMakeRange(tabView!.selectedIndexes().firstIndex, chordArray.count)
         let insertionIndexes: NSIndexSet = NSIndexSet(indexesInRange: insertionRange)
-        if let undoManager = tabDoc!.undoManager as NSUndoManager? {
+        if let undoManager = self.undoManager as NSUndoManager? {
             let undoTarget = undoManager.prepareWithInvocationTarget(self)
             undoTarget.replaceChordsAtIndexes(insertionIndexes, withChords: tabView!.selectedChords() as! [VChord])
             undoManager.setActionName(NSLocalizedString("Replace Selected Chords", comment: "replace selection undo"))
@@ -135,7 +136,7 @@ let MAX_FRET = 22
     
     func toggleMeasureBar() {
         let barIndex = Int(tabView!.currFocusChordIndex)
-        if let undoManager = tabDoc!.undoManager as NSUndoManager? {
+        if let undoManager = self.undoManager as NSUndoManager? {
             undoManager.registerUndoWithTarget(self, selector: Selector("toggleBarAtIndex:"), object: NSNumber(integer: barIndex))
             undoManager.setActionName(NSLocalizedString("Undo Toggle Measure Bar", comment:"toggle bar undo"))
         }
@@ -145,7 +146,7 @@ let MAX_FRET = 22
     // MARK: Note-level changes
     
     func prepareUndoForChangeFromNote(atLocation loc: TabLocation) {
-        guard let undoManager = tabDoc!.undoManager as NSUndoManager? else {
+        guard let undoManager = self.undoManager as NSUndoManager? else {
             return
         }
         guard let note = tablature!.noteAtLocation(loc) else {
@@ -200,7 +201,7 @@ let MAX_FRET = 22
     }
     
     func prepareUndoForNoteMarkChange(beforeNote: VNote, markType: MarkType) {
-        guard let undoManager = tabDoc!.undoManager as NSUndoManager? else {
+        guard let undoManager = self.undoManager as NSUndoManager? else {
             return
         }
         guard let undoTarget = undoManager.prepareWithInvocationTarget(self) as? VTabController else {
@@ -328,7 +329,7 @@ let MAX_FRET = 22
                 return
             }
             let chordIndexToDelete: Int = Int(view.currFocusChordIndex) - 1
-            if let undoManager = tabDoc!.undoManager as NSUndoManager? {
+            if let undoManager = self.undoManager as NSUndoManager? {
                 let indexes = NSIndexSet(index: chordIndexToDelete)
                 let undoTarget = undoManager.prepareWithInvocationTarget(self)
                 undoTarget.insertChords(tablature!.chordsAtIndexes(indexes), atIndexes: indexes, andSelectThem: false)

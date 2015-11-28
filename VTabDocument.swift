@@ -10,7 +10,7 @@ import Foundation
 
 @objc public class VTabDocument: NSDocument {
     
-    var tablature: VTablature?
+    var tablature: VTablature = VTablature(numStrings: 6)
     @IBOutlet weak var controller: VTabController?
     @IBOutlet weak var tabView: VTabView?
 
@@ -21,29 +21,27 @@ import Foundation
     }
 
     override init() {
-        if tablature == nil {
-            tablature = VTablature(numStrings: 6)
-            tablature!.addChordFromString("-1 -1 -1 -1 -1 -1")
+        if tablature.countOfChords() == 0 {
+            tablature.addChordFromString("-1 -1 -1 -1 -1 -1")
         }
         super.init()
     }
 
     override public func windowControllerDidLoadNib(aController: NSWindowController) {
+        controller!.setupTablature(self.tablature)
     }
 
     override public func dataOfType(typeName: String) throws -> NSData {
         var tabText: String = ""
         NSLog("Saving doc of type: %@", typeName)
-        if let tab = tablature {
-            if typeName.isEqual("com.valrusware.tablature") {
-                tabText = tab.toSerialString()
-            }
-            else if typeName.isEqual("public.plain-text") {
-                tabText = tab.toHumanReadableString()
-            }
-            else {
-                throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
-            }
+        if typeName.isEqual("com.valrusware.tablature") {
+            tabText = tablature.toSerialString()
+        }
+        else if typeName.isEqual("public.plain-text") {
+            tabText = tablature.toHumanReadableString()
+        }
+        else {
+            throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
         }
         guard let data = tabText.dataUsingEncoding(NSUTF8StringEncoding) else {
             throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)

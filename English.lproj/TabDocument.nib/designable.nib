@@ -80,12 +80,11 @@
             <connections>
                 <outlet property="chordModeField" destination="100096" id="100122"/>
                 <outlet property="currentFretField" destination="100080" id="rn4-Ek-Syr"/>
-                <outlet property="tabDoc" destination="-2" id="100093"/>
                 <outlet property="tabView" destination="100067" id="Ieb-Kc-hue"/>
                 <outlet property="view" destination="100067" id="UJq-Bm-dRu"/>
             </connections>
         </customObject>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <userDefaultsController representsSharedInstance="YES" id="100098"/>
     </objects>
 </document>

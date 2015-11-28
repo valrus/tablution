@@ -218,6 +218,9 @@ let CHORD_SPACE: CGFloat = 24.0
     }
     
     public override func drawRect(dirtyRect: NSRect) {
+        guard self.tablature != nil else {
+            return
+        }
         NSGraphicsContext.saveGraphicsState()
         NSColor.whiteColor().setFill()
         NSRectFill(dirtyRect)
