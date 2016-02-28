@@ -76,22 +76,23 @@ let MAX_FRET = 22
             self.replaceSelectedChordsWithChords(oneBlankChord)
         }
         else {
-            let focusIndex: Int = tabView!.currFocusChordIndex + 1
+            let focusIndex: Int = tabView!.currFocusChordIndex + modeOffset()
             let focusIndexSet: NSIndexSet = NSIndexSet(index: focusIndex)
             self.insertChords(oneBlankChord, atIndexes: focusIndexSet, andSelectThem: false)
         }
     }
     
     func insertChords(chordArray: [VChord], atIndexes indexes: NSIndexSet, andSelectThem doSelect: Bool) {
+        guard let tab = tablature, view = tabView else { return }
         if let undoManager = self.undoManager as NSUndoManager? {
             undoManager.registerUndoWithTarget(self, selector: Selector("deleteChordsAtIndexes:"), object: indexes)
             undoManager.setActionName(NSLocalizedString("Insert Chords", comment: "insert chords undo"))
         }
-        tablature!.insertChords(chordArray, atIndexes: indexes)
+        tab.insertChords(chordArray, atIndexes: indexes)
         if doSelect {
             tabView!.selectIndexes(indexes)
         }
-        tabView!.needsDisplay = true
+        view.needsDisplay = true
     }
     
     func removeChordAtIndex(index: Int) {
@@ -99,12 +100,14 @@ let MAX_FRET = 22
     }
     
     func deleteChordsAtIndexes(indexes: NSIndexSet) {
+        guard let tab = tablature, view = tabView else { return }
+        let indexesAvailable = indexes.indexesInRange(NSRange(location: 0, length: tab.countOfChords()), options: NSEnumerationOptions(), passingTest: { (a, b) -> Bool in true })
         if let undoManager = self.undoManager as NSUndoManager? {
-            undoManager.prepareWithInvocationTarget(self).insertChords(tablature!.chordsAtIndexes(indexes), atIndexes: indexes, andSelectThem: true)
-            undoManager.setActionName(NSLocalizedString("Delete Selection", comment: "delete selection undo"))
+            undoManager.prepareWithInvocationTarget(self).insertChords(tab.chordsAtIndexes(indexesAvailable), atIndexes: indexesAvailable, andSelectThem: true)
+            undoManager.setActionName(NSLocalizedString("Delete Chords", comment: "delete chords undo"))
         }
-        tablature!.removeChordsAtIndexes(indexes)
-        tabView!.clearSelection()
+        tab.removeChordsAtIndexes(indexesAvailable)
+        view.clearSelection()
     }
 
     func deleteSelectedChords() {
@@ -250,13 +253,19 @@ let MAX_FRET = 22
         soloMode = !currentMode
         self.didChangeValueForKey("soloMode")
         tabView!.clearSelection()
-        tabView!.focusNoteString = currentMode ? 0 : 1
+        if (tabView!.currFocusChordIndex + modeOffset() > tablature!.countOfChords()) {
+            focusPrevChord();
+        }
+    }
+    
+    func modeOffset() -> Int {
+        return soloMode.boolValue ? 0 : 1
     }
     
     // MARK: Focus changes
     
     func focusNextChord() -> Bool {
-        if Int(tabView!.currFocusChordIndex) < tablature!.countOfChords() - 1 {
+        if Int(tabView!.currFocusChordIndex + modeOffset()) < tablature!.countOfChords() {
             tabView!.focusNextChord()
             return true
         }
@@ -306,15 +315,29 @@ let MAX_FRET = 22
     }
     
     @IBAction override public func moveUp(sender: AnyObject?) {
-        self.focusUpString()
+        if !isInSoloMode() {
+            self.focusUpString()
+        }
     }
     
     @IBAction override public func moveDown(sender: AnyObject?) {
-        self.focusDownString()
+        if !isInSoloMode() {
+            self.focusDownString()
+        }
     }
     
     @IBAction override public func deleteForward(sender: AnyObject?) {
-        self.deleteFocusNote()
+        if isInSoloMode() {
+            guard let view = tabView else {
+                return
+            }
+            NSLog("%d", view.currFocusChordIndex)
+            let chordIndexToDelete: Int = Int(view.currFocusChordIndex)
+            deleteChordsAtIndexes(NSIndexSet(index: chordIndexToDelete))
+        }
+        else {
+            self.deleteFocusNote()
+        }
     }
     
     @IBAction override public func deleteBackward(sender: AnyObject?) {
@@ -329,13 +352,7 @@ let MAX_FRET = 22
                 return
             }
             let chordIndexToDelete: Int = Int(view.currFocusChordIndex) - 1
-            if let undoManager = self.undoManager as NSUndoManager? {
-                let indexes = NSIndexSet(index: chordIndexToDelete)
-                let undoTarget = undoManager.prepareWithInvocationTarget(self)
-                undoTarget.insertChords(tablature!.chordsAtIndexes(indexes), atIndexes: indexes, andSelectThem: false)
-                undoManager.setActionName(NSLocalizedString("Delete Chord", comment: "delete chord undo"))
-                tablature!.removeChordAtIndex(chordIndexToDelete)
-            }
+            deleteChordsAtIndexes(NSIndexSet(index: chordIndexToDelete))
         }
     }
     
@@ -343,29 +360,25 @@ let MAX_FRET = 22
     
     override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         NSLog("VTabController sees a change in %@!", keyPath!)
-        guard let changeDict = change else {
-            return
-        }
-        guard let changeKindNumber = changeDict["kind"] as? NSNumber else {
-            return
-        }
-        guard let changeKind = NSKeyValueChange(rawValue: UInt(changeKindNumber.integerValue)) as NSKeyValueChange? else {
-            return
+        guard
+            let view = tabView,
+            let changeDict = change,
+            let changeKindNumber = changeDict["kind"] as? NSNumber,
+            let changeKind = NSKeyValueChange(rawValue: UInt(changeKindNumber.integerValue)) as NSKeyValueChange? else {
+                return
         }
         switch changeKind {
         case .Replacement:
-            guard let oldChordArray = changeDict[NSKeyValueChangeOldKey] else {
-                return
-            }
-            guard let newChordArray = changeDict[NSKeyValueChangeNewKey] else {
-                return
+            guard let oldChordArray = changeDict[NSKeyValueChangeOldKey],
+                let newChordArray = changeDict[NSKeyValueChangeNewKey] else {
+                    return
             }
             if oldChordArray.count == 1 && newChordArray.count == 1 {
                 let oldChord: VChord = oldChordArray[0] as! VChord
                 let newChord: VChord = newChordArray[0] as! VChord
                 let changedNotesIndexes: NSIndexSet = newChord.indexesOfChangedNotesFrom(oldChord)!
                 if changedNotesIndexes.count == 1 {
-                    tabView!.focusNoteString = changedNotesIndexes.firstIndex
+                    view.focusNoteString = changedNotesIndexes.firstIndex
                 }
             }
             
@@ -373,22 +386,19 @@ let MAX_FRET = 22
             guard let indexes = changeDict["indexes"] as? NSIndexSet else {
                 return
             }
-            let indexForFocusAdjustment: Int = Int(tabView!.currFocusChordIndex) + (self.isInSoloMode() ? 3 : 2)
+            let indexForFocusAdjustment: Int = Int(view.currFocusChordIndex) + (self.isInSoloMode() ? 3 : 2)
             let rangeBeforeFocus: NSRange = NSMakeRange(0, indexForFocusAdjustment)
             let indexesBeforeFocus: Int = indexes.countOfIndexesInRange(rangeBeforeFocus)
-            tabView!.currFocusChordIndex = tabView!.currFocusChordIndex + indexesBeforeFocus
+            view.currFocusChordIndex = view.currFocusChordIndex + indexesBeforeFocus
             
         case .Removal:
             guard let indexes = changeDict["indexes"] as? NSIndexSet else {
                 return
             }
-            var indexForFocusAdjustment: Int = Int(tabView!.currFocusChordIndex) + (self.isInSoloMode() ? 1 : 0)
-            if Int(tabView!.currFocusChordIndex) >= self.tablature!.countOfChords() {
-                indexForFocusAdjustment += 1
-            }
+            let indexForFocusAdjustment: Int = Int(view.currFocusChordIndex)
             let rangeBeforeFocus: NSRange = NSMakeRange(0, indexForFocusAdjustment)
             let indexesBeforeFocus: Int = indexes.countOfIndexesInRange(rangeBeforeFocus)
-            tabView!.currFocusChordIndex = tabView!.currFocusChordIndex - indexesBeforeFocus
+            view.currFocusChordIndex = view.currFocusChordIndex - indexesBeforeFocus
             
         default: break
         }

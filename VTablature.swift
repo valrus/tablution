@@ -236,6 +236,7 @@ public struct TabLocation {
     }
     
     public func removeChordAtIndex(index: Int) {
+        guard index < countOfChords() else { return }
         self.willChange(NSKeyValueChange.Removal, valuesAtIndexes: NSIndexSet(index: index), forKey: "chords")
         self.chords[index].removeObserver(self, forKeyPath: "notes")
         self.chords.removeAtIndex(index)
@@ -243,6 +244,7 @@ public struct TabLocation {
     }
     
     public func removeChordsAtIndexes(indexes: NSIndexSet, andNotify notify: Bool = true) {
+        guard indexes.count > 0 else { return }
         if notify {
             self.willChange(NSKeyValueChange.Removal, valuesAtIndexes: indexes, forKey: "chords")
         }
