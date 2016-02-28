@@ -30,6 +30,9 @@ public class VNote: NSObject {
     }
 
     func stringValue() -> String {
+        // FIXME: This is probably not the way to do this.
+        // Drawing-wise, the fret number shouldn't move when you add a mark,
+        // but there's no easy way to avoid it doing this.
         let pre = self.preMark == .None ? "" : "\(self.preMark.rawValue)"
         let post = self.postMark == .None ? "" : "\(self.postMark.rawValue)"
         return "\(pre)\(self.fret)\(post)"
