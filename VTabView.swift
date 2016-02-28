@@ -85,7 +85,7 @@ let CHORD_SPACE: CGFloat = 24.0
             NSBezierPath.strokeLineFromPoint(startPoint, toPoint: endPoint)
             newStringHeight += tabFont.pointSize
         }
-        return stringHeight
+        return newStringHeight
     }
 
     func drawFocusRectForChordAtPoint(origin: NSPoint, inColor strokeColor: NSColor) {
